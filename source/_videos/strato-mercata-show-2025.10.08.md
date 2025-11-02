@@ -37,8 +37,6 @@ table_of_contents:
 
 ## Transcript
 
-We suggest that you start at the [Victor's introduction](#introduction).
-
 <!-- TABLE_OF_CONTENTS -->
 
 <a id="small-talk"></a>

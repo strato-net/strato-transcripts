@@ -31,8 +31,6 @@ table_of_contents:
 
 ## Transcript
 
-We suggest that you start at the [Bob introduction](#bob-introduction).
-
 <!-- TABLE_OF_CONTENTS -->
 
 <a id="small-talk-waiting-for-attendees"></a>

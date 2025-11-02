@@ -25,8 +25,6 @@ Our long-awaited [Mercata V2 contest]("https://www.stratomercata.com/blog/announ
 
 ## Transcript
 
-We suggest that you start at the [Victor's introduction](#victor-introduction).
-
 <!-- TABLE_OF_CONTENTS -->
 
 <a id="small-talk-waiting-for-attendees"></a>

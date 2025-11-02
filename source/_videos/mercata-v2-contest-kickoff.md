@@ -31,8 +31,6 @@ Here are [instructions to get started](https://www.stratomercata.com/blog/announ
 
 ## Transcript
 
-We suggest that you start at the [Bob introduction](#bob-introduction).
-
 <!-- TABLE_OF_CONTENTS -->
 
 <a id="small-talk-waiting-for-attendees"></a>
