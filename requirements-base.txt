@@ -24,11 +24,11 @@
 # Pulls in faster-whisper, transformers, ctranslate2, and other dependencies
 whisperx==3.7.4
 
-# SpeechBrain 1.0.3 - Using PyPI version for reproducibility and faster installs
-# Requires torch>=1.9 (fully compatible with PyTorch 2.10+ nightly)
-# Latest stable PyPI version as of Nov 2024
-# Pulls in torch-audiomentations, torchaudio-augmentations
-speechbrain==1.0.3
+# NOTE: SpeechBrain removed - not a dependency of WhisperX or pyannote-audio
+# pyannote-audio only requires it for testing (extra == "test"), not for normal operation
+# WhisperX does not depend on it at all
+# Our code does not use it directly
+# If needed in future, can be added back explicitly
 
 # NOTE: pyannote.audio is NOT listed here to avoid version conflicts
 # WhisperX requires pyannote.audio<4.0.0, but we need 4.0.1+ for PyTorch 2.10+ compatibility
