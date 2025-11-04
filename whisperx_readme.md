@@ -6,13 +6,25 @@ A complete pipeline for automatically transcribing video/audio files with speake
 
 ## 🚨 RTX 5070 / Blackwell GPU Users
 
-**If you have an NVIDIA GeForce RTX 5070, please use the dedicated setup guide:**
+**If you have an NVIDIA GeForce RTX 5070, use the automated setup scripts:**
 
-📄 **[SETUP_RTX_5070.md](SETUP_RTX_5070.md)** - Complete Ubuntu 24.04 setup for RTX 5070
+```bash
+# Step 1: Install NVIDIA drivers
+sudo ./install_nvidia_drivers.sh
+sudo reboot
 
-The RTX 5070 requires special setup (PyTorch nightly, manual patches, specific drivers). The dedicated guide covers everything from fresh Ubuntu install to working transcription.
+# Step 2: Setup Python environment (after reboot)
+./install_packages_and_venv.sh
 
-**For other GPUs (RTX 20/30/40, GTX 16-series, AMD), continue with the guide below** ⬇️
+# Step 3: Configure HuggingFace token
+nano setup_env.sh  # Add your HF_TOKEN
+```
+
+📄 **[SETUP_RTX_5070.md](SETUP_RTX_5070.md)** - Complete setup guide with troubleshooting
+
+The scripts automate everything: driver installation, PyTorch nightly, WhisperX patches, LD_LIBRARY_PATH configuration, and verification tests.
+
+**For other GPUs (RTX 20/30/40, GTX 16-series, AMD), continue with the manual setup below** ⬇️
 
 ---
 
@@ -64,6 +76,9 @@ This pipeline takes an audio/video file of a podcast or interview and automatica
 
 ## Quick Start
 
+**For RTX 5070 users:** See [SETUP_RTX_5070.md](SETUP_RTX_5070.md) for automated setup scripts.
+
+**For other GPUs:**
 ```bash
 # 1. Set up environment (one-time setup)
 python3 -m venv venv
@@ -110,99 +125,24 @@ venv\Scripts\activate  # Windows
 
 ### Step 2: Install Dependencies
 
-**IMPORTANT: GPU Compatibility Notes**
+**For RTX 5070 / Blackwell architecture (sm_120):**
+See **[SETUP_RTX_5070.md](SETUP_RTX_5070.md)** - automated scripts handle everything.
 
-For modern NVIDIA GPUs (RTX 5070, RTX 50-series / Blackwell architecture) with CUDA compute capability sm_120+:
-- **PyTorch STABLE does NOT support sm_120 yet** (as of Nov 2025)
-- Must use **PyTorch 2.10.0 NIGHTLY with CUDA 12.8**
-- **cuDNN 9.10.2** is bundled with PyTorch nightly (no separate installation needed)
-- Requires **NumPy 2.3+** for pyannote.audio 4.0.1 compatibility
-- Requires **pyannote.audio 4.0.1** for PyTorch 2.10+ compatibility
-- **WhisperX 3.7.4** works with warnings (version check can be ignored)
-
-**For RTX 5070 and Blackwell GPUs, install NVIDIA drivers first:**
-
+**For Older NVIDIA GPUs (GTX 16/RTX 20/30/40-series):**
 ```bash
-# Check current driver version
-nvidia-smi
-
-# Install latest NVIDIA drivers (565+ required for RTX 50-series)
-sudo apt update
-sudo apt install -y nvidia-driver-565  # or latest available
-sudo reboot
-
-# After reboot, verify CUDA is detected
-nvidia-smi
-# Should show CUDA Version: 12.8 or newer
-
-# Install FFmpeg for audio extraction
-sudo apt install -y ffmpeg
-```
-
-**For RTX 5070 / Blackwell architecture, install PyTorch NIGHTLY first:**
-
-```bash
-# REQUIRED: Install PyTorch nightly with CUDA 12.8 support
-pip install --pre torch torchvision torchaudio --index-url https://download.pytorch.org/whl/nightly/cu128
-```
-
-This installs:
-- PyTorch 2.10.0.dev20251103+cu128 (or later nightly)
-- torchvision 0.25.0.dev20251103+cu128
-- torchaudio 2.10.0.dev20251103+cu128
-- Bundled CUDA libraries including cuDNN 9.10.2.21
-- Bundled NVIDIA libraries (NCCL 2.27.5, cuBLAS, cuFFT, etc.)
-
-Then install remaining dependencies:
-```bash
-pip install -r requirements.txt
-```
-
-The `requirements.txt` includes pyannote.audio 4.0.1 and other dependencies compatible with PyTorch nightly.
-
-**CRITICAL: Apply WhisperX patches (REQUIRED for RTX 5070 setup):**
-
-WhisperX 3.7.4 is not yet compatible with pyannote.audio 4.0.1's new API. After installing dependencies, you MUST manually patch two files:
-
-```bash
-# Patch 1: Update venv/lib/python3.12/site-packages/whisperx/vads/pyannote.py
-sed -i 's/use_auth_token/token/g' venv/lib/python3.12/site-packages/whisperx/vads/pyannote.py
-
-# Patch 2: Update venv/lib/python3.12/site-packages/whisperx/asr.py line 412
-sed -i '412s/use_auth_token=None/token=None/' venv/lib/python3.12/site-packages/whisperx/asr.py
-```
-
-These patches change the authentication parameter from `use_auth_token` (deprecated) to `token` (pyannote.audio 4.0.1 standard).
-
-**Verify GPU is working:**
-```bash
-python3 -c "import torch; print(f'PyTorch: {torch.__version__}'); print(f'CUDA available: {torch.cuda.is_available()}'); print(f'GPU: {torch.cuda.get_device_name(0) if torch.cuda.is_available() else \"N/A\"}')"
-```
-
-Expected output:
-```
-PyTorch: 2.10.0.dev20251103+cu128
-CUDA available: True
-GPU: NVIDIA GeForce RTX 5070
-```
-
-**For Older NVIDIA GPUs (GTX 16-series, RTX 20/30/40-series):**
-
-Older GPUs can use PyTorch stable releases:
-```bash
-# For GPUs with CUDA 12.1 support (RTX 2060, 3090, 4090, etc.)
 pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
 pip install -r requirements.txt
 ```
 
-**AMD GPUs (ROCm) on Linux:**
+**AMD GPUs (ROCm):**
 ```bash
 pip install torch torchaudio --index-url https://download.pytorch.org/whl/rocm6.2
+pip install -r requirements.txt
 ```
 
 **CPU Only:**
 ```bash
-# Default torch installation (already in requirements.txt)
+pip install -r requirements.txt
 # Works but is MUCH slower
 ```
 

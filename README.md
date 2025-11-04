@@ -130,37 +130,33 @@ For high-quality local transcription with speaker diarization using WhisperX on 
 - CUDA 12.1+ compatible setup
 - FFmpeg
 
-**🚨 IMPORTANT: For RTX 5070 / Blackwell Architecture Setup**
+**🚨 IMPORTANT: For RTX 5070 / Blackwell Architecture**
 
-**If you have an NVIDIA GeForce RTX 5070 GPU, please follow the complete setup guide:**
+**Automated setup for RTX 5070 GPU:**
 
-📄 **[SETUP_RTX_5070.md](SETUP_RTX_5070.md)** - Complete step-by-step guide for Ubuntu 24.04 LTS
-
-This comprehensive guide covers:
-- NVIDIA driver installation (565+)
-- System dependencies
-- PyTorch nightly installation
-- WhisperX patching
-- Environment configuration
-- Verification steps
-- Complete troubleshooting
-
-**Quick Summary for RTX 5070:**
-
-The RTX 5070 uses Blackwell architecture (sm_120) which requires:
-- **NVIDIA Driver:** 565+ (RTX 50-series support)
-- **PyTorch:** 2.10.0.dev NIGHTLY with CUDA 12.8 (stable won't work)
-- **cuDNN:** 9.10.2 (bundled with PyTorch nightly)
-- **pyannote.audio:** 4.0.1 (PyTorch 2.10+ compatible)
-- **WhisperX:** 3.7.4 with manual patches (API compatibility)
-
-**⚠️ CRITICAL: Manual patching required after pip install:**
 ```bash
-sed -i 's/use_auth_token/token/g' venv/lib/python3.12/site-packages/whisperx/vads/pyannote.py
-sed -i '412s/use_auth_token=None/token=None/' venv/lib/python3.12/site-packages/whisperx/asr.py
+# Step 1: Install NVIDIA drivers
+sudo ./install_nvidia_drivers.sh
+sudo reboot
+
+# Step 2: Setup Python environment (after reboot)
+./install_packages_and_venv.sh
+
+# Step 3: Configure HuggingFace token
+nano setup_env.sh  # Add your HF_TOKEN
 ```
 
-**For older GPUs (RTX 20/30/40 series), use the standard setup below** ⬇️
+📄 **[SETUP_RTX_5070.md](SETUP_RTX_5070.md)** - Complete setup guide with troubleshooting
+
+**What the scripts do:**
+- Install NVIDIA driver 565+ (RTX 50-series support)
+- Install PyTorch 2.10.0.dev nightly with CUDA 12.8 (sm_120 support)
+- Install all dependencies (cuDNN 9.10.2, pyannote.audio 4.0.1, WhisperX 3.7.4)
+- Apply WhisperX patches automatically
+- Configure LD_LIBRARY_PATH
+- Run verification tests
+
+**For older GPUs (RTX 20/30/40 series):** Use stable PyTorch and skip the RTX 5070-specific setup
 
 #### NVIDIA Driver Installation
 
@@ -276,7 +272,7 @@ ffmpeg -i "video-file.mp4" -q:a 0 -map a source/videos/raw-audio/output-audio.mp
 source setup_env.sh
 source venv/bin/activate
 
-# IMPORTANT: Set LD_LIBRARY_PATH for cuDNN
+# Set LD_LIBRARY_PATH (required for PyTorch nightly - see SETUP_RTX_5070.md Step 7.5)
 export LD_LIBRARY_PATH=venv/lib/python3.12/site-packages/nvidia/cudnn/lib:$LD_LIBRARY_PATH
 
 python3 transcribe_with_diarization.py source/videos/raw-audio/output-audio.mp3

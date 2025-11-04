@@ -18,38 +18,33 @@
 # Add PyTorch nightly index for torch/torchvision/torchaudio
 --extra-index-url https://download.pytorch.org/whl/nightly/cu128
 
-# PyTorch ecosystem (locked to specific nightly build for RTX 5070)
-# Must use exact versions - RTX 5070 requires sm_120 support
-torch==2.10.0.dev20251103+cu128
-torchvision==0.25.0.dev20251103+cu128
-torchaudio==2.10.0.dev20251103+cu128
+# PyTorch ecosystem (nightly build for RTX 5070)
+# RTX 5070 requires sm_120 support, only available in nightly
+torch --pre
+torchvision --pre
+torchaudio --pre
 
-# Core transcription (pulls in faster-whisper, transformers, ctranslate2, etc.)
-whisperx @ git+https://github.com/m-bain/whisperx.git@d32ec3e3012ec4c0934f4088424c32f3f038b249
+# Core transcription
+# Pulls in faster-whisper, transformers, ctranslate2, etc.
+whisperx @ git+https://github.com/m-bain/whisperx.git
 
 # Speaker diarization
-# pyannote.audio 4.0.1 required for PyTorch 2.10+ compatibility
-# (pulls in pyannote.core, pyannote.database, pyannote.metrics, pyannote.pipeline,
-#  pytorch-lightning, opentelemetry, numpy>=2.0, pandas, scipy, etc.)
-pyannote.audio==4.0.1
+# pyannote.audio 4.0.1+ required for PyTorch 2.10+ compatibility
+# Pulls in pyannote.core, pyannote.database, pyannote.metrics, pyannote.pipeline,
+# pytorch-lightning, opentelemetry, numpy>=2.0, pandas, scipy, etc.
+pyannote.audio>=4.0.1
 
 # Additional ML framework
-# (pulls in torch-audiomentations, torchaudio-augmentations, etc.)
-speechbrain @ git+https://github.com/speechbrain/speechbrain.git@c6d2a8b1836dd86d06404c67d211e518a82fc407
+# Pulls in torch-audiomentations, torchaudio-augmentations, etc.
+speechbrain @ git+https://github.com/speechbrain/speechbrain.git
 
 # ==============================================================================
-# Post-Installation Steps
+# Post-Installation Steps (RTX 5070 Required)
 # ==============================================================================
 #
-# After installation, you must apply WhisperX patches:
+# 1. Apply WhisperX patches (pyannote.audio 4.0.1 compatibility)
+# 2. Set LD_LIBRARY_PATH (PyTorch nightly library path issue)
 #
-# sed -i 's/use_auth_token/token/g' venv/lib/python3.12/site-packages/whisperx/vads/pyannote.py
-# sed -i '412s/use_auth_token=None/token=None/' venv/lib/python3.12/site-packages/whisperx/asr.py
-#
-# And set LD_LIBRARY_PATH when running:
-#
-# export LD_LIBRARY_PATH=venv/lib/python3.12/site-packages/nvidia/cudnn/lib:$LD_LIBRARY_PATH
-#
-# See SETUP_RTX_5070.md for complete setup instructions.
+# See SETUP_RTX_5070.md for complete instructions and explanations.
 #
 # ==============================================================================
