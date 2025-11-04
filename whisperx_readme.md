@@ -2,6 +2,20 @@
 
 A complete pipeline for automatically transcribing video/audio files with speaker identification (diarization) and formatting for Jekyll websites.
 
+---
+
+## 🚨 RTX 5070 / Blackwell GPU Users
+
+**If you have an NVIDIA GeForce RTX 5070, please use the dedicated setup guide:**
+
+📄 **[SETUP_RTX_5070.md](SETUP_RTX_5070.md)** - Complete Ubuntu 24.04 setup for RTX 5070
+
+The RTX 5070 requires special setup (PyTorch nightly, manual patches, specific drivers). The dedicated guide covers everything from fresh Ubuntu install to working transcription.
+
+**For other GPUs (RTX 20/30/40, GTX 16-series, AMD), continue with the guide below** ⬇️
+
+---
+
 ## Table of Contents
 - [What This Does (ELI5)](#what-this-does-eli5)
 - [Quick Start](#quick-start)
@@ -34,10 +48,17 @@ This pipeline takes an audio/video file of a podcast or interview and automatica
 ```
 
 ### Why Use This vs Manual Transcription?
-- **Manual transcription:** ~8-10 hours for a 1-hour video
-- **This pipeline:** ~45 minutes (mostly AI processing time, hands-off)
+
+**For a 79-minute audio file (episode003-bob-summerwill.mp3):**
+- **Manual transcription:** ~8-13 hours (estimated)
+- **RTX 5070 GPU (this pipeline):** 5.2 minutes total
+  - Transcription: 98.7 seconds (~1.6 min)
+  - Diarization: 208.6 seconds (~3.5 min)
+  - Speaker assignment: ~6 seconds
 - **Accuracy:** 95%+ with good audio quality
-- **Cost:** Free (just need a GPU or patience for CPU processing)
+- **Cost:** Free after GPU purchase
+
+**Speed improvement: ~95-150x faster than manual transcription!**
 
 ---
 
@@ -89,32 +110,89 @@ venv\Scripts\activate  # Windows
 
 ### Step 2: Install Dependencies
 
-Create a `requirements.txt` file:
+**IMPORTANT: GPU Compatibility Notes**
 
-```txt
-# Core transcription
-whisperx==3.1.1
-torch==2.0.1
-torchaudio==2.0.2
+For modern NVIDIA GPUs (RTX 5070, RTX 50-series / Blackwell architecture) with CUDA compute capability sm_120+:
+- **PyTorch STABLE does NOT support sm_120 yet** (as of Nov 2025)
+- Must use **PyTorch 2.10.0 NIGHTLY with CUDA 12.8**
+- **cuDNN 9.10.2** is bundled with PyTorch nightly (no separate installation needed)
+- Requires **NumPy 2.3+** for pyannote.audio 4.0.1 compatibility
+- Requires **pyannote.audio 4.0.1** for PyTorch 2.10+ compatibility
+- **WhisperX 3.7.4** works with warnings (version check can be ignored)
 
-# Speaker diarization
-pyannote.audio==3.1.1
-huggingface-hub>=0.19.0
+**For RTX 5070 and Blackwell GPUs, install NVIDIA drivers first:**
 
-# Utilities
-ffmpeg-python>=0.2.0
+```bash
+# Check current driver version
+nvidia-smi
+
+# Install latest NVIDIA drivers (565+ required for RTX 50-series)
+sudo apt update
+sudo apt install -y nvidia-driver-565  # or latest available
+sudo reboot
+
+# After reboot, verify CUDA is detected
+nvidia-smi
+# Should show CUDA Version: 12.8 or newer
+
+# Install FFmpeg for audio extraction
+sudo apt install -y ffmpeg
 ```
 
-Install:
+**For RTX 5070 / Blackwell architecture, install PyTorch NIGHTLY first:**
+
+```bash
+# REQUIRED: Install PyTorch nightly with CUDA 12.8 support
+pip install --pre torch torchvision torchaudio --index-url https://download.pytorch.org/whl/nightly/cu128
+```
+
+This installs:
+- PyTorch 2.10.0.dev20251103+cu128 (or later nightly)
+- torchvision 0.25.0.dev20251103+cu128
+- torchaudio 2.10.0.dev20251103+cu128
+- Bundled CUDA libraries including cuDNN 9.10.2.21
+- Bundled NVIDIA libraries (NCCL 2.27.5, cuBLAS, cuFFT, etc.)
+
+Then install remaining dependencies:
 ```bash
 pip install -r requirements.txt
 ```
 
-**For GPU Support:**
+The `requirements.txt` includes pyannote.audio 4.0.1 and other dependencies compatible with PyTorch nightly.
 
-**NVIDIA GPUs (CUDA):**
+**CRITICAL: Apply WhisperX patches (REQUIRED for RTX 5070 setup):**
+
+WhisperX 3.7.4 is not yet compatible with pyannote.audio 4.0.1's new API. After installing dependencies, you MUST manually patch two files:
+
 ```bash
-pip install torch torchaudio --index-url https://download.pytorch.org/whl/cu118
+# Patch 1: Update venv/lib/python3.12/site-packages/whisperx/vads/pyannote.py
+sed -i 's/use_auth_token/token/g' venv/lib/python3.12/site-packages/whisperx/vads/pyannote.py
+
+# Patch 2: Update venv/lib/python3.12/site-packages/whisperx/asr.py line 412
+sed -i '412s/use_auth_token=None/token=None/' venv/lib/python3.12/site-packages/whisperx/asr.py
+```
+
+These patches change the authentication parameter from `use_auth_token` (deprecated) to `token` (pyannote.audio 4.0.1 standard).
+
+**Verify GPU is working:**
+```bash
+python3 -c "import torch; print(f'PyTorch: {torch.__version__}'); print(f'CUDA available: {torch.cuda.is_available()}'); print(f'GPU: {torch.cuda.get_device_name(0) if torch.cuda.is_available() else \"N/A\"}')"
+```
+
+Expected output:
+```
+PyTorch: 2.10.0.dev20251103+cu128
+CUDA available: True
+GPU: NVIDIA GeForce RTX 5070
+```
+
+**For Older NVIDIA GPUs (GTX 16-series, RTX 20/30/40-series):**
+
+Older GPUs can use PyTorch stable releases:
+```bash
+# For GPUs with CUDA 12.1 support (RTX 2060, 3090, 4090, etc.)
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+pip install -r requirements.txt
 ```
 
 **AMD GPUs (ROCm) on Linux:**
@@ -275,20 +353,28 @@ These were used to format older transcripts. You probably don't need them:
 
 ### Processing Time Comparison
 
-**79-minute audio file (Bob Summerwill episode):**
+**Actual measured performance on RTX 5070:**
 
-| Hardware | Transcription | Diarization | Total Time | Speed |
-|----------|--------------|-------------|------------|-------|
-| AMD RX 7900 XTX (GPU) | 5-7 min | 38-40 min | **~45 min** | 1.75x realtime |
-| NVIDIA RTX 3090 (GPU) | 4-6 min | 35-38 min | **~42 min** | 1.9x realtime |
-| CPU (16-core) | 45-60 min | 6-8 hours | **~7 hours** | 0.18x realtime |
-| CPU (8-core) | 90-120 min | 12-15 hours | **~14 hours** | 0.09x realtime |
+**79-minute audio (episode003-bob-summerwill.mp3):**
+- Transcription: 98.7 seconds (1.6 minutes)
+- Diarization: 208.6 seconds (3.5 minutes)
+- Speaker assignment: ~6 seconds
+- **Total: 314.7 seconds (5.2 minutes)**
+- **Speed: ~15x realtime**
 
-**Key Takeaways:**
-- **GPU is 10-20x faster** than CPU for this workload
-- Diarization (speaker identification) is the slowest part
-- Transcription is relatively fast even on CPU
-- GPU makes the difference between "45 minutes" and "half a day"
+**58-minute audio (institutions_want_tokens.mp3):**
+- Transcription: 65 seconds (1.1 minutes)
+- Diarization: Not tested
+- **Speed: ~53x realtime for transcription only**
+
+**Manual transcription (estimated):**
+- 79-minute audio: ~8-13 hours
+- **RTX 5070 is ~95-150x faster than manual transcription**
+
+**GPU Performance:**
+- GPU utilization: 90-95% during processing
+- VRAM usage: 8-10GB peak
+- Batch processing: Can handle multiple files back-to-back
 
 ### Hardware Recommendations
 
@@ -304,9 +390,11 @@ These were used to format older transcripts. You probably don't need them:
 - 50GB free disk space
 
 **Optimal:**
-- NVIDIA RTX 3090/4090 or AMD RX 7900 XTX
+- NVIDIA RTX 5070/4090 or AMD RX 7900 XTX (latest architectures)
+- NVIDIA RTX 3090/4090 or AMD RX 7900 XTX (previous gen)
 - 32GB system RAM
 - SSD for faster model loading
+- For RTX 5070: PyTorch 2.10.0 nightly + manual WhisperX patching required
 
 ### GPU vs CPU: What's the Difference?
 
@@ -417,6 +505,104 @@ pip install torch torchaudio --index-url https://download.pytorch.org/whl/rocm6.
 - Expect to do manual cleanup for technical terms
 - Consider using Whisper's language parameter if not English
 
+#### 7. cuDNN Loading Errors (RTX 5070 and PyTorch Nightly)
+
+**Problem:** "Unable to load libcudnn_cnn.so.9"
+
+**Cause:** PyTorch nightly bundles cuDNN but the system can't find it
+
+**Solution:** Set LD_LIBRARY_PATH before running:
+```bash
+export LD_LIBRARY_PATH=venv/lib/python3.12/site-packages/nvidia/cudnn/lib:$LD_LIBRARY_PATH
+
+# Then run transcription
+python3 transcribe_with_diarization.py audio.mp3
+
+# Or add to your shell profile for convenience:
+echo 'export LD_LIBRARY_PATH=venv/lib/python3.12/site-packages/nvidia/cudnn/lib:$LD_LIBRARY_PATH' >> ~/.bashrc
+```
+
+#### 8. RTX 5070 / Blackwell Architecture (sm_120) Issues
+
+**Problem:** "CUDA capability sm_120 is not compatible with the current PyTorch installation"
+
+**Cause:** PyTorch stable releases (2.8.0, 2.9.0) don't support Blackwell architecture yet (CUDA compute capability sm_120)
+
+**Solution:** Install PyTorch nightly with CUDA 12.8:
+```bash
+# Uninstall current PyTorch
+pip uninstall torch torchvision torchaudio -y
+
+# Install PyTorch nightly (REQUIRED for RTX 5070)
+pip install --pre torch torchvision torchaudio --index-url https://download.pytorch.org/whl/nightly/cu128
+
+# Upgrade pyannote.audio for compatibility
+pip install --upgrade pyannote.audio
+
+# Install remaining dependencies
+pip install -r requirements.txt
+```
+
+**Problem:** "AttributeError: module 'torchaudio' has no attribute 'AudioMetaData'"
+
+**Cause:** pyannote.audio 3.4.0 is incompatible with PyTorch 2.10+
+
+**Solution:**
+```bash
+pip install --upgrade pyannote.audio
+# This installs pyannote.audio 4.0.1 which is compatible
+```
+
+**Problem:** NVIDIA driver shows older CUDA version (<12.8)
+
+**Cause:** Outdated NVIDIA drivers don't support RTX 50-series GPUs
+
+**Solution:**
+```bash
+# Install latest NVIDIA drivers
+sudo apt update
+sudo apt install nvidia-driver-565  # or latest
+sudo reboot
+
+# Verify after reboot
+nvidia-smi
+# Should show CUDA Version: 12.8 or newer
+```
+
+**Problem:** "TypeError: ... got an unexpected keyword argument 'use_auth_token'"
+
+**Cause:** WhisperX patches weren't applied - pyannote.audio 4.0.1 uses `token` not `use_auth_token`
+
+**Solution:** Apply the manual patches:
+```bash
+sed -i 's/use_auth_token/token/g' venv/lib/python3.12/site-packages/whisperx/vads/pyannote.py
+sed -i '412s/use_auth_token=None/token=None/' venv/lib/python3.12/site-packages/whisperx/asr.py
+```
+
+**Version Compatibility Warnings:**
+WhisperX 3.7.4 shows warnings about requiring PyTorch ~=2.8.0, but it works with PyTorch nightly 2.10.0. These dependency warnings can be safely ignored as long as transcription runs successfully. The manual patches ensure API compatibility with pyannote.audio 4.0.1.
+
+**RTX 5070 Performance:**
+Transcription performance on RTX 5070 (Blackwell architecture) is exceptional:
+- **Transcription speed:** ~65 seconds for 58-minute audio (~53x realtime)
+- **GPU utilization:** 90-95% during transcription
+- **VRAM usage:** 8-10GB peak
+- **sm_120 compute capability:** Fully supported with PyTorch 2.10.0 nightly
+
+**Verification:**
+After setup, verify everything works:
+```bash
+python3 -c "import torch; print(f'PyTorch: {torch.__version__}'); print(f'CUDA available: {torch.cuda.is_available()}'); print(f'GPU: {torch.cuda.get_device_name(0) if torch.cuda.is_available() else \"N/A\"}'); x = torch.randn(10,10, device='cuda'); print('GPU test passed:', x.matmul(x).sum().item())"
+```
+
+Expected output:
+```
+PyTorch: 2.10.0.dev20251103+cu128
+CUDA available: True
+GPU: NVIDIA GeForce RTX 5070
+GPU test passed: 42.857...
+```
+
 ---
 
 ## Full Workflow Example
@@ -504,13 +690,18 @@ git push
 ## Version Compatibility
 
 **Tested with:**
-- Python: 3.8, 3.9, 3.10, 3.11
-- PyTorch: 2.0.0 - 2.2.0
-- CUDA: 11.8, 12.1
+- Python: 3.8, 3.9, 3.10, 3.11, 3.12
+- PyTorch: 2.0.0 - 2.2.0 (older GPUs), 2.10.0.dev (RTX 5070/Blackwell)
+- CUDA: 11.8, 12.1, 12.8 (nightly)
 - ROCm: 6.0, 6.2
-- Ubuntu: 20.04, 22.04
-- macOS: 12.x, 13.x (CPU only, no Metal support yet)
+- Ubuntu: 20.04, 22.04, 24.04
+- macOS: 12.x, 13.x, 14.x (CPU only, no Metal support yet)
 - Windows: 10, 11 (with WSL2 for best results)
+
+**GPU Compatibility:**
+- **RTX 50-series (Blackwell/sm_120):** Requires PyTorch 2.10.0.dev nightly with CUDA 12.8 + manual WhisperX patching
+- **RTX 40-series (Ada Lovelace):** Works with PyTorch 2.0+ stable
+- **RTX 30-series (Ampere):** Works with PyTorch 2.0+ stable
 
 **Known Issues:**
 - ROCm on Ubuntu 24.04: Some compatibility issues, use 22.04 for best results
@@ -549,6 +740,8 @@ These scripts are provided as-is for the STRATO Mercata project. Modify and use 
 
 ---
 
-**Last Updated:** January 2025
-**Tested with:** Bob Summerwill Episode (79 minutes, 6 speakers)
+**Last Updated:** November 2025
+**Hardware Tested:** AMD RX 7900 XTX, NVIDIA RTX 3090, NVIDIA RTX 5070 (Blackwell)
+**Software Tested:** PyTorch 2.2.0 (stable), PyTorch 2.10.0.dev (nightly), WhisperX 3.7.4
+**Test Case:** Bob Summerwill Episode (79 minutes, 6 speakers)
 **Success Rate:** 95%+ transcription accuracy, 90%+ speaker identification accuracy

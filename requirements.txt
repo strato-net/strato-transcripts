@@ -1,0 +1,188 @@
+# ==============================================================================
+# RTX 5070 / Blackwell Architecture Setup Requirements
+# ==============================================================================
+#
+# 🚨 CRITICAL: For complete RTX 5070 setup, see SETUP_RTX_5070.md
+#
+# Quick Start for RTX 5070 (Blackwell/sm_120):
+# 1. Install NVIDIA driver 565+: sudo apt install nvidia-driver-565 && sudo reboot
+# 2. Install PyTorch NIGHTLY with CUDA 12.8:
+#    pip install --pre torch torchvision torchaudio --index-url https://download.pytorch.org/whl/nightly/cu128
+# 3. Install this requirements.txt: pip install -r requirements.txt
+# 4. Apply WhisperX patches (REQUIRED):
+#    sed -i 's/use_auth_token/token/g' venv/lib/python3.12/site-packages/whisperx/vads/pyannote.py
+#    sed -i '412s/use_auth_token=None/token=None/' venv/lib/python3.12/site-packages/whisperx/asr.py
+# 5. Set LD_LIBRARY_PATH when running:
+#    export LD_LIBRARY_PATH=venv/lib/python3.12/site-packages/nvidia/cudnn/lib:$LD_LIBRARY_PATH
+#
+# For older GPUs (RTX 20/30/40): Use stable PyTorch instead of nightly
+#
+# ==============================================================================
+
+# WhisperX - Transcription with word-level timestamps
+# NOTE: Requires manual patching for pyannote.audio 4.0.1 compatibility
+whisperx==3.7.4
+faster-whisper==1.2.1
+transformers==4.57.1
+
+# ==============================================================================
+# PyTorch Ecosystem - NIGHTLY BUILD REQUIRED for RTX 5070
+# ==============================================================================
+# RTX 5070 uses Blackwell architecture (sm_120) which only works with PyTorch nightly
+# Stable releases (2.8.0, 2.9.0, 2.10.0) DO NOT support sm_120
+#
+# Install separately BEFORE requirements.txt:
+# pip install --pre torch torchvision torchaudio --index-url https://download.pytorch.org/whl/nightly/cu128
+#
+# This installs:
+# - torch==2.10.0.dev20251103+cu128 (or newer nightly)
+# - torchvision==0.25.0.dev20251103+cu128
+# - torchaudio==2.10.0.dev20251103+cu128
+# - Bundled CUDA 12.8 libraries: cuDNN 9.10.2, NCCL 2.27.5, cuBLAS, cuFFT, etc.
+#
+# NO system-wide CUDA installation needed - all bundled in venv
+# ==============================================================================
+
+# Pyannote - Speaker Diarization
+# UPGRADED to 4.0.1 for PyTorch 2.10+ compatibility
+pyannote.audio==4.0.1
+pyannote.core==6.0.1
+pyannote.database==6.1.0
+pyannote.metrics==4.0.0
+pyannote.pipeline==4.0.0
+
+# NumPy - pyannote.audio 4.0.1 requires numpy>=2.0
+numpy>=2.0.2
+
+# Core scientific computing
+scipy==1.16.3
+scikit-learn==1.7.2
+soundfile==0.13.1
+ffmpeg-python==0.2.0
+nltk==3.9.2
+
+# Data handling - pandas REQUIRED for speaker segment conversion
+pandas==2.2.3
+sortedcontainers==2.4.0
+sentencepiece==0.2.1
+regex==2025.11.3
+
+# Additional pyannote dependencies
+pytorch-metric-learning==2.9.0
+speechbrain==1.0.3
+torch-audiomentations==0.12.0
+torchmetrics==1.8.2
+
+# Lightning ecosystem
+lightning==2.5.5
+pytorch-lightning==2.5.5
+lightning-utilities==0.15.2
+
+# Hugging Face ecosystem
+huggingface-hub==0.36.0
+tokenizers==0.22.1
+safetensors==0.6.2
+
+# Audio processing
+asteroid-filterbanks==0.4.0
+einops==0.8.1
+julius==0.2.7
+torch_pitch_shift==1.2.5
+ctranslate2==4.6.0
+onnxruntime==1.23.2
+
+# OpenTelemetry - Required by pyannote.audio 4.0.1
+opentelemetry-api>=1.34.0
+opentelemetry-exporter-otlp>=1.34.0
+opentelemetry-sdk>=1.34.0
+
+# Configuration
+omegaconf==2.3.0
+PyYAML==6.0.3
+HyperPyYAML==1.2.2
+rich==14.2.0
+tqdm==4.67.1
+click==8.3.0
+typer==0.20.0
+
+# Optimization
+optuna==4.5.0
+alembic==1.17.1
+SQLAlchemy==2.0.44
+colorlog==6.10.1
+
+# Visualization
+matplotlib==3.10.7
+tensorboardX==2.6.4
+
+# Networking
+requests==2.32.5
+aiohttp==3.13.2
+fsspec==2025.9.0
+protobuf==6.33.0
+
+# Utilities
+semver==3.0.4
+tabulate==0.9.0
+coloredlogs==15.0.1
+docopt==0.6.2
+joblib==1.5.2
+
+# ==============================================================================
+# Installation Notes
+# ==============================================================================
+#
+# Complete Installation Order for RTX 5070:
+#
+# 1. System packages:
+#    sudo apt install build-essential python3-dev python3-venv ffmpeg
+#
+# 2. Create venv:
+#    python3 -m venv venv && source venv/bin/activate
+#
+# 3. Install PyTorch NIGHTLY (must be BEFORE requirements.txt):
+#    pip install --pre torch torchvision torchaudio --index-url https://download.pytorch.org/whl/nightly/cu128
+#
+# 4. Install requirements:
+#    pip install -r requirements.txt
+#
+# 5. Apply WhisperX patches (CRITICAL):
+#    sed -i 's/use_auth_token/token/g' venv/lib/python3.12/site-packages/whisperx/vads/pyannote.py
+#    sed -i '412s/use_auth_token=None/token=None/' venv/lib/python3.12/site-packages/whisperx/asr.py
+#
+# 6. Set environment variable (add to ~/.bashrc for permanent):
+#    export LD_LIBRARY_PATH=venv/lib/python3.12/site-packages/nvidia/cudnn/lib:$LD_LIBRARY_PATH
+#
+# 7. Verify installation:
+#    python3 -c "import torch; print(torch.cuda.is_available(), torch.cuda.get_device_name(0))"
+#    # Should show: True NVIDIA GeForce RTX 5070
+#
+# ==============================================================================
+# Why These Specific Versions?
+# ==============================================================================
+#
+# - PyTorch 2.10.0.dev nightly: Only version with sm_120 (Blackwell) support
+# - pyannote.audio 4.0.1: Required for PyTorch 2.10+ compatibility
+# - NumPy 2.0+: Required by pyannote.audio 4.0.1
+# - WhisperX 3.7.4: Latest stable, but requires patching for pyannote 4.0.1
+# - pandas 2.2.3: Required for DiarizeOutput to DataFrame conversion
+#
+# ==============================================================================
+# Troubleshooting
+# ==============================================================================
+#
+# Error: "CUDA capability sm_120 not supported"
+# Solution: Install PyTorch nightly, not stable
+#
+# Error: "Unable to load libcudnn_cnn.so.9"
+# Solution: Set LD_LIBRARY_PATH (see step 6 above)
+#
+# Error: "TypeError: got an unexpected keyword argument 'use_auth_token'"
+# Solution: Apply WhisperX patches (see step 5 above)
+#
+# Error: nvidia-smi doesn't work
+# Solution: Install NVIDIA driver 565+, then reboot
+#
+# For complete troubleshooting, see SETUP_RTX_5070.md
+#
+# ==============================================================================

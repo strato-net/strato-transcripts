@@ -117,23 +117,222 @@ embed:
 
 ## Workflow: Adding Video Content with Transcripts
 
-### 1. Extract Audio from Video
+### Option 1: Automated Local Transcription (WhisperX)
 
-Download the video from Streamyard/YouTube, then extract audio:
+For high-quality local transcription with speaker diarization using WhisperX on GPU.
 
+#### Prerequisites
+
+**System Requirements:**
+- NVIDIA GPU (tested on RTX 5070)
+- Ubuntu 24.04+ (or compatible Linux)
+- Python 3.12+
+- CUDA 12.1 compatible setup
+- FFmpeg
+
+**🚨 IMPORTANT: For RTX 5070 / Blackwell Architecture Setup**
+
+**If you have an NVIDIA GeForce RTX 5070 GPU, please follow the complete setup guide:**
+
+📄 **[SETUP_RTX_5070.md](SETUP_RTX_5070.md)** - Complete step-by-step guide for Ubuntu 24.04 LTS
+
+This comprehensive guide covers:
+- NVIDIA driver installation (565+)
+- System dependencies
+- PyTorch nightly installation
+- WhisperX patching
+- Environment configuration
+- Verification steps
+- Complete troubleshooting
+
+**Quick Summary for RTX 5070:**
+
+The RTX 5070 uses Blackwell architecture (sm_120) which requires:
+- **NVIDIA Driver:** 565+ (RTX 50-series support)
+- **PyTorch:** 2.10.0.dev NIGHTLY with CUDA 12.8 (stable won't work)
+- **cuDNN:** 9.10.2 (bundled with PyTorch nightly)
+- **pyannote.audio:** 4.0.1 (PyTorch 2.10+ compatible)
+- **WhisperX:** 3.7.4 with manual patches (API compatibility)
+
+**⚠️ CRITICAL: Manual patching required after pip install:**
 ```bash
-ffmpeg -i "video-file.mp4" -q:a 0 -map a "output-audio.mp3"
+sed -i 's/use_auth_token/token/g' venv/lib/python3.12/site-packages/whisperx/vads/pyannote.py
+sed -i '412s/use_auth_token=None/token=None/' venv/lib/python3.12/site-packages/whisperx/asr.py
 ```
 
-### 2. Transcribe with TurboScribe
+**For older GPUs (RTX 20/30/40 series), use the standard setup below** ⬇️
+
+#### NVIDIA Driver Installation
+
+1. **Install latest NVIDIA drivers (550+ required for RTX 50-series):**
+```bash
+# Check current driver version
+nvidia-smi
+
+# If driver is outdated, install latest:
+sudo apt update
+sudo apt install -y nvidia-driver-565  # or latest available
+sudo reboot
+```
+
+2. **Verify CUDA is detected:**
+```bash
+nvidia-smi
+# Should show CUDA Version: 12.8 or newer
+```
+
+3. **Install FFmpeg for audio extraction:**
+```bash
+sudo apt install -y ffmpeg
+```
+
+#### Python Environment Setup
+
+1. **Create and activate virtual environment:**
+```bash
+python3 -m venv venv
+source venv/bin/activate
+```
+
+2. **Install PyTorch NIGHTLY with CUDA 12.8 support (REQUIRED for RTX 5070):**
+```bash
+pip install --pre torch torchvision torchaudio --index-url https://download.pytorch.org/whl/nightly/cu128
+```
+
+This installs:
+- PyTorch 2.10.0.dev20251103+cu128 (or later nightly)
+- torchvision 0.25.0.dev20251103+cu128
+- torchaudio 2.10.0.dev20251103+cu128
+- Bundled CUDA libraries including cuDNN 9.10.2.21, NCCL 2.27.5, cuBLAS, cuFFT, etc.
+
+3. **Install remaining Python dependencies:**
+```bash
+pip install -r requirements.txt
+```
+
+The `requirements.txt` includes pyannote.audio 4.0.1 and all other dependencies compatible with PyTorch nightly.
+
+4. **Apply WhisperX patches (REQUIRED):**
+
+Edit `venv/lib/python3.12/site-packages/whisperx/vads/pyannote.py`:
+```bash
+# Change all occurrences of use_auth_token to token:
+sed -i 's/use_auth_token/token/g' venv/lib/python3.12/site-packages/whisperx/vads/pyannote.py
+```
+
+Edit `venv/lib/python3.12/site-packages/whisperx/asr.py`:
+```bash
+# Line 412: change use_auth_token=None to token=None
+sed -i '412s/use_auth_token=None/token=None/' venv/lib/python3.12/site-packages/whisperx/asr.py
+```
+
+5. **Verify GPU is working:**
+```bash
+python3 -c "import torch; print(f'PyTorch: {torch.__version__}'); print(f'CUDA available: {torch.cuda.is_available()}'); print(f'GPU: {torch.cuda.get_device_name(0) if torch.cuda.is_available() else \"N/A\"}')"
+```
+
+Expected output:
+```
+PyTorch: 2.10.0.dev20251103+cu128
+CUDA available: True
+GPU: NVIDIA GeForce RTX 5070
+```
+
+6. **Set up environment variables:**
+```bash
+cp setup_env.sh.example setup_env.sh
+# Edit setup_env.sh and add your Hugging Face token
+chmod +x setup_env.sh
+source setup_env.sh
+```
+
+Get a Hugging Face token at: https://huggingface.co/settings/tokens
+
+You'll need to accept the terms for:
+- pyannote/segmentation-3.0
+- pyannote/speaker-diarization-3.1
+
+#### Extract Audio and Transcribe
+
+1. **Extract audio from video:**
+```bash
+ffmpeg -i "video-file.mp4" -q:a 0 -map a source/videos/raw-audio/output-audio.mp3
+```
+
+2. **Run transcription with speaker diarization:**
+```bash
+source setup_env.sh
+source venv/bin/activate
+
+# IMPORTANT: Set LD_LIBRARY_PATH for cuDNN
+export LD_LIBRARY_PATH=venv/lib/python3.12/site-packages/nvidia/cudnn/lib:$LD_LIBRARY_PATH
+
+python3 transcribe_with_diarization.py source/videos/raw-audio/output-audio.mp3
+```
+
+This will:
+- Detect and separate speakers automatically
+- Generate transcript with speaker labels
+- Create output file: `output-audio_transcript_with_speakers.txt`
+- **Performance on RTX 5070:** ~65 seconds for 58-minute audio (transcription only)
+
+3. **Optional: Map speakers to names:**
+```bash
+python3 map_speakers_to_names.py \
+  source/videos/raw-audio/output-audio_transcript_with_speakers.txt \
+  source/videos/raw-audio/output-audio_transcript_with_speakers_with_names.txt \
+  --speaker-map "SPEAKER_00=Bob Summerwill,SPEAKER_01=Victor Wong"
+```
+
+#### Troubleshooting
+
+**CUDA Compatibility Issues:**
+If you see errors about CUDA capability sm_120 not being supported:
+- **Solution:** Install PyTorch nightly with CUDA 12.8 (not stable releases)
+- Run: `pip install --pre torch torchvision torchaudio --index-url https://download.pytorch.org/whl/nightly/cu128`
+- Verify PyTorch version shows "2.10.0.dev" or newer: `pip show torch`
+
+**NVIDIA Driver Issues:**
+If `nvidia-smi` shows an older CUDA version (< 12.8):
+- Install newer drivers: `sudo apt install nvidia-driver-565`
+- Reboot: `sudo reboot`
+- Verify: `nvidia-smi` should show CUDA 12.8+
+
+**cuDNN Loading Errors:**
+If you see "Unable to load libcudnn_cnn.so.9":
+- **Solution:** Set LD_LIBRARY_PATH before running:
+  ```bash
+  export LD_LIBRARY_PATH=venv/lib/python3.12/site-packages/nvidia/cudnn/lib:$LD_LIBRARY_PATH
+  ```
+- PyTorch nightly bundles cuDNN 9.10.2 in the venv, just needs to be found
+- Add this export to your shell profile for convenience
+
+**pyannote.audio API Errors:**
+If you see "TypeError: ... got an unexpected keyword argument 'use_auth_token'":
+- **Solution:** Apply the WhisperX patches described in setup step 4
+- This error means the manual patches weren't applied correctly
+- The patches change `use_auth_token` to `token` for pyannote.audio 4.0.1 compatibility
+
+**Version Compatibility Warnings:**
+WhisperX 3.7.4 shows warnings about requiring PyTorch 2.8.0, but it works with PyTorch nightly 2.10.0. These warnings can be safely ignored as long as transcription completes successfully.
+
+**RTX 5070 Performance:**
+- Transcription (WhisperX large-v2): ~65 seconds for 58-minute audio
+- GPU utilization: ~90-95% during transcription
+- VRAM usage: ~8-10GB peak
+
+For more details, see `whisperx_readme.md` and `USAGE.md`.
+
+### Option 2: Manual Transcription (TurboScribe)
 
 1. Upload the audio file to [TurboScribe](https://turboscribe.ai)
 2. Select **Whale Transcription** mode
 3. Enable **Speaker Recognition** in settings
 4. Set number of speakers (usually 2-3)
 5. Click **Transcribe**
+6. Export transcript as **TXT** with **Section Timestamps**
 
-### 3. Save Audio File
+### Save Audio File
 
 Store the MP3 for future reference:
 ```

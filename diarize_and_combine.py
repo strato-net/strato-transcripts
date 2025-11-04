@@ -4,6 +4,7 @@ Run speaker diarization and combine with existing WhisperX transcript
 """
 
 import sys
+import os
 import re
 from pathlib import Path
 from pyannote.audio import Pipeline
@@ -147,9 +148,16 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("audio_file", help="Audio file path")
     parser.add_argument("transcript_file", help="WhisperX transcript file")
-    parser.add_argument("--token", required=True, help="HuggingFace token")
+    parser.add_argument("--token", help="HuggingFace token (overrides HF_TOKEN env var)")
     parser.add_argument("--output", help="Output file path")
     
     args = parser.parse_args()
     
-    process_audio(args.audio_file, args.transcript_file, args.token, args.output)
+    # Get token from argument or environment variable
+    hf_token = args.token or os.environ.get('HF_TOKEN')
+    if not hf_token:
+        print("Error: HuggingFace token not provided.")
+        print("Set HF_TOKEN environment variable or use --token argument")
+        sys.exit(1)
+    
+    process_audio(args.audio_file, args.transcript_file, hf_token, args.output)

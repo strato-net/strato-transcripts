@@ -1,0 +1,16 @@
+#!/bin/bash
+# Setup environment variables for WhisperX transcription pipeline
+
+# Hugging Face API Token
+# Get your token from: https://huggingface.co/settings/tokens
+# Accept model agreements at:
+#   - https://huggingface.co/pyannote/speaker-diarization-3.1
+#   - https://huggingface.co/pyannote/segmentation-3.0
+export HF_TOKEN="your_huggingface_token_here"
+
+echo "✓ Environment variables set"
+echo "  HF_TOKEN: ${HF_TOKEN:0:20}..."
+echo ""
+echo "You can now run the transcription pipeline:"
+echo "  source venv/bin/activate"
+echo "  python3 diarize_and_combine.py audio.mp3 transcript.txt"
