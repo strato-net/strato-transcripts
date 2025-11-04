@@ -2,12 +2,21 @@
 # PyTorch Nightly with CUDA 12.8 - For NVIDIA GPUs
 # ==============================================================================
 #
-# Supports all NVIDIA GPUs including RTX 5070 Blackwell/sm_120
+# WHY NIGHTLY:
+# - REQUIRED for RTX 5070 Blackwell architecture (sm_120 compute capability)
+# - Used for all NVIDIA GPUs for consistency and maximum hardware support
+# - Stable PyTorch (as of Nov 2025) doesn't support sm_120
+#
+# WHEN TO SWITCH TO STABLE:
+# - Once PyTorch 2.6+ stable is released with Blackwell support
+# - Expected: Q1-Q2 2026
+# - Then replace with: torch>=2.6.0 torchvision>=0.17.0 torchaudio>=2.6.0
+# - And use stable CUDA index: --index-url https://download.pytorch.org/whl/cu128
 #
 # ==============================================================================
 
-# PyTorch nightly - REQUIRED for RTX 5070 Blackwell/sm_120 compute capability
-# Also works with older NVIDIA GPUs (RTX 20/30/40, GTX)
+# PyTorch nightly with CUDA 12.8
+# Works with all NVIDIA GPUs: RTX 5070/50/40/30/20 series, GTX, Tesla, etc.
 --extra-index-url https://download.pytorch.org/whl/nightly/cu128
 torch --pre
 torchvision --pre

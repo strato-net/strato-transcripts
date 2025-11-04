@@ -3,102 +3,212 @@
 # Python Environment Setup Script for WhisperX Transcription
 # ==============================================================================
 #
-# This script sets up the complete Python environment for WhisperX.
-# Works with NVIDIA GPUs (including RTX 5070) or CPU-only systems.
+# DESCRIPTION:
+#   Automated setup script that installs and configures WhisperX for audio
+#   transcription with speaker diarization. Supports both NVIDIA GPU and
+#   CPU-only systems with automatic hardware detection.
 #
-# Usage:
+# HARDWARE SUPPORT:
+#   - NVIDIA GPUs: RTX 5070 Blackwell, RTX 50/40/30/20 series, GTX, Tesla
+#   - CPU-only: Any system without NVIDIA GPU (including AMD GPUs via CPU)
+#
+# WHAT IT DOES:
+#   1. Detects hardware (NVIDIA GPU vs CPU)
+#   2. Installs system dependencies (ffmpeg, build tools, Python dev)
+#   3. Creates isolated Python virtual environment
+#   4. Installs PyTorch nightly (required for RTX 5070 Blackwell support)
+#   5. Installs WhisperX and dependencies (pyannote.audio, SpeechBrain)
+#   6. Applies compatibility patches to WhisperX
+#   7. Configures environment (LD_LIBRARY_PATH for NVIDIA)
+#   8. Verifies all installations
+#
+# REQUIREMENTS:
+#   - Ubuntu 24.04 LTS (or compatible Debian-based system)
+#   - Python 3.12
+#   - For NVIDIA: Driver 565+ installed (run install_nvidia_drivers.sh first)
+#   - sudo access for system package installation
+#
+# USAGE:
 #   ./install_packages_and_venv.sh
 #
-# After completion, manually configure HuggingFace token in setup_env.sh
+# POST-INSTALLATION:
+#   1. Get HuggingFace token: https://huggingface.co/settings/tokens
+#   2. Edit setup_env.sh and add your token
+#   3. Accept model agreements:
+#      - https://huggingface.co/pyannote/speaker-diarization-3.1
+#      - https://huggingface.co/pyannote/segmentation-3.0
+#
+# TROUBLESHOOTING:
+#   - If nvidia-smi fails: Reboot after driver installation
+#   - If PyTorch can't detect GPU: Check CUDA installation and driver version
+#   - If imports fail: Ensure virtual environment is activated
 #
 # ==============================================================================
 
-set -e  # Exit on error
+set -e  # Exit immediately if any command fails
 
-# Colors for output
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-BLUE='\033[0;34m'
-NC='\033[0m' # No Color
+# Terminal color codes for formatted output
+RED='\033[0;31m'       # Error messages
+GREEN='\033[0;32m'     # Success messages
+YELLOW='\033[1;33m'    # Warning/info messages
+BLUE='\033[0;34m'      # Section headers
+NC='\033[0m'           # No Color (reset)
 
-# Get project directory
-PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-VENV_DIR="$PROJECT_DIR/venv"
+# Project directories - resolved to absolute paths
+PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"  # Script's directory
+VENV_DIR="$PROJECT_DIR/venv"                                   # Virtual environment location
 
 echo -e "${BLUE}========================================${NC}"
 echo -e "${BLUE}Python Environment Setup for WhisperX${NC}"
 echo -e "${BLUE}========================================${NC}"
 echo ""
 
-# Step 1: Detect hardware and install PyTorch
-echo -e "${YELLOW}[1/10] Detecting hardware and installing PyTorch...${NC}"
+# ==============================================================================
+# Step 1: Hardware Detection
+# ==============================================================================
+# Detect if an NVIDIA GPU is present to determine which PyTorch variant to install.
+# Uses nvidia-smi command which is only available with NVIDIA drivers installed.
+# Sets HAS_NVIDIA flag used throughout script for conditional logic.
+# ==============================================================================
+echo -e "${YELLOW}[1/10] Detecting hardware...${NC}"
+echo "Checking for NVIDIA GPU to determine PyTorch installation type"
 if command -v nvidia-smi &> /dev/null && nvidia-smi &> /dev/null; then
     HAS_NVIDIA=true
     GPU_NAME=$(nvidia-smi --query-gpu=name --format=csv,noheader 2>/dev/null || echo "NVIDIA GPU")
     echo -e "${GREEN}✓ Detected NVIDIA GPU: $GPU_NAME${NC}"
-    echo "Installing PyTorch nightly with CUDA 12.8..."
+    echo "Will install PyTorch nightly with CUDA 12.8 support"
 else
     HAS_NVIDIA=false
     echo -e "${YELLOW}⚠ No NVIDIA GPU detected - using CPU mode${NC}"
-    echo "Installing PyTorch nightly (CPU)..."
+    echo "Will install PyTorch nightly CPU-only version"
 fi
 echo ""
 
-# Step 2: Install system dependencies
+# ==============================================================================
+# Step 2: System Dependencies Installation
+# ==============================================================================
+# Install required system packages using apt package manager.
+# These are low-level dependencies needed to build Python packages and process audio.
+# Requires sudo access for system-wide installation.
+# ==============================================================================
 echo -e "${YELLOW}[2/10] Installing system dependencies...${NC}"
+echo "Installing required system packages:"
+echo "  - build-essential: C/C++ compilers for building Python packages"
+echo "  - ffmpeg: Audio/video processing for WhisperX"
+echo "  - python3-dev: Python headers for compiling extensions"
+echo "  - python3-venv: Python virtual environment support"
+echo "  - python3-pip: Python package installer"
+echo "  - git: Version control for installing packages from GitHub"
 sudo apt update
 sudo apt install -y build-essential ffmpeg python3-dev python3-venv python3-pip git
 echo -e "${GREEN}✓ System dependencies installed${NC}"
 echo ""
 
-# Step 3: Create Python virtual environment
+# ==============================================================================
+# Step 3: Python Virtual Environment Creation
+# ==============================================================================
+# Create an isolated Python environment to avoid conflicts with system packages.
+# If venv already exists, it's removed and recreated to ensure clean state.
+# All subsequent Python packages will be installed into this venv.
+# ==============================================================================
 echo -e "${YELLOW}[3/10] Creating Python virtual environment...${NC}"
+echo "Creating isolated Python environment to avoid conflicts with system packages"
+echo "Location: $VENV_DIR"
 if [ -d "$VENV_DIR" ]; then
     echo -e "${YELLOW}Warning: venv directory already exists. Removing...${NC}"
     rm -rf "$VENV_DIR"
 fi
 python3 -m venv "$VENV_DIR"
-echo -e "${GREEN}✓ Virtual environment created at $VENV_DIR${NC}"
+echo -e "${GREEN}✓ Virtual environment created${NC}"
 echo ""
 
-# Activate virtual environment
+# Activate the virtual environment for all subsequent pip installations
 source "$VENV_DIR/bin/activate"
 
-# Step 4: Install PyTorch (hardware-appropriate)
+# ==============================================================================
+# Step 4: PyTorch Installation
+# ==============================================================================
+# Install PyTorch nightly (not stable) for maximum GPU compatibility.
+# NVIDIA systems get CUDA 12.8 build, CPU systems get CPU-only build.
+# Uses --pre flag to install pre-release (nightly) versions.
+# Nightly is REQUIRED for RTX 5070 Blackwell (sm_120) but used universally.
+# Will switch to stable once PyTorch 2.6+ adds Blackwell support (est. Q1-Q2 2026).
+# ==============================================================================
 echo -e "${YELLOW}[4/10] Installing PyTorch nightly...${NC}"
+echo "Using PyTorch nightly for all hardware to ensure maximum GPU support"
+echo "REQUIRED for RTX 5070 Blackwell (sm_120), but used universally for consistency"
+echo "Will switch to stable PyTorch once it supports Blackwell (expected: PyTorch 2.6+)"
 echo "This may take 2-5 minutes depending on internet speed..."
 if [ "$HAS_NVIDIA" = true ]; then
+    echo "Installing from: requirements-nvidia.txt (CUDA 12.8)"
     pip install -r "$PROJECT_DIR/requirements-nvidia.txt"
 else
+    echo "Installing from: requirements-cpu.txt (CPU-only)"
     pip install -r "$PROJECT_DIR/requirements-cpu.txt"
 fi
 echo -e "${GREEN}✓ PyTorch nightly installed${NC}"
 echo ""
 
-# Step 5: Verify PyTorch installation
+# ==============================================================================
+# Step 5: PyTorch Verification
+# ==============================================================================
+# Verify PyTorch was installed correctly and can access hardware.
+# For NVIDIA: Checks CUDA availability, runs GPU matrix operations, tests cuDNN.
+# For CPU: Runs basic CPU matrix operations to confirm functionality.
+# Script exits with error if NVIDIA GPU is detected but CUDA isn't available.
+# ==============================================================================
 echo -e "${YELLOW}[5/10] Verifying PyTorch installation...${NC}"
+echo "Verifying PyTorch installation and hardware access..."
 python3 -c "import torch; print(f'PyTorch: {torch.__version__}'); print(f'CUDA available: {torch.cuda.is_available()}'); print(f'GPU: {torch.cuda.get_device_name(0) if torch.cuda.is_available() else \"N/A\"}')"
+
 if [ "$HAS_NVIDIA" = true ]; then
     if ! python3 -c "import torch; assert torch.cuda.is_available(), 'CUDA not available'" 2>/dev/null; then
         echo -e "${RED}ERROR: PyTorch cannot detect CUDA/GPU${NC}"
         exit 1
     fi
-    echo -e "${GREEN}✓ PyTorch can use GPU${NC}"
+    
+    echo "Testing GPU operations..."
+    python3 -c "import torch; x = torch.randn(100,100, device='cuda'); print('✓ GPU test passed:', x.matmul(x).sum().item())"
+    
+    echo "Testing cuDNN..."
+    python3 -c "import torch.backends.cudnn as cudnn; print('✓ cuDNN version:', cudnn.version()); print('✓ cuDNN enabled:', cudnn.is_available())"
+    
+    echo -e "${GREEN}✓ PyTorch verified - GPU ready${NC}"
 else
-    echo -e "${GREEN}✓ PyTorch CPU installed${NC}"
+    echo "Testing CPU operations..."
+    python3 -c "import torch; x = torch.randn(100,100); print('✓ CPU test passed:', x.matmul(x).sum().item())"
+    
+    echo -e "${GREEN}✓ PyTorch verified - CPU ready${NC}"
 fi
 echo ""
 
-# Step 6: Install common packages
-echo -e "${YELLOW}[6/10] Installing common packages from requirements-base.txt...${NC}"
+# ==============================================================================
+# Step 6: Application Packages Installation
+# ==============================================================================
+# Install WhisperX and its dependencies (pyannote.audio, SpeechBrain).
+# These packages are hardware-agnostic and work with both NVIDIA and CPU.
+# Installed from requirements-base.txt which uses git repos for latest versions.
+# This step takes longest (5-10 min) due to compiling numerous dependencies.
+# ==============================================================================
+echo -e "${YELLOW}[6/10] Installing common packages...${NC}"
+echo "Installing WhisperX, pyannote.audio, and SpeechBrain from requirements-base.txt"
+echo "These packages are hardware-agnostic and work with both NVIDIA and CPU"
 echo "This may take 5-10 minutes..."
 pip install -r "$PROJECT_DIR/requirements-base.txt"
 echo -e "${GREEN}✓ Common packages installed${NC}"
 echo ""
 
-# Step 7: Apply WhisperX patches
+# ==============================================================================
+# Step 7: WhisperX Compatibility Patches
+# ==============================================================================
+# Patch WhisperX source code to use 'token' instead of 'use_auth_token'.
+# WhisperX (from git) uses deprecated parameter name incompatible with
+# pyannote.audio 4.0.1+. Patches are applied with sed and verified.
+# Files patched: vads/pyannote.py (global replace) and asr.py (line 412).
+# ==============================================================================
 echo -e "${YELLOW}[7/10] Applying WhisperX patches...${NC}"
+echo "Patching WhisperX to use 'token' parameter instead of deprecated 'use_auth_token'"
+echo "Required for compatibility with pyannote.audio 4.0.1+"
 WHISPERX_VADS="$VENV_DIR/lib/python3.12/site-packages/whisperx/vads/pyannote.py"
 WHISPERX_ASR="$VENV_DIR/lib/python3.12/site-packages/whisperx/asr.py"
 
@@ -126,9 +236,18 @@ fi
 echo -e "${GREEN}✓ WhisperX patches applied successfully${NC}"
 echo ""
 
-# Step 8: Configure LD_LIBRARY_PATH (NVIDIA only)
+# ==============================================================================
+# Step 8: LD_LIBRARY_PATH Configuration (NVIDIA Only)
+# ==============================================================================
+# PyTorch nightly packages cuDNN as a separate pip package in nvidia/cudnn/lib.
+# The system linker needs LD_LIBRARY_PATH to find these libraries at runtime.
+# Added to ~/.bashrc for persistence across terminal sessions.
+# CPU installations skip this step as they don't use cuDNN.
+# ==============================================================================
 if [ "$HAS_NVIDIA" = true ]; then
     echo -e "${YELLOW}[8/10] Configuring LD_LIBRARY_PATH for NVIDIA...${NC}"
+    echo "PyTorch nightly packages cuDNN separately - needs LD_LIBRARY_PATH to find it"
+    echo "Adding to ~/.bashrc for persistent configuration across sessions"
     BASHRC="$HOME/.bashrc"
     LD_PATH_LINE="export LD_LIBRARY_PATH=$PROJECT_DIR/venv/lib/python3.12/site-packages/nvidia/cudnn/lib:\$LD_LIBRARY_PATH"
 
@@ -143,25 +262,22 @@ if [ "$HAS_NVIDIA" = true ]; then
 
     # Set for current session
     export LD_LIBRARY_PATH="$VENV_DIR/lib/python3.12/site-packages/nvidia/cudnn/lib:$LD_LIBRARY_PATH"
-    echo -e "${GREEN}✓ LD_LIBRARY_PATH configured${NC}"
+    echo -e "${GREEN}✓ LD_LIBRARY_PATH configured for current session and future sessions${NC}"
 else
-    echo -e "${YELLOW}[8/10] Skipping LD_LIBRARY_PATH (not needed for CPU)${NC}"
+    echo -e "${YELLOW}[8/10] Skipping LD_LIBRARY_PATH configuration${NC}"
+    echo "Not needed for CPU-only installations"
 fi
 echo ""
 
-# Step 9: Run verification tests
-echo -e "${YELLOW}[9/10] Running verification tests...${NC}"
-
-if [ "$HAS_NVIDIA" = true ]; then
-    echo "Testing GPU..."
-    python3 -c "import torch; x = torch.randn(100,100, device='cuda'); print('✓ GPU test passed:', x.matmul(x).sum().item())"
-
-    echo "Testing cuDNN..."
-    python3 -c "import torch.backends.cudnn as cudnn; print('✓ cuDNN version:', cudnn.version()); print('✓ cuDNN enabled:', cudnn.is_available())"
-else
-    echo "Testing CPU..."
-    python3 -c "import torch; x = torch.randn(100,100); print('✓ CPU test passed:', x.matmul(x).sum().item())"
-fi
+# ==============================================================================
+# Step 9: Application Package Verification
+# ==============================================================================
+# Test import of WhisperX and pyannote.audio to ensure they installed correctly.
+# These imports also verify all their dependencies are properly installed.
+# Catches common issues like missing dependencies or incompatible versions.
+# ==============================================================================
+echo -e "${YELLOW}[9/10] Verifying package installations...${NC}"
+echo "Testing imports to ensure all packages are properly installed and accessible"
 
 echo "Testing WhisperX import..."
 python3 -c "import whisperx; print('✓ WhisperX imported successfully')"
@@ -169,20 +285,29 @@ python3 -c "import whisperx; print('✓ WhisperX imported successfully')"
 echo "Testing pyannote.audio import..."
 python3 -c "from pyannote.audio import Pipeline; print('✓ pyannote.audio imported successfully')"
 
-echo -e "${GREEN}✓ All verification tests passed${NC}"
+echo -e "${GREEN}✓ All packages verified and ready to use${NC}"
 echo ""
 
-# Step 10: Setup environment file
-echo -e "${YELLOW}[10/10] Checking setup_env.sh...${NC}"
+# ==============================================================================
+# Step 10: Environment File Setup
+# ==============================================================================
+# Create setup_env.sh from template if it doesn't exist.
+# This file stores HuggingFace token needed for downloading pyannote models.
+# User must manually edit this file to add their token (see post-install steps).
+# ==============================================================================
+echo -e "${YELLOW}[10/10] Setting up environment configuration...${NC}"
+echo "Checking for setup_env.sh (required for HuggingFace authentication)"
 if [ ! -f "$PROJECT_DIR/setup_env.sh" ]; then
     if [ -f "$PROJECT_DIR/setup_env.sh.example" ]; then
         cp "$PROJECT_DIR/setup_env.sh.example" "$PROJECT_DIR/setup_env.sh"
-        echo -e "${GREEN}✓ Created setup_env.sh from example${NC}"
+        echo -e "${GREEN}✓ Created setup_env.sh from example template${NC}"
+        echo "You'll need to edit this file to add your HuggingFace token"
     else
         echo -e "${YELLOW}Warning: setup_env.sh.example not found${NC}"
+        echo "You'll need to create setup_env.sh manually"
     fi
 else
-    echo "setup_env.sh already exists"
+    echo "setup_env.sh already exists - skipping creation"
 fi
 echo ""
 
