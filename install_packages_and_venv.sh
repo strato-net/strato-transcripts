@@ -107,7 +107,7 @@ elif command -v nvidia-smi &> /dev/null && nvidia-smi &> /dev/null; then
     HAS_NVIDIA=true
     GPU_NAME=$(nvidia-smi --query-gpu=name --format=csv,noheader 2>/dev/null || echo "NVIDIA GPU")
     echo -e "${GREEN}✓ Detected NVIDIA GPU: $GPU_NAME${NC}"
-    echo "Will install PyTorch nightly with CUDA 12.8 support"
+    echo "Will install PyTorch nightly with CUDA 13.0 support"
 else
     HAS_NVIDIA=false
     echo -e "${YELLOW}⚠ No NVIDIA GPU detected - using CPU mode${NC}"
@@ -147,7 +147,12 @@ echo "Creating isolated Python environment to avoid conflicts with system packag
 echo "Location: $VENV_DIR"
 if [ -d "$VENV_DIR" ]; then
     echo -e "${YELLOW}Warning: venv directory already exists. Removing...${NC}"
-    rm -rf "$VENV_DIR"
+    # Try normal removal first, fall back to sudo only if permission denied
+    if ! rm -rf "$VENV_DIR" 2>/dev/null; then
+        echo -e "${YELLOW}Permission denied - trying with sudo...${NC}"
+        echo "Note: This shouldn't be necessary. The venv may have been created with sudo previously."
+        sudo rm -rf "$VENV_DIR"
+    fi
 fi
 python3 -m venv "$VENV_DIR"
 echo -e "${GREEN}✓ Virtual environment created${NC}"
@@ -157,35 +162,50 @@ echo ""
 source "$VENV_DIR/bin/activate"
 
 # ==============================================================================
-# Step 4: PyTorch Installation
+# Step 4: WhisperX Installation
 # ==============================================================================
-# Install PyTorch 2.9.0 stable with CUDA 12.8 for Blackwell architecture support.
-# PyTorch 2.7+ includes stable Blackwell (sm_120) support for RTX 50-series.
-# Using stable release for better reliability and ecosystem compatibility.
+# Installs WhisperX and its base dependencies.
+# WhisperX pulls in PyTorch 2.8.0 as its dependency.
+# We install the optimal PyTorch version for this GPU in the next step.
 # ==============================================================================
-echo -e "${YELLOW}[4/10] Installing PyTorch 2.9.0 stable...${NC}"
-echo "Installing PyTorch 2.9.0 stable with CUDA 12.8 support"
-echo "Includes full Blackwell (sm_120) support for RTX 50-series GPUs"
-echo "This may take 2-5 minutes depending on internet speed..."
-if [ "$HAS_NVIDIA" = true ]; then
-    echo "Installing from: requirements-nvidia.txt (PyTorch 2.9.0 + CUDA 12.8)"
-    pip install -r "$PROJECT_DIR/requirements-nvidia.txt"
-else
-    echo "Installing from: requirements-cpu.txt (PyTorch 2.9.0 CPU-only)"
-    pip install -r "$PROJECT_DIR/requirements-cpu.txt"
-fi
-echo -e "${GREEN}✓ PyTorch 2.9.0 stable installed${NC}"
+echo -e "${YELLOW}[4/10] Installing WhisperX and base packages...${NC}"
+echo "Installing WhisperX and dependencies from requirements-base.txt"
+echo "Note: WhisperX includes PyTorch 2.8.0 (we install 2.9.0 next for GPU optimization)"
+echo "This may take 5-10 minutes..."
+pip install -r "$PROJECT_DIR/requirements-base.txt"
+echo -e "${GREEN}✓ WhisperX and base packages installed${NC}"
 echo ""
 
 # ==============================================================================
-# Step 5: PyTorch Verification
+# Step 5: PyTorch Installation
 # ==============================================================================
-# Verify PyTorch was installed correctly and can access hardware.
-# For NVIDIA: Checks CUDA availability, runs GPU matrix operations, tests cuDNN.
-# For CPU: Runs basic CPU matrix operations to confirm functionality.
-# Script exits with error if NVIDIA GPU is detected but CUDA isn't available.
+# Installs PyTorch 2.9.0 with CUDA 13.0 for optimal GPU performance.
+# PyTorch 2.9.0 provides full Blackwell (sm_120) support for RTX 50-series GPUs.
+# CUDA 13.0 offers the latest optimizations and performance improvements.
 # ==============================================================================
-echo -e "${YELLOW}[5/10] Verifying PyTorch installation...${NC}"
+echo -e "${YELLOW}[5/10] Installing PyTorch 2.9.0...${NC}"
+echo "Installing PyTorch 2.9.0 stable with CUDA 13.0"
+echo "Provides full Blackwell (sm_120) support for RTX 50-series GPUs"
+echo "This may take 2-5 minutes depending on internet speed..."
+if [ "$HAS_NVIDIA" = true ]; then
+    echo "Installing from: requirements-nvidia.txt (PyTorch 2.9.0 + CUDA 13.0)"
+    pip install --force-reinstall -r "$PROJECT_DIR/requirements-nvidia.txt"
+else
+    echo "Installing from: requirements-cpu.txt (PyTorch 2.9.0 CPU-only)"
+    pip install --force-reinstall -r "$PROJECT_DIR/requirements-cpu.txt"
+fi
+echo -e "${GREEN}✓ PyTorch 2.9.0 installed${NC}"
+echo ""
+
+# ==============================================================================
+# Step 6: PyTorch Verification
+# ==============================================================================
+# Verifies PyTorch installation and hardware accessibility.
+# For NVIDIA: Confirms CUDA availability, GPU operations, and cuDNN functionality.
+# For CPU: Confirms basic CPU tensor operations work correctly.
+# Ensures the installation is ready for machine learning workloads.
+# ==============================================================================
+echo -e "${YELLOW}[6/10] Verifying PyTorch installation...${NC}"
 echo "Verifying PyTorch installation and hardware access..."
 python3 -c "import torch; print(f'PyTorch: {torch.__version__}'); print(f'CUDA available: {torch.cuda.is_available()}'); print(f'GPU: {torch.cuda.get_device_name(0) if torch.cuda.is_available() else \"N/A\"}')"
 
@@ -211,31 +231,16 @@ fi
 echo ""
 
 # ==============================================================================
-# Step 6: Application Packages Installation
-# ==============================================================================
-# Install WhisperX and its dependencies.
-# These packages are hardware-agnostic and work with both NVIDIA and CPU.
-# This step takes longest (5-10 min) due to downloading and installing packages.
-# ==============================================================================
-echo -e "${YELLOW}[6/10] Installing common packages...${NC}"
-echo "Installing WhisperX and dependencies from requirements-base.txt"
-echo "These packages are hardware-agnostic and work with both NVIDIA and CPU"
-echo "This may take 5-10 minutes..."
-pip install -r "$PROJECT_DIR/requirements-base.txt"
-echo -e "${GREEN}✓ Common packages installed${NC}"
-echo ""
-
-# ==============================================================================
 # Step 7: WhisperX Compatibility Patches
 # ==============================================================================
-# Patch WhisperX source code to use 'token' instead of 'use_auth_token'.
-# WhisperX uses deprecated parameter name incompatible with pyannote.audio 4.x.
+# Updates WhisperX source code to use 'token' parameter for HuggingFace authentication.
+# This enables compatibility with pyannote.audio 4.x API.
 # Patches are applied with sed and verified.
-# Files patched: vads/pyannote.py (global replace) and asr.py (line 412).
+# Files modified: vads/pyannote.py (global replace) and asr.py (line 412).
 # ==============================================================================
 echo -e "${YELLOW}[7/10] Applying WhisperX patches...${NC}"
-echo "Patching WhisperX to use 'token' parameter instead of deprecated 'use_auth_token'"
-echo "Required for compatibility with pyannote.audio 4.x"
+echo "Updating WhisperX to use 'token' parameter for HuggingFace authentication"
+echo "Enables compatibility with pyannote.audio 4.x"
 WHISPERX_VADS="$VENV_DIR/lib/python3.12/site-packages/whisperx/vads/pyannote.py"
 WHISPERX_ASR="$VENV_DIR/lib/python3.12/site-packages/whisperx/asr.py"
 
@@ -264,43 +269,27 @@ echo -e "${GREEN}✓ WhisperX patches applied successfully${NC}"
 echo ""
 
 # ==============================================================================
-# Step 8: Package Upgrades for Compatibility
+# Step 8: pyannote.audio Installation
 # ==============================================================================
-# Upgrade pyannote.audio to 4.0.0+ for PyTorch 2.9.0 compatibility.
-# WhisperX dependencies downgrade PyTorch to 2.8.0; reinstall 2.9.0 if needed.
+# Installs pyannote.audio 4.0+, which provides PyTorch 2.9.0 compatibility.
+# Version 4.0+ is required to work with PyTorch 2.9.0's API and features.
 # ==============================================================================
-echo -e "${YELLOW}[8/10] Finalizing package versions...${NC}"
-
-# Upgrade pyannote.audio
-echo "Upgrading pyannote.audio 3.x to 4.0.0+ for PyTorch 2.9.0 compatibility..."
+echo -e "${YELLOW}[8/10] Installing pyannote.audio 4.0+...${NC}"
+echo "Installing pyannote.audio 4.0+ for PyTorch 2.9.0 compatibility..."
 pip install --upgrade "pyannote.audio>=4.0.0"
-echo -e "${GREEN}✓ pyannote.audio upgraded${NC}"
-
-# Check if PyTorch version is 2.9.0 and reinstall if needed
-PYTORCH_VERSION=$(python3 -c "import torch; print(torch.__version__)" 2>/dev/null || echo "unknown")
-if [[ "$PYTORCH_VERSION" != "2.9.0"* ]]; then
-    echo "PyTorch is $PYTORCH_VERSION - reinstalling 2.9.0..."
-    if [ "$HAS_NVIDIA" = true ]; then
-        pip install --force-reinstall torch==2.9.0 torchvision==0.24.0 torchaudio==2.9.0 --index-url https://download.pytorch.org/whl/cu128
-    else
-        pip install --force-reinstall torch==2.9.0 torchvision==0.24.0 torchaudio==2.9.0 --index-url https://download.pytorch.org/whl/cpu
-    fi
-    echo -e "${GREEN}✓ PyTorch 2.9.0 reinstalled${NC}"
-else
-    echo "PyTorch 2.9.0 still installed - no reinstall needed"
-fi
+echo -e "${GREEN}✓ pyannote.audio 4.0+ installed${NC}"
 echo ""
 
 # ==============================================================================
 # Step 9: SpeechBrain Compatibility Patches
 # ==============================================================================
-# Patch SpeechBrain for compatibility with torchaudio 2.9.0.
-# The list_audio_backends() function is not available in current torchaudio.
-# Add hasattr() check to handle both old and new torchaudio versions gracefully.
+# Updates SpeechBrain to work with torchaudio 2.9.0's API.
+# Adds hasattr() check to gracefully handle different torchaudio versions.
+# This ensures SpeechBrain can detect available audio backends across versions.
 # ==============================================================================
 echo -e "${YELLOW}[9/12] Applying SpeechBrain compatibility patches...${NC}"
-echo "Patching SpeechBrain for torchaudio 2.9.0 compatibility"
-echo "Adding compatibility check for list_audio_backends() function"
+echo "Updating SpeechBrain for torchaudio 2.9.0 compatibility"
+echo "Adding version-agnostic audio backend detection"
 
 SPEECHBRAIN_BACKEND="$VENV_DIR/lib/python3.12/site-packages/speechbrain/utils/torch_audio_backend.py"
 
@@ -379,9 +368,10 @@ echo ""
 # ==============================================================================
 # Step 10: LD_LIBRARY_PATH Configuration (NVIDIA Only)
 # ==============================================================================
-# PyTorch packages CUDA libraries (including cuDNN) as separate pip packages.
-# The system linker needs LD_LIBRARY_PATH to locate these libraries at runtime.
-# This configuration is added to ~/.bashrc for persistence across sessions.
+# Configures system linker to locate PyTorch's CUDA libraries.
+# PyTorch packages CUDA libraries as separate pip packages in the venv.
+# LD_LIBRARY_PATH tells the system where to find these libraries at runtime.
+# Configuration persists across sessions by adding to ~/.bashrc.
 # ==============================================================================
 if [ "$HAS_NVIDIA" = true ]; then
     echo -e "${YELLOW}[10/12] Configuring LD_LIBRARY_PATH for NVIDIA...${NC}"
@@ -415,9 +405,9 @@ echo ""
 # ==============================================================================
 # Step 11: Application Package Verification
 # ==============================================================================
-# Test import of WhisperX and pyannote.audio to ensure they installed correctly.
-# These imports also verify all their dependencies are properly installed.
-# Catches common issues like missing dependencies or incompatible versions.
+# Verifies WhisperX and pyannote.audio can be imported successfully.
+# Import tests confirm all dependencies are properly installed and accessible.
+# This validation ensures the environment is ready for transcription tasks.
 # ==============================================================================
 echo -e "${YELLOW}[11/12] Verifying package installations...${NC}"
 echo "Testing imports to ensure all packages are properly installed and accessible"
@@ -434,9 +424,9 @@ echo ""
 # ==============================================================================
 # Step 12: Environment File Setup
 # ==============================================================================
-# Create setup_env.sh from template if it doesn't exist.
-# This file stores HuggingFace token needed for downloading pyannote models.
-# User must manually edit this file to add their token (see post-install steps).
+# Creates setup_env.sh from template if needed.
+# This file stores the HuggingFace token for downloading pyannote models.
+# User provides their token manually (see post-installation instructions).
 # ==============================================================================
 echo -e "${YELLOW}[12/12] Setting up environment configuration...${NC}"
 echo "Checking for setup_env.sh (required for HuggingFace authentication)"
