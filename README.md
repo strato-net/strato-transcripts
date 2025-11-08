@@ -251,16 +251,21 @@ sed -i '412s/use_auth_token=None/token=None/' venv/lib/python3.12/site-packages/
 
 ### LD_LIBRARY_PATH Configuration
 
-**Not needed with PyTorch 2.9.0 stable!** 
+**Still required with PyTorch 2.9.0 stable for cuDNN**
 
-Previous versions using PyTorch nightly builds required manual `LD_LIBRARY_PATH` configuration to help the system linker find CUDA libraries. PyTorch 2.9.0 stable properly packages and locates these libraries automatically, so this workaround is no longer necessary.
+Even with PyTorch 2.9.0 stable, the system linker needs `LD_LIBRARY_PATH` to find cuDNN libraries at runtime. The installation script automatically configures this by adding to your `~/.bashrc`:
 
-**If you upgraded from nightly builds:** You can safely remove old LD_LIBRARY_PATH entries from your `~/.bashrc`:
 ```bash
-# Remove lines added by old versions of install_packages_and_venv.sh
-sed -i '/Added by install_packages_and_venv.sh/d' ~/.bashrc
-sed -i '/nvidia.*LD_LIBRARY_PATH/d' ~/.bashrc
+# Automatically configured by install_packages_and_venv.sh
+export LD_LIBRARY_PATH=venv/lib/python3.12/site-packages/nvidia/cudnn/lib:$LD_LIBRARY_PATH
 ```
+
+**Why is this needed?**
+- PyTorch packages CUDA libraries (including cuDNN) as separate pip packages
+- The system linker needs to know where to find `libcudnn_cnn.so.9` at runtime
+- Without this, you'll see errors like: `Unable to load libcudnn_cnn.so.9.1.0`
+
+**Note:** This is automatically added to your `~/.bashrc` by the installation script and is set in the batch processing script. You don't need to configure it manually.
 
 ## Manual Setup (Advanced)
 

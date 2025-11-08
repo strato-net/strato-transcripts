@@ -22,8 +22,9 @@
 #   7. Applies compatibility patches to WhisperX
 #   8. Upgrades packages for compatibility
 #   9. Applies compatibility patches to SpeechBrain
-#  10. Verifies package installations
-#  11. Sets up environment configuration file
+#  10. Configures LD_LIBRARY_PATH for NVIDIA
+#  11. Verifies package installations
+#  12. Sets up environment configuration file
 #
 # REQUIREMENTS:
 #   - Ubuntu 24.04 LTS (or compatible Debian-based system)
@@ -379,13 +380,50 @@ rm -f /tmp/speechbrain_patch.py
 echo ""
 
 # ==============================================================================
-# Step 10: Application Package Verification
+# Step 10: LD_LIBRARY_PATH Configuration (NVIDIA Only)
+# ==============================================================================
+# PyTorch packages CUDA libraries as separate pip packages.
+# The system linker needs LD_LIBRARY_PATH to find these libraries at runtime.
+# Even with PyTorch 2.9.0 stable, this is required for cuDNN to load properly.
+# Added to ~/.bashrc for persistence across terminal sessions.
+# ==============================================================================
+if [ "$HAS_NVIDIA" = true ]; then
+    echo -e "${YELLOW}[10/12] Configuring LD_LIBRARY_PATH for NVIDIA...${NC}"
+    echo "Adding cuDNN library path to ~/.bashrc"
+    echo "Required for PyTorch CUDA operations"
+    
+    BASHRC="$HOME/.bashrc"
+    # Only add cuDNN path - this is what pyannote.audio needs
+    CUDNN_LIB="$VENV_DIR/lib/python3.12/site-packages/nvidia/cudnn/lib"
+    LD_PATH_LINE="export LD_LIBRARY_PATH=$CUDNN_LIB:\$LD_LIBRARY_PATH"
+
+    # Remove any existing entry
+    sed -i '/Added by install_packages_and_venv.sh/d' "$BASHRC"
+    sed -i '/nvidia.*LD_LIBRARY_PATH/d' "$BASHRC"
+    
+    # Add new entry
+    echo "" >> "$BASHRC"
+    echo "# Added by install_packages_and_venv.sh for PyTorch CUDA libraries" >> "$BASHRC"
+    echo "$LD_PATH_LINE" >> "$BASHRC"
+    
+    # Set for current session
+    export LD_LIBRARY_PATH="$CUDNN_LIB:$LD_LIBRARY_PATH"
+    
+    echo -e "${GREEN}✓ LD_LIBRARY_PATH configured${NC}"
+else
+    echo -e "${YELLOW}[10/12] Skipping LD_LIBRARY_PATH configuration${NC}"
+    echo "Not needed for CPU-only installations"
+fi
+echo ""
+
+# ==============================================================================
+# Step 11: Application Package Verification
 # ==============================================================================
 # Test import of WhisperX and pyannote.audio to ensure they installed correctly.
 # These imports also verify all their dependencies are properly installed.
 # Catches common issues like missing dependencies or incompatible versions.
 # ==============================================================================
-echo -e "${YELLOW}[10/11] Verifying package installations...${NC}"
+echo -e "${YELLOW}[11/12] Verifying package installations...${NC}"
 echo "Testing imports to ensure all packages are properly installed and accessible"
 
 echo "Testing WhisperX import..."
@@ -398,13 +436,13 @@ echo -e "${GREEN}✓ All packages verified and ready to use${NC}"
 echo ""
 
 # ==============================================================================
-# Step 11: Environment File Setup
+# Step 12: Environment File Setup
 # ==============================================================================
 # Create setup_env.sh from template if it doesn't exist.
 # This file stores HuggingFace token needed for downloading pyannote models.
 # User must manually edit this file to add their token (see post-install steps).
 # ==============================================================================
-echo -e "${YELLOW}[11/11] Setting up environment configuration...${NC}"
+echo -e "${YELLOW}[12/12] Setting up environment configuration...${NC}"
 echo "Checking for setup_env.sh (required for HuggingFace authentication)"
 if [ ! -f "$PROJECT_DIR/setup_env.sh" ]; then
     if [ -f "$PROJECT_DIR/setup_env.sh.example" ]; then
