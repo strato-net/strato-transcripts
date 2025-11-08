@@ -14,17 +14,24 @@ import whisperx
 import torch
 from pyannote.audio import Pipeline
 
-def transcribe_audio(audio_path, device, compute_type="float16"):
+def transcribe_audio(audio_path, device, compute_type="float16", high_accuracy=False):
     """Run WhisperX transcription - hardcoded to English
     
     Args:
         audio_path: Path to audio file
         device: Device to use (cuda/cpu)
-        compute_type: Compute precision (float16/int8)
+        compute_type: Compute precision (float16/int8/float32)
+        high_accuracy: Enable high-accuracy mode (slower, more thorough)
     """
     print("\n" + "="*60)
     print("Step 1: Transcribing audio with WhisperX...")
     print("="*60)
+    
+    # Display quality mode
+    quality_mode = "HIGH QUALITY" if high_accuracy else "LOW QUALITY"
+    device_type = "GPU" if device == "cuda" else "CPU"
+    print(f"Mode: {quality_mode}, {device_type}")
+    print(f"Compute type: {compute_type}")
     print("Language: en (hardcoded)")
     
     start = time.time()
@@ -34,7 +41,34 @@ def transcribe_audio(audio_path, device, compute_type="float16"):
     
     # Transcribe with explicit English language to prevent drift
     audio = whisperx.load_audio(audio_path)
-    result = model.transcribe(audio, batch_size=16, language="en")
+    
+    if high_accuracy:
+        # HIGH QUALITY settings
+        if device == "cuda":
+            # GPU: Aggressive high-accuracy settings
+            batch_size = 4
+            beam_size = 10
+            best_of = 5
+        else:
+            # CPU: Conservative but improved settings
+            batch_size = 2
+            beam_size = 5
+            best_of = 3
+        
+        temperature = 0.0  # Most conservative predictions
+        
+        print(f"Settings: batch_size={batch_size}, beam_size={beam_size}, best_of={best_of}, temperature={temperature}")
+        result = model.transcribe(audio, 
+                                 batch_size=batch_size, 
+                                 language="en",
+                                 temperature=temperature,
+                                 beam_size=beam_size,
+                                 best_of=best_of)
+    else:
+        # LOW QUALITY (FAST) settings - standard batch processing
+        batch_size = 16 if device == "cuda" else 8
+        print(f"Settings: batch_size={batch_size} (standard fast mode)")
+        result = model.transcribe(audio, batch_size=batch_size, language="en")
     
     # Align whisper output using English
     model_a, metadata = whisperx.load_align_model(language_code="en", device=device)
@@ -192,12 +226,35 @@ def save_transcript(result, output_path):
 def main():
     import argparse
     
-    parser = argparse.ArgumentParser(description="Complete WhisperX transcription with speaker diarization (English only)")
+    parser = argparse.ArgumentParser(
+        description="Complete WhisperX transcription with speaker diarization (English only)",
+        epilog="""
+Quality modes:
+  --high-quality: Enable thorough processing (slower, more accurate)
+  --low-quality:  Fast processing (default, good accuracy)
+  
+Device modes:
+  Auto-detect GPU (default)
+  --force-cpu:    Force CPU even if GPU available
+        """,
+        formatter_class=argparse.RawDescriptionHelpFormatter
+    )
     parser.add_argument("audio_file", help="Audio file path")
     parser.add_argument("--output", help="Output file path")
     parser.add_argument("--token", help="HuggingFace token (overrides HF_TOKEN env var)")
+    parser.add_argument("--high-quality", action="store_true", 
+                       help="Enable high-quality mode (5-10x slower, more accurate)")
+    parser.add_argument("--low-quality", action="store_true",
+                       help="Force low-quality/fast mode (overrides default)")
+    parser.add_argument("--force-cpu", action="store_true",
+                       help="Force CPU processing even if GPU available")
     
     args = parser.parse_args()
+    
+    # Validate conflicting options
+    if args.high_quality and args.low_quality:
+        print("Error: Cannot specify both --high-quality and --low-quality")
+        sys.exit(1)
     
     # Get token
     hf_token = args.token or os.environ.get('HF_TOKEN')
@@ -218,18 +275,33 @@ def main():
     else:
         output_path = audio_path.parent / f"{audio_path.stem}_transcript_with_speakers.txt"
     
-    # Setup device
-    device = "cuda" if torch.cuda.is_available() else "cpu"
-    compute_type = "float16" if device == "cuda" else "int8"
+    # Setup device based on flags
+    if args.force_cpu:
+        device = "cpu"
+    else:
+        device = "cuda" if torch.cuda.is_available() else "cpu"
+    
+    # Determine quality mode (default is low-quality/fast unless high-quality specified)
+    high_quality_mode = args.high_quality
+    
+    # Setup compute type based on device and quality
+    if high_quality_mode:
+        # High quality: use float32 for maximum precision
+        compute_type = "float32"
+    else:
+        # Low quality (fast): use appropriate default for device
+        compute_type = "float16" if device == "cuda" else "int8"
     
     print("="*60)
     print("WhisperX Transcription Pipeline with Diarization")
     print("="*60)
     print(f"Audio file: {audio_path}")
     print(f"Output file: {output_path}")
-    print(f"Device: {device}")
+    print(f"Device: {device}" + (" (forced)" if args.force_cpu else ""))
     if device == "cuda":
         print(f"GPU: {torch.cuda.get_device_name(0)}")
+    print(f"Quality mode: {'HIGH' if high_quality_mode else 'LOW (FAST)'}")
+    print(f"Compute type: {compute_type}")
     print("="*60)
     
     # Start total timer
@@ -238,7 +310,7 @@ def main():
     # Run pipeline
     try:
         # Step 1: Transcribe (English hardcoded)
-        result = transcribe_audio(str(audio_path), device, compute_type)
+        result = transcribe_audio(str(audio_path), device, compute_type, high_accuracy=high_quality_mode)
         
         # Step 2: Diarize
         diarize_segments = diarize_audio(str(audio_path), hf_token, device)
