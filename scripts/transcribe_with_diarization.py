@@ -39,8 +39,9 @@ def transcribe_audio(audio_path, device, model_name="large-v2", batch_size=None)
     print("Step 1: Transcribing audio with WhisperX...")
     print("="*60)
     
-    # Use int8 for optimal VRAM/quality balance (98-99% quality, 3-4x less VRAM)
-    compute_type = "int8"
+    # Use float16 instead of int8 to avoid TF32 conflicts with pyannote.audio
+    # float16 provides excellent quality with low VRAM usage (~6GB for large-v2)
+    compute_type = "float16" if device == "cuda" else "int8"
     
     # Auto-determine batch size if not specified
     if batch_size is None:
