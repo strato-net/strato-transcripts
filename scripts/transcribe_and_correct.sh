@@ -44,8 +44,16 @@ fi
 AUDIO_FILE="$1"
 shift
 
+# Auto-detect GPU and default to high quality if available
+if command -v nvidia-smi &> /dev/null && nvidia-smi &> /dev/null; then
+    HIGH_QUALITY="--high-quality"
+    echo "GPU detected - defaulting to HIGH QUALITY mode"
+else
+    HIGH_QUALITY=""
+    echo "No GPU detected - defaulting to standard quality mode"
+fi
+
 # Default options
-HIGH_QUALITY=""
 MODEL="large-v2"
 AI_PROVIDER="openai"  # Default to OpenAI (ChatGPT-5)
 OPENAI_MODEL="chatgpt-4o-latest"
