@@ -19,8 +19,12 @@ from pyannote.audio import Pipeline
 
 # Configure TF32 using PyTorch 2.9+ API
 # Enables TensorFloat-32 for better performance on Ampere+ GPUs (RTX 30/40/50 series)
+# NOTE: pyannote.audio disables TF32 on import, so we re-enable it after the import
 torch.backends.cudnn.conv.fp32_precision = 'tf32'
 torch.backends.cuda.matmul.fp32_precision = 'tf32'
+# Also set old API for compatibility (pyannote checks this)
+torch.backends.cuda.matmul.allow_tf32 = True
+torch.backends.cudnn.allow_tf32 = True
 
 def transcribe_audio(audio_path, device, model_name="large-v2", batch_size=None):
     """Run WhisperX transcription with int8 quantization - hardcoded to English
