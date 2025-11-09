@@ -17,10 +17,10 @@ import whisperx
 import torch
 from pyannote.audio import Pipeline
 
-# Configure TF32 for better performance on Ampere+ GPUs (RTX 30/40/50 series)
-# Suppresses pyannote reproducibility warning
-torch.backends.cuda.matmul.allow_tf32 = True
-torch.backends.cudnn.allow_tf32 = True
+# Configure TF32 using PyTorch 2.9+ API
+# Enables TensorFloat-32 for better performance on Ampere+ GPUs (RTX 30/40/50 series)
+torch.backends.cudnn.conv.fp32_precision = 'tf32'
+torch.backends.cuda.matmul.fp32_precision = 'tf32'
 
 def transcribe_audio(audio_path, device, model_name="large-v2", batch_size=None):
     """Run WhisperX transcription with int8 quantization - hardcoded to English
