@@ -119,13 +119,14 @@ fi
 echo ""
 
 # ==============================================================================
-# Step 2: System Dependencies Installation
+# Step 2: System Dependencies and AI Tools Installation
 # ==============================================================================
-# Install required system packages using apt package manager.
-# These are low-level dependencies needed to build Python packages and process audio.
+# Install required system packages and optional AI tools.
+# System packages: Build tools, audio processing, Python development
+# Optional AI tools: Ollama for local/private AI post-processing (FREE)
 # Requires sudo access for system-wide installation.
 # ==============================================================================
-echo -e "${YELLOW}[2/13] Installing system dependencies...${NC}"
+echo -e "${YELLOW}[2/13] Installing system dependencies and AI tools...${NC}"
 echo "Installing required system packages:"
 echo "  - build-essential: C/C++ compilers for building Python packages"
 echo "  - ffmpeg: Audio/video processing for WhisperX"
@@ -140,6 +141,23 @@ echo "  - libcurl4-openssl-dev: cURL development libraries for Python packages"
 sudo apt update
 sudo apt install -y build-essential ffmpeg python3-dev python3-venv python3-pip git curl ca-certificates libssl-dev libcurl4-openssl-dev
 echo -e "${GREEN}✓ System dependencies installed${NC}"
+
+echo ""
+echo "Installing Ollama for local AI post-processing (optional, FREE, private)..."
+if command -v ollama &> /dev/null; then
+    echo -e "${GREEN}✓ Ollama already installed${NC}"
+    OLLAMA_VERSION=$(ollama --version 2>/dev/null || echo "unknown")
+    echo "  Version: $OLLAMA_VERSION"
+else
+    echo "Downloading and installing Ollama..."
+    if curl -fsSL https://ollama.com/install.sh | sh; then
+        echo -e "${GREEN}✓ Ollama installed successfully${NC}"
+        echo "  You can pull models later with: ollama pull model-name"
+    else
+        echo -e "${YELLOW}⚠ Ollama installation failed (non-fatal)${NC}"
+        echo "  You can install it manually later: curl -fsSL https://ollama.com/install.sh | sh"
+    fi
+fi
 echo ""
 
 # ==============================================================================
@@ -514,12 +532,12 @@ echo "3. Accept model agreements:"
 echo "   - https://huggingface.co/pyannote/speaker-diarization-3.1"
 echo "   - https://huggingface.co/pyannote/segmentation-3.0"
 echo ""
-echo -e "${YELLOW}OPTIONAL: For local Ollama support (FREE, private AI)${NC}"
+echo -e "${YELLOW}OPTIONAL: For Ollama local AI (already installed, FREE, private)${NC}"
 echo ""
-echo "4. Install Ollama (for local AI post-processing):"
-echo "   curl -fsSL https://ollama.com/install.sh | sh"
-echo "   ollama serve"
-echo "   ollama pull qwen2.5:32b"
+echo "4. Pull an Ollama model for local AI post-processing:"
+echo "   ollama serve  # Start Ollama service (if not running)"
+echo "   ollama pull qwen2.5:32b  # Recommended: Fast and high-quality"
+echo "   ollama pull llama3.1:70b  # Alternative: Larger, slower, more capable"
 echo ""
 echo "5. Get API keys for remote AI providers:"
 echo "   - OpenAI (ChatGPT-5): https://platform.openai.com/api-keys"
