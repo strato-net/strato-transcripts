@@ -14,12 +14,12 @@ import whisperx
 import torch
 from pyannote.audio import Pipeline
 
-# Configure TF32 (suppresses PyTorch 2.9 deprecation warnings)
-# Keep the old API settings - they still work, just show warnings
-torch.backends.cudnn.allow_tf32 = True
-torch.backends.cuda.matmul.allow_tf32 = True
+# Configure TF32 using PyTorch 2.9+ API
+# Enables TensorFloat-32 for better performance on Ampere+ GPUs (RTX 30/40/50 series)
+torch.backends.cudnn.conv.fp32_precision = 'tf32'
+torch.backends.cuda.matmul.fp32_precision = 'tf32'
 
-def transcribe_audio(audio_path, device, compute_type="float16", high_accuracy=False, model_name="large-v2", initial_prompt=None):
+def transcribe_audio(audio_path, device, compute_type="float16", high_accuracy=False, model_name="large-v2"):
     """Run WhisperX transcription - hardcoded to English
     
     Args:
@@ -28,7 +28,6 @@ def transcribe_audio(audio_path, device, compute_type="float16", high_accuracy=F
         compute_type: Compute precision (float16/int8/float32)
         high_accuracy: Enable high-accuracy mode (slower, more thorough)
         model_name: Model to use (large-v2, large-v3, turbo, distil-large-v3)
-        initial_prompt: Optional prompt text to guide transcription (max 224 tokens)
     """
     print("\n" + "="*60)
     print("Step 1: Transcribing audio with WhisperX...")
@@ -41,9 +40,6 @@ def transcribe_audio(audio_path, device, compute_type="float16", high_accuracy=F
     print(f"Model: {model_name}")
     print(f"Compute type: {compute_type}")
     print("Language: en (hardcoded)")
-    if initial_prompt:
-        prompt_preview = initial_prompt[:100] + "..." if len(initial_prompt) > 100 else initial_prompt
-        print(f"Initial prompt: {prompt_preview}")
     
     start = time.time()
     
@@ -60,17 +56,15 @@ def transcribe_audio(audio_path, device, compute_type="float16", high_accuracy=F
         
         print(f"Settings: batch_size={batch_size} (high-accuracy mode with float32)")
         result = model.transcribe(audio, 
-                                 batch_size=batch_size, 
-                                 language="en",
-                                 initial_prompt=initial_prompt)
+                                 batch_size=batch_size,
+                                 language='en')
     else:
         # LOW QUALITY (FAST) settings - standard batch processing
         batch_size = 16 if device == "cuda" else 8
         print(f"Settings: batch_size={batch_size} (standard fast mode)")
         result = model.transcribe(audio, 
-                                 batch_size=batch_size, 
-                                 language="en",
-                                 initial_prompt=initial_prompt)
+                                 batch_size=batch_size,
+                                 language='en')
     
     # Align whisper output using English
     model_a, metadata = whisperx.load_align_model(language_code="en", device=device)
@@ -253,10 +247,6 @@ Device modes:
     parser.add_argument("--model", default="large-v2",
                        choices=["large-v2", "large-v3", "turbo", "distil-large-v3"],
                        help="Whisper model to use (default: large-v2)")
-    parser.add_argument("--initial-prompt",
-                       help="Initial prompt text or path to prompt file (guides transcription, max 224 tokens)")
-    parser.add_argument("--auto-prompt", action="store_true",
-                       help="Use built-in Ethereum terminology prompt automatically")
     
     args = parser.parse_args()
     
@@ -280,29 +270,6 @@ Device modes:
     
     # Determine quality mode (default is low-quality/fast unless high-quality specified)
     high_quality_mode = args.high_quality
-    
-    # Handle initial prompt
-    initial_prompt = None
-    if args.auto_prompt:
-        # Load built-in Ethereum prompt
-        prompt_file = Path(__file__).parent / "ethereum_initial_prompt.txt"
-        if prompt_file.exists():
-            with open(prompt_file, 'r', encoding='utf-8') as f:
-                initial_prompt = f.read().strip()
-            print(f"Using built-in Ethereum prompt from: {prompt_file}")
-        else:
-            print(f"Warning: ethereum_initial_prompt.txt not found at {prompt_file}")
-    elif args.initial_prompt:
-        # Check if it's a file path or direct text
-        prompt_path = Path(args.initial_prompt)
-        if prompt_path.exists():
-            with open(prompt_path, 'r', encoding='utf-8') as f:
-                initial_prompt = f.read().strip()
-            print(f"Using prompt from file: {prompt_path}")
-        else:
-            # Treat as direct text
-            initial_prompt = args.initial_prompt
-            print("Using provided prompt text")
     
     # Set output path with settings info for comparison
     if args.output:
@@ -347,8 +314,7 @@ Device modes:
         # Step 1: Transcribe (English hardcoded)
         result = transcribe_audio(str(audio_path), device, compute_type, 
                                  high_accuracy=high_quality_mode,
-                                 model_name=args.model,
-                                 initial_prompt=initial_prompt)
+                                 model_name=args.model)
         
         # Step 2: Diarize
         diarize_segments = diarize_audio(str(audio_path), hf_token, device)

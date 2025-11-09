@@ -1,0 +1,9 @@
+
+   Retention: 79.1%
+
+❌ ERROR: Severe content loss detected!
+   Lost 262 lines (20.9% loss)
+   This indicates truncation or incomplete processing.
+   Aborting - corrected file will not be saved.
+---
+

@@ -114,11 +114,36 @@ def process_with_anthropic(transcript, api_key, context):
     
     response = client.messages.create(
         model="claude-3-5-sonnet-20241022",
-        max_tokens=16000,
+        max_tokens=8192,  # Maximum supported by Claude 3.5
         messages=[{"role": "user", "content": prompt}]
     )
     
     return response.content[0].text
+
+def split_transcript_by_speakers(transcript, max_chunk_size=15000):
+    """Split transcript into chunks at speaker boundaries"""
+    lines = transcript.split('\n')
+    chunks = []
+    current_chunk = []
+    current_size = 0
+    
+    for line in lines:
+        line_size = len(line)
+        
+        # If adding this line would exceed max size and we have content, start new chunk
+        if current_size + line_size > max_chunk_size and current_chunk:
+            chunks.append('\n'.join(current_chunk))
+            current_chunk = []
+            current_size = 0
+        
+        current_chunk.append(line)
+        current_size += line_size + 1  # +1 for newline
+    
+    # Add final chunk
+    if current_chunk:
+        chunks.append('\n'.join(current_chunk))
+    
+    return chunks
 
 def process_with_openai(transcript, api_key, context, model="chatgpt-4o-latest"):
     """Process transcript using OpenAI GPT models (GPT-4, GPT-4o, ChatGPT-5)"""
@@ -129,18 +154,33 @@ def process_with_openai(transcript, api_key, context, model="chatgpt-4o-latest")
         return None
     
     client = openai.OpenAI(api_key=api_key)
-    prompt = build_prompt(context, transcript)
     
-    response = client.chat.completions.create(
-        model=model,
-        messages=[
-            {"role": "system", "content": SYSTEM_PROMPT},
-            {"role": "user", "content": prompt}
-        ],
-        max_tokens=16000
-    )
+    # ALWAYS chunk to ensure complete output - unconditional chunking prevents any truncation
+    print(f"   Transcript size: {len(transcript)} chars - using chunking for complete output")
+    print(f"   Splitting into chunks for processing...")
     
-    return response.choices[0].message.content
+    chunks = split_transcript_by_speakers(transcript, max_chunk_size=15000)
+    print(f"   Processing {len(chunks)} chunks...")
+    
+    corrected_chunks = []
+    for i, chunk in enumerate(chunks, 1):
+        print(f"   Processing chunk {i}/{len(chunks)}...", end=' ', flush=True)
+        
+        prompt = build_prompt(context, chunk)
+        response = client.chat.completions.create(
+            model=model,
+            messages=[
+                {"role": "system", "content": SYSTEM_PROMPT},
+                {"role": "user", "content": prompt}
+            ],
+            max_tokens=16384
+        )
+        
+        corrected_chunks.append(response.choices[0].message.content)
+        print("✓")
+    
+    # Combine chunks
+    return '\n\n'.join(corrected_chunks)
 
 def process_with_gemini(transcript, api_key, context, model="gemini-2.0-flash-exp"):
     """Process transcript using Google Gemini"""
@@ -178,7 +218,7 @@ def process_with_deepseek(transcript, api_key, context, model="deepseek-chat"):
             {"role": "system", "content": SYSTEM_PROMPT},
             {"role": "user", "content": prompt}
         ],
-        max_tokens=16000
+        max_tokens=16384  # Maximum supported
     )
     
     return response.choices[0].message.content
@@ -283,16 +323,38 @@ def process_transcript(transcript_path, api_key, provider="anthropic",
     
     print("   ✓ Processing complete")
     
+    # Strip trailing whitespace from each line
+    corrected_lines = [line.rstrip() for line in corrected.split('\n')]
+    corrected_clean = '\n'.join(corrected_lines)
+    
+    # Validate line count - original vs corrected
+    original_line_count = len(transcript.split('\n'))
+    corrected_line_count = len(corrected_lines)
+    retention_pct = (corrected_line_count / original_line_count) * 100
+    
+    print(f"\n4. Validating output...")
+    print(f"   Original lines: {original_line_count}")
+    print(f"   Corrected lines: {corrected_line_count}")
+    print(f"   Retention: {retention_pct:.1f}%")
+    
+    # Fail if more than 15% of lines are lost (allowing for reasonable AI cleanup & line consolidation)
+    if corrected_line_count < original_line_count * 0.85:
+        print(f"\n❌ ERROR: Severe content loss detected!")
+        print(f"   Lost {original_line_count - corrected_line_count} lines ({100 - retention_pct:.1f}% loss)")
+        print(f"   This indicates truncation or incomplete processing.")
+        print(f"   Aborting - corrected file will not be saved.")
+        return None
+    
     # Save corrected transcript
     output_path = transcript_file.parent / f"{transcript_file.stem}_corrected.txt"
     with open(output_path, 'w', encoding='utf-8') as f:
-        f.write(corrected)
+        f.write(corrected_clean)
     
-    print(f"\n4. Saved corrected transcript to: {output_path}")
+    print(f"\n5. Saved corrected transcript to: {output_path}")
     
     # Also save markdown version
     md_output_path = output_path.with_suffix('.md')
-    md_content = corrected.replace('\n\nSPEAKER_', '\n\n**SPEAKER_')
+    md_content = corrected_clean.replace('\n\nSPEAKER_', '\n\n**SPEAKER_')
     md_content = md_content.replace(':\n', ':**\n')
     with open(md_output_path, 'w', encoding='utf-8') as f:
         f.write(md_content)
@@ -300,7 +362,7 @@ def process_transcript(transcript_path, api_key, provider="anthropic",
     print(f"   Also saved markdown to: {md_output_path}")
     
     print("\n" + "="*60)
-    print("✓ Post-processing complete!")
+    print(f"✓ Post-processing complete! ({retention_pct:.1f}% line retention)")
     print("="*60)
     
     return output_path

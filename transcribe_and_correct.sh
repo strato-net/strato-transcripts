@@ -160,8 +160,7 @@ echo "------------------------------------------------------------------------"
 
 python3 transcribe_with_diarization.py "$AUDIO_FILE" \
     $HIGH_QUALITY \
-    --model "$MODEL" \
-    --auto-prompt
+    --model "$MODEL"
 
 if [ $? -ne 0 ]; then
     echo "Error: Transcription failed"

@@ -24,7 +24,8 @@
 #   9. Applies compatibility patches to SpeechBrain
 #  10. Configures LD_LIBRARY_PATH for NVIDIA
 #  11. Verifies package installations
-#  12. Sets up environment configuration file
+#  12. Builds Ethereum glossaries
+#  13. Sets up environment configuration file
 #
 # REQUIREMENTS:
 #   - Ubuntu 24.04 LTS (or compatible Debian-based system)
@@ -96,7 +97,7 @@ echo ""
 # Sets HAS_NVIDIA flag used throughout script for conditional logic.
 # Can be overridden with --force-cpu flag to force CPU-only installation.
 # ==============================================================================
-echo -e "${YELLOW}[1/10] Detecting hardware...${NC}"
+echo -e "${YELLOW}[1/13] Detecting hardware...${NC}"
 
 if [ "$FORCE_CPU" = true ]; then
     HAS_NVIDIA=false
@@ -122,7 +123,7 @@ echo ""
 # These are low-level dependencies needed to build Python packages and process audio.
 # Requires sudo access for system-wide installation.
 # ==============================================================================
-echo -e "${YELLOW}[2/10] Installing system dependencies...${NC}"
+echo -e "${YELLOW}[2/13] Installing system dependencies...${NC}"
 echo "Installing required system packages:"
 echo "  - build-essential: C/C++ compilers for building Python packages"
 echo "  - ffmpeg: Audio/video processing for WhisperX"
@@ -142,7 +143,7 @@ echo ""
 # If venv already exists, it's removed and recreated to ensure clean state.
 # All subsequent Python packages will be installed into this venv.
 # ==============================================================================
-echo -e "${YELLOW}[3/10] Creating Python virtual environment...${NC}"
+echo -e "${YELLOW}[3/13] Creating Python virtual environment...${NC}"
 echo "Creating isolated Python environment to avoid conflicts with system packages"
 echo "Location: $VENV_DIR"
 if [ -d "$VENV_DIR" ]; then
@@ -168,7 +169,7 @@ source "$VENV_DIR/bin/activate"
 # WhisperX pulls in PyTorch 2.8.0 as its dependency.
 # We install the optimal PyTorch version for this GPU in the next step.
 # ==============================================================================
-echo -e "${YELLOW}[4/10] Installing WhisperX and base packages...${NC}"
+echo -e "${YELLOW}[4/13] Installing WhisperX and base packages...${NC}"
 echo "Installing WhisperX and dependencies from requirements-base.txt"
 echo "Note: WhisperX includes PyTorch 2.8.0 (we install 2.9.0 next for GPU optimization)"
 echo "This may take 5-10 minutes..."
@@ -183,7 +184,7 @@ echo ""
 # PyTorch 2.9.0 provides full Blackwell (sm_120) support for RTX 50-series GPUs.
 # CUDA 13.0 offers the latest optimizations and performance improvements.
 # ==============================================================================
-echo -e "${YELLOW}[5/10] Installing PyTorch 2.9.0...${NC}"
+echo -e "${YELLOW}[5/13] Installing PyTorch 2.9.0...${NC}"
 echo "Installing PyTorch 2.9.0 stable with CUDA 13.0"
 echo "Provides full Blackwell (sm_120) support for RTX 50-series GPUs"
 echo "This may take 2-5 minutes depending on internet speed..."
@@ -205,7 +206,7 @@ echo ""
 # For CPU: Confirms basic CPU tensor operations work correctly.
 # Ensures the installation is ready for machine learning workloads.
 # ==============================================================================
-echo -e "${YELLOW}[6/10] Verifying PyTorch installation...${NC}"
+echo -e "${YELLOW}[6/13] Verifying PyTorch installation...${NC}"
 echo "Verifying PyTorch installation and hardware access..."
 python3 -c "import torch; print(f'PyTorch: {torch.__version__}'); print(f'CUDA available: {torch.cuda.is_available()}'); print(f'GPU: {torch.cuda.get_device_name(0) if torch.cuda.is_available() else \"N/A\"}')"
 
@@ -238,7 +239,7 @@ echo ""
 # Patches are applied with sed and verified.
 # Files modified: vads/pyannote.py (global replace) and asr.py (line 412).
 # ==============================================================================
-echo -e "${YELLOW}[7/10] Applying WhisperX patches...${NC}"
+echo -e "${YELLOW}[7/13] Applying WhisperX patches...${NC}"
 echo "Updating WhisperX to use 'token' parameter for HuggingFace authentication"
 echo "Enables compatibility with pyannote.audio 4.x"
 WHISPERX_VADS="$VENV_DIR/lib/python3.12/site-packages/whisperx/vads/pyannote.py"
@@ -274,7 +275,7 @@ echo ""
 # Installs pyannote.audio 4.0+, which provides PyTorch 2.9.0 compatibility.
 # Version 4.0+ is required to work with PyTorch 2.9.0's API and features.
 # ==============================================================================
-echo -e "${YELLOW}[8/10] Installing pyannote.audio 4.0+...${NC}"
+echo -e "${YELLOW}[8/13] Installing pyannote.audio 4.0+...${NC}"
 echo "Installing pyannote.audio 4.0+ for PyTorch 2.9.0 compatibility..."
 pip install --upgrade "pyannote.audio>=4.0.0"
 echo -e "${GREEN}✓ pyannote.audio 4.0+ installed${NC}"
@@ -287,7 +288,7 @@ echo ""
 # Adds hasattr() check to gracefully handle different torchaudio versions.
 # This ensures SpeechBrain can detect available audio backends across versions.
 # ==============================================================================
-echo -e "${YELLOW}[9/12] Applying SpeechBrain compatibility patches...${NC}"
+echo -e "${YELLOW}[9/13] Applying SpeechBrain compatibility patches...${NC}"
 echo "Updating SpeechBrain for torchaudio 2.9.0 compatibility"
 echo "Adding version-agnostic audio backend detection"
 
@@ -374,7 +375,7 @@ echo ""
 # Configuration persists across sessions by adding to ~/.bashrc.
 # ==============================================================================
 if [ "$HAS_NVIDIA" = true ]; then
-    echo -e "${YELLOW}[10/12] Configuring LD_LIBRARY_PATH for NVIDIA...${NC}"
+    echo -e "${YELLOW}[10/13] Configuring LD_LIBRARY_PATH for NVIDIA...${NC}"
     echo "Adding all required CUDA library paths to ~/.bashrc"
     echo "Required for PyTorch CUDA operations (cuDNN, cuBLAS, NVRTC, and CUDA 13.0 runtime)"
     
@@ -399,7 +400,7 @@ if [ "$HAS_NVIDIA" = true ]; then
     
     echo -e "${GREEN}✓ LD_LIBRARY_PATH configured${NC}"
 else
-    echo -e "${YELLOW}[10/12] Skipping LD_LIBRARY_PATH configuration${NC}"
+    echo -e "${YELLOW}[10/13] Skipping LD_LIBRARY_PATH configuration${NC}"
     echo "Not needed for CPU-only installations"
 fi
 echo ""
@@ -411,7 +412,7 @@ echo ""
 # Import tests confirm all dependencies are properly installed and accessible.
 # This validation ensures the environment is ready for transcription tasks.
 # ==============================================================================
-echo -e "${YELLOW}[11/12] Verifying package installations...${NC}"
+echo -e "${YELLOW}[11/13] Verifying package installations...${NC}"
 echo "Testing imports to ensure all packages are properly installed and accessible"
 
 echo "Testing WhisperX import..."
@@ -424,13 +425,50 @@ echo -e "${GREEN}✓ All packages verified and ready to use${NC}"
 echo ""
 
 # ==============================================================================
-# Step 12: Environment File Setup
+# Step 12: Build Ethereum Glossaries
+# ==============================================================================
+# Extracts people names and technical terms for quality improvement.
+# These glossaries are used by AI post-processing to correct transcripts.
+# Runs extract_people.py and extract_terms.py if they exist.
+# Failures are non-fatal as these are optional enhancements.
+# ==============================================================================
+echo -e "${YELLOW}[12/13] Building Ethereum glossaries...${NC}"
+echo "Extracting domain-specific terminology for transcript quality improvement"
+
+if [ -f "$PROJECT_DIR/extract_people.py" ]; then
+    echo "Running extract_people.py..."
+    if python3 "$PROJECT_DIR/extract_people.py" 2>/dev/null; then
+        echo -e "${GREEN}✓ People glossary created${NC}"
+    else
+        echo -e "${YELLOW}⚠ extract_people.py failed (EarlyDaysOfEthereum may not be available)${NC}"
+        echo "You can run manually later: python3 extract_people.py"
+    fi
+else
+    echo -e "${YELLOW}⚠ extract_people.py not found${NC}"
+fi
+
+if [ -f "$PROJECT_DIR/extract_terms.py" ]; then
+    echo "Running extract_terms.py..."
+    if python3 "$PROJECT_DIR/extract_terms.py" 2>/dev/null; then
+        echo -e "${GREEN}✓ Technical terms glossary created${NC}"
+    else
+        echo -e "${YELLOW}⚠ extract_terms.py failed${NC}"
+        echo "You can run manually later: python3 extract_terms.py"
+    fi
+else
+    echo -e "${YELLOW}⚠ extract_terms.py not found${NC}"
+fi
+
+echo ""
+
+# ==============================================================================
+# Step 13: Environment File Setup
 # ==============================================================================
 # Creates setup_env.sh from template if needed.
 # This file stores the HuggingFace token for downloading pyannote models.
 # User provides their token manually (see post-installation instructions).
 # ==============================================================================
-echo -e "${YELLOW}[12/12] Setting up environment configuration...${NC}"
+echo -e "${YELLOW}[13/13] Setting up environment configuration...${NC}"
 echo "Checking for setup_env.sh (required for HuggingFace authentication)"
 if [ ! -f "$PROJECT_DIR/setup_env.sh" ]; then
     if [ -f "$PROJECT_DIR/setup_env.sh.example" ]; then
