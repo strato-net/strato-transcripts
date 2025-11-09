@@ -152,10 +152,31 @@ else
     echo "Downloading and installing Ollama..."
     if curl -fsSL https://ollama.com/install.sh | sh; then
         echo -e "${GREEN}✓ Ollama installed successfully${NC}"
-        echo "  You can pull models later with: ollama pull model-name"
     else
         echo -e "${YELLOW}⚠ Ollama installation failed (non-fatal)${NC}"
         echo "  You can install it manually later: curl -fsSL https://ollama.com/install.sh | sh"
+    fi
+fi
+
+# Start Ollama service and pull default model
+if command -v ollama &> /dev/null; then
+    echo "Starting Ollama service..."
+    # Start in background, redirect output to avoid clutter
+    if ! pgrep -x "ollama" > /dev/null; then
+        nohup ollama serve > /tmp/ollama.log 2>&1 &
+        sleep 2  # Give service time to start
+        echo "✓ Ollama service started"
+    else
+        echo "✓ Ollama service already running"
+    fi
+    
+    echo "Pulling recommended Ollama model (qwen2.5:32b - fast and high-quality)..."
+    echo "This may take several minutes depending on your internet speed..."
+    if ollama pull qwen2.5:32b 2>&1 | grep -q "success"; then
+        echo -e "${GREEN}✓ Model qwen2.5:32b downloaded and ready${NC}"
+    else
+        # Try anyway, sometimes it succeeds but doesn't output "success"
+        echo -e "${YELLOW}⚠ Model pull completed (check with: ollama list)${NC}"
     fi
 fi
 echo ""
@@ -532,14 +553,9 @@ echo "3. Accept model agreements:"
 echo "   - https://huggingface.co/pyannote/speaker-diarization-3.1"
 echo "   - https://huggingface.co/pyannote/segmentation-3.0"
 echo ""
-echo -e "${YELLOW}OPTIONAL: For Ollama local AI (already installed, FREE, private)${NC}"
+echo -e "${YELLOW}OPTIONAL: Get API keys for remote AI providers${NC}"
 echo ""
-echo "4. Pull an Ollama model for local AI post-processing:"
-echo "   ollama serve  # Start Ollama service (if not running)"
-echo "   ollama pull qwen2.5:32b  # Recommended: Fast and high-quality"
-echo "   ollama pull llama3.1:70b  # Alternative: Larger, slower, more capable"
-echo ""
-echo "5. Get API keys for remote AI providers:"
+echo "4. For cloud-based AI providers (if not using local Ollama):"
 echo "   - OpenAI (ChatGPT-5): https://platform.openai.com/api-keys"
 echo "   - Anthropic (Claude): https://console.anthropic.com/"
 echo "   - Google (Gemini): https://makersuite.google.com/app/apikey"
