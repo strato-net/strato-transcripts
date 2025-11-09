@@ -244,14 +244,32 @@ echo -e "${GREEN}✓ PyTorch 2.9.0 installed${NC}"
 echo ""
 
 # ==============================================================================
-# Step 6: PyTorch Verification
+# Step 6: Upgrade WhisperX Lightning Checkpoint
+# ==============================================================================
+# Upgrades WhisperX's Lightning checkpoint from v1.5.4 to v2.5.6.
+# This prevents the upgrade warning that appears on every transcription.
+# The checkpoint is embedded in WhisperX and only needs upgrading once.
+# ==============================================================================
+echo -e "${YELLOW}[6/13] Upgrading WhisperX Lightning checkpoint...${NC}"
+echo "Upgrading Lightning checkpoint from v1.5.4 to v2.5.6 (prevents warning)"
+CHECKPOINT_PATH="$VENV_DIR/lib/python3.12/site-packages/whisperx/assets/pytorch_model.bin"
+if [ -f "$CHECKPOINT_PATH" ]; then
+    python -m lightning.pytorch.utilities.upgrade_checkpoint "$CHECKPOINT_PATH"
+    echo -e "${GREEN}✓ Lightning checkpoint upgraded${NC}"
+else
+    echo -e "${YELLOW}⚠ Checkpoint not found (will be downloaded on first use)${NC}"
+fi
+echo ""
+
+# ==============================================================================
+# Step 7: PyTorch Verification
 # ==============================================================================
 # Verifies PyTorch installation and hardware accessibility.
 # For NVIDIA: Confirms CUDA availability, GPU operations, and cuDNN functionality.
 # For CPU: Confirms basic CPU tensor operations work correctly.
 # Ensures the installation is ready for machine learning workloads.
 # ==============================================================================
-echo -e "${YELLOW}[6/13] Verifying PyTorch installation...${NC}"
+echo -e "${YELLOW}[7/13] Verifying PyTorch installation...${NC}"
 echo "Verifying PyTorch installation and hardware access..."
 python3 -c "import torch; print(f'PyTorch: {torch.__version__}'); print(f'CUDA available: {torch.cuda.is_available()}'); print(f'GPU: {torch.cuda.get_device_name(0) if torch.cuda.is_available() else \"N/A\"}')"
 
@@ -277,14 +295,14 @@ fi
 echo ""
 
 # ==============================================================================
-# Step 7: WhisperX Compatibility Patches
+# Step 8: WhisperX Compatibility Patches
 # ==============================================================================
 # Updates WhisperX source code to use 'token' parameter for HuggingFace authentication.
 # This enables compatibility with pyannote.audio 4.x API.
 # Patches are applied with sed and verified.
 # Files modified: vads/pyannote.py (global replace) and asr.py (line 412).
 # ==============================================================================
-echo -e "${YELLOW}[7/13] Applying WhisperX patches...${NC}"
+echo -e "${YELLOW}[8/14] Applying WhisperX patches...${NC}"
 echo "Updating WhisperX to use 'token' parameter for HuggingFace authentication"
 echo "Enables compatibility with pyannote.audio 4.x"
 WHISPERX_VADS="$VENV_DIR/lib/python3.12/site-packages/whisperx/vads/pyannote.py"
@@ -315,12 +333,12 @@ echo -e "${GREEN}✓ WhisperX patches applied successfully${NC}"
 echo ""
 
 # ==============================================================================
-# Step 8: pyannote.audio Installation
+# Step 9: pyannote.audio Installation
 # ==============================================================================
 # Installs pyannote.audio 4.0+, which provides PyTorch 2.9.0 compatibility.
 # Version 4.0+ is required to work with PyTorch 2.9.0's API and features.
 # ==============================================================================
-echo -e "${YELLOW}[8/13] Installing pyannote.audio 4.0+ and AI providers...${NC}"
+echo -e "${YELLOW}[9/14] Installing pyannote.audio 4.0+ and AI providers...${NC}"
 echo "Installing pyannote.audio 4.0+ for PyTorch 2.9.0 compatibility..."
 pip install --upgrade "pyannote.audio>=4.0.0"
 echo "Installing AI provider packages for post-processing..."
@@ -329,13 +347,13 @@ echo -e "${GREEN}✓ pyannote.audio 4.0+ and AI providers installed${NC}"
 echo ""
 
 # ==============================================================================
-# Step 9: SpeechBrain Compatibility Patches
+# Step 10: SpeechBrain Compatibility Patches
 # ==============================================================================
 # Updates SpeechBrain to work with torchaudio 2.9.0's API.
 # Adds hasattr() check to gracefully handle different torchaudio versions.
 # This ensures SpeechBrain can detect available audio backends across versions.
 # ==============================================================================
-echo -e "${YELLOW}[9/13] Applying SpeechBrain compatibility patches...${NC}"
+echo -e "${YELLOW}[10/14] Applying SpeechBrain compatibility patches...${NC}"
 echo "Updating SpeechBrain for torchaudio 2.9.0 compatibility"
 echo "Adding version-agnostic audio backend detection"
 
@@ -422,7 +440,7 @@ echo ""
 # Configuration persists across sessions by adding to ~/.bashrc.
 # ==============================================================================
 if [ "$HAS_NVIDIA" = true ]; then
-    echo -e "${YELLOW}[10/13] Configuring LD_LIBRARY_PATH for NVIDIA...${NC}"
+    echo -e "${YELLOW}[11/14] Configuring LD_LIBRARY_PATH for NVIDIA...${NC}"
     echo "Adding all required CUDA library paths to ~/.bashrc"
     echo "Required for PyTorch CUDA operations (cuDNN, cuBLAS, NVRTC, and CUDA 13.0 runtime)"
     
@@ -447,19 +465,19 @@ if [ "$HAS_NVIDIA" = true ]; then
     
     echo -e "${GREEN}✓ LD_LIBRARY_PATH configured${NC}"
 else
-    echo -e "${YELLOW}[10/13] Skipping LD_LIBRARY_PATH configuration${NC}"
+    echo -e "${YELLOW}[11/14] Skipping LD_LIBRARY_PATH configuration${NC}"
     echo "Not needed for CPU-only installations"
 fi
 echo ""
 
 # ==============================================================================
-# Step 11: Application Package Verification
+# Step 12: Application Package Verification
 # ==============================================================================
 # Verifies WhisperX and pyannote.audio can be imported successfully.
 # Import tests confirm all dependencies are properly installed and accessible.
 # This validation ensures the environment is ready for transcription tasks.
 # ==============================================================================
-echo -e "${YELLOW}[11/13] Verifying package installations...${NC}"
+echo -e "${YELLOW}[12/14] Verifying package installations...${NC}"
 echo "Testing imports to ensure all packages are properly installed and accessible"
 
 echo "Testing WhisperX import..."
@@ -472,14 +490,14 @@ echo -e "${GREEN}✓ All packages verified and ready to use${NC}"
 echo ""
 
 # ==============================================================================
-# Step 12: Build Ethereum Glossaries
+# Step 13: Build Ethereum Glossaries
 # ==============================================================================
 # Extracts people names and technical terms for quality improvement.
 # These glossaries are used by AI post-processing to correct transcripts.
 # Runs extract_people.py and extract_terms.py if they exist.
 # Failures are non-fatal as these are optional enhancements.
 # ==============================================================================
-echo -e "${YELLOW}[12/13] Building Ethereum glossaries and project directories...${NC}"
+echo -e "${YELLOW}[13/14] Building Ethereum glossaries and project directories...${NC}"
 echo "Creating project directory structure..."
 mkdir -p "$PROJECT_DIR/intermediates"
 mkdir -p "$PROJECT_DIR/outputs"
@@ -514,13 +532,13 @@ fi
 echo ""
 
 # ==============================================================================
-# Step 13: Environment File Setup
+# Step 14: Environment File Setup
 # ==============================================================================
 # Creates setup_env.sh from template if needed.
 # This file stores the HuggingFace token for downloading pyannote models.
 # User provides their token manually (see post-installation instructions).
 # ==============================================================================
-echo -e "${YELLOW}[13/13] Setting up environment configuration...${NC}"
+echo -e "${YELLOW}[14/14] Setting up environment configuration...${NC}"
 echo "Checking for setup_env.sh (required for HuggingFace authentication)"
 if [ ! -f "$PROJECT_DIR/setup_env.sh" ]; then
     if [ -f "$PROJECT_DIR/setup_env.sh.example" ]; then
