@@ -65,8 +65,10 @@ BLUE='\033[0;34m'      # Section headers
 NC='\033[0m'           # No Color (reset)
 
 # Project directories - resolved to absolute paths
-PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"  # Script's directory
-VENV_DIR="$PROJECT_DIR/venv"                                   # Virtual environment location
+# Script is in ./scripts/, so go up one level to project root
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"  # Project root (parent of scripts/)
+VENV_DIR="$PROJECT_DIR/venv"                  # Virtual environment location
 
 # Parse command-line arguments
 FORCE_CPU=false
