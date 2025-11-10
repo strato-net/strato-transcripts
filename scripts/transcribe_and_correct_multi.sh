@@ -96,13 +96,13 @@ for PROVIDER in "${PROVIDER_ARRAY[@]}"; do
             echo "  - OpenAI: chatgpt-4o-latest"
             ;;
         gemini)
-            echo "  - Gemini: gemini-2.5-flash"
+            echo "  - Gemini: gemini-2.5-pro (latest)"
             ;;
         ollama)
             echo "  - Ollama: qwen2.5:32b (auto-managed)"
             ;;
         anthropic)
-            echo "  - Anthropic: claude-3-5-sonnet"
+            echo "  - Anthropic: claude-sonnet-4-5 (latest)"
             ;;
         deepseek)
             echo "  - DeepSeek: deepseek-chat"
@@ -148,8 +148,13 @@ echo ""
 echo "STEP 2: Post-processing with AI providers..."
 echo "------------------------------------------------------------------------"
 
+# Clean up any leftover Ollama processes from previous runs
+echo "Cleaning up any leftover Ollama processes..."
+ollama stop 2>/dev/null || true
+
 SUCCESS_COUNT=0
 FAILED_COUNT=0
+SKIPPED_COUNT=0
 
 for i in "${!PROVIDER_ARRAY[@]}"; do
     PROVIDER="${PROVIDER_ARRAY[$i]}"
@@ -159,30 +164,65 @@ for i in "${!PROVIDER_ARRAY[@]}"; do
     echo "STEP 2.$STEP_NUM: Post-processing with $PROVIDER..."
     echo "------------------------------------------------------------------------"
     
-    # Check API keys for cloud providers
-    if [ "$PROVIDER" = "anthropic" ] && [ -z "${ANTHROPIC_API_KEY}" ]; then
-        echo "Warning: ANTHROPIC_API_KEY not set, skipping $PROVIDER"
-        FAILED_COUNT=$((FAILED_COUNT + 1))
+    # Check API keys for cloud providers (skip if undefined or empty)
+    SKIP_PROVIDER=false
+    
+    if [ "$PROVIDER" = "anthropic" ]; then
+        if [ -z "${ANTHROPIC_API_KEY:-}" ]; then
+            echo "⊘ ANTHROPIC_API_KEY not defined or empty, skipping $PROVIDER"
+            SKIP_PROVIDER=true
+        fi
+    elif [ "$PROVIDER" = "openai" ]; then
+        if [ -z "${OPENAI_API_KEY:-}" ]; then
+            echo "⊘ OPENAI_API_KEY not defined or empty, skipping $PROVIDER"
+            SKIP_PROVIDER=true
+        fi
+    elif [ "$PROVIDER" = "gemini" ]; then
+        if [ -z "${GOOGLE_API_KEY:-}" ]; then
+            echo "⊘ GOOGLE_API_KEY not defined or empty, skipping $PROVIDER"
+            SKIP_PROVIDER=true
+        fi
+    elif [ "$PROVIDER" = "deepseek" ]; then
+        if [ -z "${DEEPSEEK_API_KEY:-}" ]; then
+            echo "⊘ DEEPSEEK_API_KEY not defined or empty, skipping $PROVIDER"
+            SKIP_PROVIDER=true
+        fi
+    fi
+    
+    # Skip if credentials are missing (don't count as failure)
+    if [ "$SKIP_PROVIDER" = true ]; then
+        SKIPPED_COUNT=$((SKIPPED_COUNT + 1))
         continue
-    elif [ "$PROVIDER" = "openai" ] && [ -z "${OPENAI_API_KEY}" ]; then
-        echo "Warning: OPENAI_API_KEY not set, skipping $PROVIDER"
-        FAILED_COUNT=$((FAILED_COUNT + 1))
-        continue
-    elif [ "$PROVIDER" = "gemini" ] && [ -z "${GOOGLE_API_KEY}" ]; then
-        echo "Warning: GOOGLE_API_KEY not set, skipping $PROVIDER"
-        FAILED_COUNT=$((FAILED_COUNT + 1))
-        continue
-    elif [ "$PROVIDER" = "deepseek" ] && [ -z "${DEEPSEEK_API_KEY}" ]; then
-        echo "Warning: DEEPSEEK_API_KEY not set, skipping $PROVIDER"
-        FAILED_COUNT=$((FAILED_COUNT + 1))
-        continue
+    fi
+    
+    # Start Ollama if this provider needs it
+    OLLAMA_STARTED=false
+    if [ "$PROVIDER" = "ollama" ]; then
+        echo "Starting Ollama server..."
+        ollama serve > /dev/null 2>&1 &
+        OLLAMA_PID=$!
+        OLLAMA_STARTED=true
+        # Give Ollama time to start
+        sleep 3
+        echo "Ollama server started (PID: $OLLAMA_PID)"
     fi
     
     # Run post-processing
     python3 scripts/post_process_transcript.py "$TRANSCRIPT_FULL" --provider "$PROVIDER"
+    POST_PROCESS_EXIT=$?
     
-    if [ $? -ne 0 ]; then
-        echo "Warning: Post-processing failed for $PROVIDER"
+    # Stop Ollama if we started it
+    if [ "$OLLAMA_STARTED" = true ]; then
+        echo "Stopping Ollama server..."
+        ollama stop 2>/dev/null || true
+        # Also kill the serve process if still running
+        kill $OLLAMA_PID 2>/dev/null || true
+        wait $OLLAMA_PID 2>/dev/null || true
+        echo "Ollama server stopped"
+    fi
+    
+    if [ $POST_PROCESS_EXIT -ne 0 ]; then
+        echo "✗ Post-processing failed for $PROVIDER"
         FAILED_COUNT=$((FAILED_COUNT + 1))
     else
         CORRECTED="outputs/${BASE_NAME}_${PROVIDER}_corrected.txt"
@@ -202,8 +242,11 @@ echo "  Intermediates (./intermediates/):"
 echo "    - Raw transcript: $TRANSCRIPT_FULL"
 echo "  Final Output (./outputs/):"
 echo "    - Successfully processed: $SUCCESS_COUNT/${#PROVIDER_ARRAY[@]} providers"
+if [ $SKIPPED_COUNT -gt 0 ]; then
+    echo "    - Skipped (no credentials): $SKIPPED_COUNT providers"
+fi
 if [ $FAILED_COUNT -gt 0 ]; then
-    echo "    - Failed: $FAILED_COUNT providers"
+    echo "    - Failed (processing errors): $FAILED_COUNT providers"
 fi
 for PROVIDER in "${PROVIDER_ARRAY[@]}"; do
     OUTPUT_FILE="outputs/${BASE_NAME}_${PROVIDER}_corrected.txt"
@@ -214,7 +257,14 @@ done
 echo ""
 echo "========================================================================"
 
-# Exit with error if any provider failed
+# Exit with error only if processing failed (not if providers were skipped)
 if [ $FAILED_COUNT -gt 0 ]; then
+    echo "Error: $FAILED_COUNT provider(s) failed during processing"
+    exit 1
+fi
+
+# Exit successfully even if some providers were skipped
+if [ $SUCCESS_COUNT -eq 0 ]; then
+    echo "Warning: No providers were successfully processed"
     exit 1
 fi

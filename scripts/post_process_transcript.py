@@ -102,7 +102,7 @@ def build_context_summary():
     return "\n\n".join(context_parts) if context_parts else "No additional context available."
 
 def process_with_anthropic(transcript, api_key, context):
-    """Process transcript using Anthropic Claude"""
+    """Process transcript using Anthropic Claude Sonnet 4.5 with streaming"""
     try:
         import anthropic
     except ImportError:
@@ -112,13 +112,27 @@ def process_with_anthropic(transcript, api_key, context):
     client = anthropic.Anthropic(api_key=api_key)
     prompt = build_prompt(context, transcript)
     
-    response = client.messages.create(
-        model="claude-3-5-sonnet-20241022",
-        max_tokens=8192,  # Maximum supported by Claude 3.5
-        messages=[{"role": "user", "content": prompt}]
-    )
+    print(f"   Transcript size: {len(transcript)} chars (may take 5-15 minutes)")
+    print(f"   Progress: ", end='', flush=True)
     
-    return response.content[0].text
+    # Use streaming for long requests (required for operations >10 minutes)
+    result = ""
+    chunk_count = 0
+    
+    with client.messages.stream(
+        model="claude-sonnet-4-5",  # Latest and best
+        max_tokens=64000,  # Claude 4.5 supports up to 64K output
+        messages=[{"role": "user", "content": prompt}]
+    ) as stream:
+        for text in stream.text_stream:
+            result += text
+            chunk_count += 1
+            # Show progress every 100 chunks
+            if chunk_count % 100 == 0:
+                print(".", end='', flush=True)
+    
+    print(" ✓")  # Complete the progress line
+    return result
 
 def split_transcript_by_speakers(transcript, max_chunk_size=15000):
     """Split transcript into chunks at speaker boundaries"""
@@ -185,9 +199,9 @@ def process_with_openai(transcript, api_key, context):
     return '\n\n'.join(corrected_chunks)
 
 def process_with_gemini(transcript, api_key, context):
-    """Process transcript using Google Gemini 2.5 Flash"""
-    # Hardcoded best model for technical content (2.5 Flash - best price/performance)
-    model = "gemini-2.5-flash"
+    """Process transcript using Google Gemini 2.5 Pro"""
+    # Hardcoded latest and best model
+    model = "gemini-2.5-pro"
     try:
         import google.generativeai as genai
     except ImportError:
@@ -348,11 +362,13 @@ def process_transcript(transcript_path, api_key, provider="anthropic"):
     if provider == "openai":
         print(f"Model: chatgpt-4o-latest (hardcoded)")
     elif provider == "gemini":
-        print(f"Model: gemini-2.5-flash (hardcoded)")
+        print(f"Model: gemini-2.5-pro (hardcoded)")
     elif provider == "deepseek":
         print(f"Model: deepseek-chat (hardcoded)")
     elif provider == "ollama":
         print(f"Model: qwen2.5:32b (hardcoded)")
+    elif provider == "anthropic":
+        print(f"Model: claude-sonnet-4-5 (hardcoded)")
     
     # Load transcript
     print("\n1. Loading transcript...")
