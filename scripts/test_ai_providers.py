@@ -34,7 +34,7 @@ def test_gemini():
 def test_openai():
     """Test OpenAI connection"""
     print("\n" + "="*60)
-    print("Testing OPENAI (chatgpt-4o-latest)")
+    print("Testing OPENAI (gpt-4o-2024-11-20)")
     print("="*60)
     
     api_key = os.environ.get('OPENAI_API_KEY')
@@ -47,7 +47,7 @@ def test_openai():
         client = openai.OpenAI(api_key=api_key)
         
         response = client.chat.completions.create(
-            model="chatgpt-4o-latest",
+            model="gpt-4o-2024-11-20",
             messages=[{"role": "user", "content": "Say 'hello' in one word"}],
             max_tokens=10
         )
@@ -62,7 +62,7 @@ def test_openai():
 def test_anthropic():
     """Test Anthropic Claude connection"""
     print("\n" + "="*60)
-    print("Testing ANTHROPIC (claude-sonnet-4-5)")
+    print("Testing ANTHROPIC (claude-3-5-sonnet-20241022)")
     print("="*60)
     
     api_key = os.environ.get('ANTHROPIC_API_KEY')
@@ -75,7 +75,7 @@ def test_anthropic():
         client = anthropic.Anthropic(api_key=api_key)
         
         response = client.messages.create(
-            model="claude-sonnet-4-5",
+            model="claude-3-5-sonnet-20241022",
             max_tokens=10,
             messages=[{"role": "user", "content": "Say 'hello' in one word"}]
         )
@@ -163,9 +163,9 @@ def test_deepseek():
         return False
 
 def test_moonshot():
-    """Test Moonshot Kimi connection"""
+    """Test Moonshot Kimi K2-Instruct connection"""
     print("\n" + "="*60)
-    print("Testing MOONSHOT (moonshot-v1-128k)")
+    print("Testing MOONSHOT (kimi-k2-instruct)")
     print("="*60)
     
     api_key = os.environ.get('MOONSHOT_API_KEY')
@@ -181,7 +181,7 @@ def test_moonshot():
         )
         
         response = client.chat.completions.create(
-            model="moonshot-v1-128k",
+            model="kimi-k2-instruct",
             messages=[{"role": "user", "content": "Say 'hello' in one word"}],
             max_tokens=10
         )

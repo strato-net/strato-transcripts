@@ -93,7 +93,7 @@ echo "AI providers: $PROVIDERS (${#PROVIDER_ARRAY[@]} total)"
 for PROVIDER in "${PROVIDER_ARRAY[@]}"; do
     case "$PROVIDER" in
         openai)
-            echo "  - OpenAI: chatgpt-4o-latest"
+            echo "  - OpenAI: gpt-4o-2024-11-20"
             ;;
         gemini)
             echo "  - Gemini: gemini-2.5-pro (latest)"
@@ -102,13 +102,13 @@ for PROVIDER in "${PROVIDER_ARRAY[@]}"; do
             echo "  - Ollama: qwen2.5:32b (auto-managed)"
             ;;
         anthropic)
-            echo "  - Anthropic: claude-sonnet-4-5 (latest)"
+            echo "  - Anthropic: claude-3-5-sonnet-20241022"
             ;;
         deepseek)
             echo "  - DeepSeek: deepseek-chat"
             ;;
         moonshot)
-            echo "  - Moonshot: moonshot-v1-128k (128K context)"
+            echo "  - Moonshot: kimi-k2-instruct (256K context)"
             ;;
     esac
 done

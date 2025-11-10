@@ -102,7 +102,7 @@ def build_context_summary():
     return "\n\n".join(context_parts) if context_parts else "No additional context available."
 
 def process_with_anthropic(transcript, api_key, context):
-    """Process transcript using Anthropic Claude Sonnet 4.5 with streaming"""
+    """Process transcript using Anthropic Claude 3.5 Sonnet (claude-3-5-sonnet-20241022) with streaming"""
     try:
         import anthropic
     except ImportError:
@@ -120,8 +120,8 @@ def process_with_anthropic(transcript, api_key, context):
     chunk_count = 0
     
     with client.messages.stream(
-        model="claude-sonnet-4-5",  # Latest and best
-        max_tokens=64000,  # Claude 4.5 supports up to 64K output
+        model="claude-3-5-sonnet-20241022",  # Latest Claude 3.5 Sonnet
+        max_tokens=64000,  # Claude 3.5 supports up to 64K output
         messages=[{"role": "user", "content": prompt}]
     ) as stream:
         for text in stream.text_stream:
@@ -160,9 +160,9 @@ def split_transcript_by_speakers(transcript, max_chunk_size=15000):
     return chunks
 
 def process_with_openai(transcript, api_key, context):
-    """Process transcript using OpenAI ChatGPT-5 (chatgpt-4o-latest)"""
-    # Hardcoded best model for quality
-    model = "chatgpt-4o-latest"
+    """Process transcript using OpenAI GPT-4o (gpt-4o-2024-11-20)"""
+    # Hardcoded to latest dated snapshot for version-locking
+    model = "gpt-4o-2024-11-20"
     try:
         import openai
     except ImportError:
@@ -259,9 +259,9 @@ def process_with_deepseek(transcript, api_key, context):
     return '\n\n'.join(corrected_chunks)
 
 def process_with_moonshot(transcript, api_key, context):
-    """Process transcript using Moonshot Kimi v2 with chunking (OpenAI-compatible API)"""
-    # Hardcoded best model - moonshot-v1-128k has 128K context
-    model = "moonshot-v1-128k"
+    """Process transcript using Moonshot Kimi K2-Instruct (256K context, no chunking needed)"""
+    # Hardcoded best model - kimi-k2-instruct has 256K context window
+    model = "kimi-k2-instruct"
     try:
         import openai
     except ImportError:
@@ -273,32 +273,19 @@ def process_with_moonshot(transcript, api_key, context):
         base_url="https://api.moonshot.cn/v1"
     )
     
-    # Use chunking for reliability (OpenAI-compatible API)
-    print(f"   Transcript size: {len(transcript)} chars - using chunking for complete output")
-    print(f"   Splitting into chunks for processing...")
+    # No chunking needed - 256K context handles full transcripts easily
+    prompt = build_prompt(context, transcript)
     
-    chunks = split_transcript_by_speakers(transcript, max_chunk_size=15000)
-    print(f"   Processing {len(chunks)} chunks...")
+    response = client.chat.completions.create(
+        model=model,
+        messages=[
+            {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "user", "content": prompt}
+        ],
+        max_tokens=16384  # Standard for OpenAI-compatible APIs
+    )
     
-    corrected_chunks = []
-    for i, chunk in enumerate(chunks, 1):
-        print(f"   Processing chunk {i}/{len(chunks)}...", end=' ', flush=True)
-        
-        prompt = build_prompt(context, chunk)
-        response = client.chat.completions.create(
-            model=model,
-            messages=[
-                {"role": "system", "content": SYSTEM_PROMPT},
-                {"role": "user", "content": prompt}
-            ],
-            max_tokens=16384  # Standard for OpenAI-compatible APIs
-        )
-        
-        corrected_chunks.append(response.choices[0].message.content)
-        print("✓")
-    
-    # Combine chunks
-    return '\n\n'.join(corrected_chunks)
+    return response.choices[0].message.content
 
 def process_with_ollama(transcript, context):
     """Process transcript using local Ollama with qwen2.5:32b (auto-managed service)"""
@@ -417,17 +404,17 @@ def process_transcript(transcript_path, api_key, provider="anthropic"):
     print(f"Provider: {provider}")
     
     if provider == "openai":
-        print(f"Model: chatgpt-4o-latest (hardcoded)")
+        print(f"Model: gpt-4o-2024-11-20 (hardcoded)")
     elif provider == "gemini":
         print(f"Model: gemini-2.5-pro (hardcoded)")
     elif provider == "deepseek":
         print(f"Model: deepseek-chat (hardcoded)")
     elif provider == "moonshot":
-        print(f"Model: moonshot-v1-128k (hardcoded)")
+        print(f"Model: kimi-k2-instruct (hardcoded)")
     elif provider == "ollama":
         print(f"Model: qwen2.5:32b (hardcoded)")
     elif provider == "anthropic":
-        print(f"Model: claude-sonnet-4-5 (hardcoded)")
+        print(f"Model: claude-3-5-sonnet-20241022 (hardcoded)")
     
     # Load transcript
     print("\n1. Loading transcript...")
@@ -544,7 +531,7 @@ Examples:
   # Using Anthropic Claude 3.5 Sonnet (best quality)
   python3 post_process_transcript.py transcript.txt --provider anthropic
   
-  # Using OpenAI ChatGPT-5 (chatgpt-4o-latest)
+  # Using OpenAI GPT-4o (gpt-4o-2024-11-20)
   python3 post_process_transcript.py transcript.txt --provider openai
   
   # Using Google Gemini 1.5 Pro (best reasoning)

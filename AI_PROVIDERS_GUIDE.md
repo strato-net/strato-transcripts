@@ -6,7 +6,7 @@ This guide explains the different AI providers available for transcript post-pro
 
 | Provider | Type | Cost | Quality | Speed | Privacy |
 |----------|------|------|---------|-------|---------|
-| **ChatGPT-5** (OpenAI) | Cloud | $$$ | Excellent | Fast | Low |
+| **GPT-4o** (OpenAI) | Cloud | $$$ | Excellent | Fast | Low |
 | **Claude 3.5** (Anthropic) | Cloud | $$$ | Excellent | Fast | Low |
 | **Gemini 2.0** (Google) | Cloud | $$ | Excellent | Fast | Low |
 | **DeepSeek** | Cloud | $ | Very Good | Fast | Low |
@@ -15,12 +15,13 @@ This guide explains the different AI providers available for transcript post-pro
 
 ## Cloud Providers (API Required)
 
-### 1. OpenAI (ChatGPT-5 / GPT-4o)
-**Best for: Latest GPT models, established ecosystem**
+### 1. OpenAI (GPT-4o)
+**Best for: Latest GPT-4o model, version-locked for reproducibility**
 
-- **Models**: `chatgpt-4o-latest` (ChatGPT-5), `gpt-4o`, `gpt-4o-mini`
+- **Models**: `gpt-4o-2024-11-20` (latest dated snapshot)
 - **Cost**: ~$2.50-$5.00 per 1M input tokens
 - **Quality**: Excellent reasoning, great at following instructions
+- **Version-locked**: Uses dated snapshot for reproducible results
 - **Setup**:
   ```bash
   export OPENAI_API_KEY="sk-..."
@@ -31,9 +32,10 @@ This guide explains the different AI providers available for transcript post-pro
 ### 2. Anthropic (Claude 3.5 Sonnet)
 **Best for: Long context, reasoning, safety**
 
-- **Models**: `claude-3-5-sonnet-20241022`
+- **Models**: `claude-3-5-sonnet-20241022` (October 22, 2024 release)
 - **Cost**: ~$3.00 per 1M input tokens
 - **Quality**: Excellent, particularly good at nuanced editing
+- **Version-locked**: Uses dated snapshot for reproducible results
 - **Setup**:
   ```bash
   export ANTHROPIC_API_KEY="sk-ant-..."
@@ -67,20 +69,20 @@ This guide explains the different AI providers available for transcript post-pro
   ```
 - **Get API key**: https://platform.deepseek.com/
 
-### 5. Moonshot Kimi (Chinese Provider)
-**Best for: Large context windows, competitive pricing**
+### 5. Moonshot Kimi K2-Instruct (Chinese Provider)
+**Best for: Largest context windows (256K), no chunking needed**
 
-- **Models**: `moonshot-v1-128k` (128K context window)
+- **Models**: `kimi-k2-instruct` (256K context window - LARGEST!)
 - **Cost**: ~$0.50-1.00 per 1M input tokens (affordable)
 - **Quality**: Very good, excellent for technical content
-- **Context**: 128K context window (larger than most)
+- **Context**: 256K context window (handles full transcripts without chunking)
 - **Setup**:
   ```bash
   export MOONSHOT_API_KEY="sk-..."
   python3 post_process_transcript.py transcript.txt --provider moonshot
   ```
 - **Get API key**: https://platform.moonshot.cn/
-- **Note**: Chinese provider, uses OpenAI-compatible API
+- **Note**: Chinese provider, OpenAI-compatible API, Kimi K2-Instruct-0905 has the largest context window of any provider
 
 ## Local Options (FREE, Private)
 
@@ -120,12 +122,12 @@ This guide explains the different AI providers available for transcript post-pro
 ## Recommendations
 
 ### For Best Quality (Money No Object)
-1. **ChatGPT-5** (`--provider openai --openai-model chatgpt-4o-latest`)
+1. **GPT-4o** (`--provider openai`) - Version-locked to gpt-4o-2024-11-20
 2. **Claude 3.5** (`--provider anthropic`)
 3. **Gemini 2.0** (`--provider gemini`)
 
 ### For Best Value (Cloud)
-1. **Gemini 1.5 Flash** (`--provider gemini --gemini-model gemini-1.5-flash`) - Fast & cheap
+1. **Gemini 2.5 Pro** (`--provider gemini`) - Fast & competitive
 2. **DeepSeek** (`--provider deepseek`) - Cheapest, surprisingly good
 
 ### For Privacy/Unlimited Use
@@ -139,7 +141,7 @@ This guide explains the different AI providers available for transcript post-pro
 - Fits your 24GB VRAM perfectly
 - Complete privacy for sensitive interviews
 
-**Fallback**: Use **Gemini 1.5 Flash** for cloud processing when needed
+**Fallback**: Use **Gemini 2.5 Pro** for cloud processing when needed
 - Very affordable
 - Excellent quality/cost ratio
 
@@ -149,7 +151,7 @@ For a typical 1-hour interview transcript (~50,000 tokens):
 
 | Provider | Cost per Transcript |
 |----------|---------------------|
-| ChatGPT-5 | ~$0.25 |
+| GPT-4o | ~$0.25 |
 | Claude 3.5 | ~$0.15 |
 | Gemini 2.0 Flash | ~$0.004 |
 | DeepSeek | ~$0.007 |
@@ -157,7 +159,7 @@ For a typical 1-hour interview transcript (~50,000 tokens):
 | **Ollama (Local)** | **$0.00** |
 
 For 100 transcripts:
-- ChatGPT-5: $25
+- GPT-4o: $25
 - Claude: $15
 - Gemini: $0.40
 - DeepSeek: $0.70
