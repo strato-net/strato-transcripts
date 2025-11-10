@@ -324,7 +324,7 @@ echo -e "${YELLOW}[8/13] Installing pyannote.audio 4.0+ and AI providers...${NC}
 echo "Installing pyannote.audio 4.0+ for PyTorch 2.9.0 compatibility..."
 pip install --upgrade "pyannote.audio>=4.0.0"
 echo "Installing AI provider packages for post-processing..."
-pip install openai anthropic google-generativeai requests
+pip install openai anthropic google-generativeai assemblyai requests
 echo -e "${GREEN}✓ pyannote.audio 4.0+ and AI providers installed${NC}"
 echo ""
 
