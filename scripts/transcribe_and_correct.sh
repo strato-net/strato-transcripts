@@ -50,7 +50,7 @@ shift
 BATCH_SIZE=""
 AI_PROVIDER="openai"  # Default to OpenAI (ChatGPT-5)
 OPENAI_MODEL="chatgpt-4o-latest"
-GEMINI_MODEL="gemini-2.0-flash-exp"
+GEMINI_MODEL="gemini-1.5-pro"
 DEEPSEEK_MODEL="deepseek-chat"
 OLLAMA_MODEL="qwen2.5:32b"
 SKIP_CORRECTION=false

@@ -182,7 +182,7 @@ def process_with_openai(transcript, api_key, context, model="chatgpt-4o-latest")
     # Combine chunks
     return '\n\n'.join(corrected_chunks)
 
-def process_with_gemini(transcript, api_key, context, model="gemini-2.0-flash-exp"):
+def process_with_gemini(transcript, api_key, context, model="gemini-1.5-pro"):
     """Process transcript using Google Gemini"""
     try:
         import google.generativeai as genai
@@ -426,9 +426,9 @@ Examples:
                        choices=["chatgpt-4o-latest", "gpt-4o", "gpt-4o-mini", "gpt-4-turbo", "gpt-4"],
                        help="OpenAI model (default: chatgpt-4o-latest)")
     parser.add_argument("--gemini-model",
-                       default="gemini-2.0-flash-exp",
+                       default="gemini-1.5-pro",
                        choices=["gemini-2.0-flash-exp", "gemini-1.5-pro", "gemini-1.5-flash"],
-                       help="Gemini model (default: gemini-2.0-flash-exp)")
+                       help="Gemini model (default: gemini-1.5-pro)")
     parser.add_argument("--deepseek-model",
                        default="deepseek-chat",
                        choices=["deepseek-chat", "deepseek-reasoner"],
