@@ -2,9 +2,8 @@
 # ==============================================================================
 # Single MP3 Transcription with Multi-Provider Pipeline
 # ==============================================================================
-# - Transcribes audio with specified transcription services
+# - Transcribes audio with specified transcription services (via unified Python script)
 # - Runs AI correction with specified post-processors
-# - Loops through ALL combinations (transcriber × processor)
 # - Outputs to ./intermediates and ./outputs directories
 # ==============================================================================
 
@@ -32,9 +31,6 @@ if [ $# -eq 0 ]; then
     echo "  $0 interview.mp3 \\"
     echo "    --transcribers whisperx,deepgram,assemblyai,openai \\"
     echo "    --processors anthropic,openai,gemini,deepseek,moonshot,ollama"
-    echo ""
-    echo "  # WhisperX with Ollama only"
-    echo "  $0 interview.mp3 --transcribers whisperx --processors ollama"
     exit 1
 fi
 
@@ -84,13 +80,6 @@ fi
 IFS=',' read -ra TRANSCRIBER_ARRAY <<< "$TRANSCRIBERS"
 IFS=',' read -ra PROCESSOR_ARRAY <<< "$PROCESSORS"
 
-# Check required environment variables
-if [ -z "${HF_TOKEN}" ]; then
-    echo "Error: HF_TOKEN environment variable not set"
-    echo "Get your token from: https://huggingface.co/settings/tokens"
-    exit 1
-fi
-
 # Check audio file exists
 if [ ! -f "$AUDIO_FILE" ]; then
     echo "Error: Audio file not found: $AUDIO_FILE"
@@ -105,135 +94,77 @@ echo "Multi-Transcriber × Multi-Processor Pipeline"
 echo "========================================================================"
 echo "Audio file: $AUDIO_FILE"
 echo "Transcribers: $TRANSCRIBERS (${#TRANSCRIBER_ARRAY[@]} services)"
+echo "Processors: $PROCESSORS (${#PROCESSOR_ARRAY[@]} services)"
+echo "Total combinations: ${#TRANSCRIBER_ARRAY[@]} × ${#PROCESSOR_ARRAY[@]} = $TOTAL_COMBINATIONS"
+echo "========================================================================"
+echo ""
+
+SUCCESS_COUNT=0
+FAILED_COUNT=0
+SKIPPED_COUNT=0
+
+# PHASE 1: Run all transcriptions via unified Python script
+echo "========================================================================"
+echo "PHASE 1: Transcription (${#TRANSCRIBER_ARRAY[@]} services)"
+echo "========================================================================"
+echo ""
+
+# Build command for unified transcription script
+TRANSCRIBE_CMD="python3 scripts/transcribe_and_diarize.py \"$AUDIO_FILE\" --transcribers \"$TRANSCRIBERS\""
+if [ -n "$BATCH_SIZE" ]; then
+    TRANSCRIBE_CMD="$TRANSCRIBE_CMD --batch-size $BATCH_SIZE"
+fi
+
+# Run unified transcription script
+if eval $TRANSCRIBE_CMD; then
+    echo "✓ Transcription phase complete"
+else
+    echo "✗ Transcription phase failed"
+    echo "No transcripts generated - exiting"
+    exit 1
+fi
+
+echo ""
+
+# Find generated transcript files
+TRANSCRIPT_FILES=()
 for TRANSCRIBER in "${TRANSCRIBER_ARRAY[@]}"; do
     case "$TRANSCRIBER" in
         whisperx)
-            echo "  - WhisperX: large-v3, float16 (local GPU)"
+            TRANSCRIPT_FILE="intermediates/${BASE_NAME}_whisperx_transcript_with_speakers.txt"
             ;;
         deepgram)
-            echo "  - Deepgram: nova-2 (cloud, fastest)"
+            TRANSCRIPT_FILE="intermediates/${BASE_NAME}_deepgram_transcript_with_speakers.txt"
             ;;
         assemblyai)
-            echo "  - AssemblyAI: universal-2 (cloud, high accuracy)"
+            TRANSCRIPT_FILE="intermediates/${BASE_NAME}_assemblyai_transcript_with_speakers.txt"
             ;;
         openai)
-            echo "  - OpenAI: whisper-1 (cloud)"
+            TRANSCRIPT_FILE="intermediates/${BASE_NAME}_openai_transcript_with_speakers.txt"
             ;;
     esac
+    
+    if [ -f "$TRANSCRIPT_FILE" ]; then
+        TRANSCRIPT_FILES+=("$TRANSCRIPT_FILE")
+    else
+        SKIPPED_COUNT=$((SKIPPED_COUNT + ${#PROCESSOR_ARRAY[@]}))
+    fi
 done
-echo "Processors: $PROCESSORS (${#PROCESSOR_ARRAY[@]} services)"
-for PROCESSOR in "${PROCESSOR_ARRAY[@]}"; do
-    case "$PROCESSOR" in
-        openai)
-            echo "  - OpenAI: gpt-4o-2024-11-20"
-            ;;
-        gemini)
-            echo "  - Gemini: gemini-2.5-pro (2M context)"
-            ;;
-        ollama)
-            echo "  - Ollama: qwen2.5:32b (local, FREE)"
-            ;;
-        anthropic)
-            echo "  - Anthropic: claude-3-5-sonnet-20241022"
-            ;;
-        deepseek)
-            echo "  - DeepSeek: deepseek-chat"
-            ;;
-        moonshot)
-            echo "  - Moonshot: kimi-k2-instruct (256K context)"
-            ;;
-    esac
-done
-echo "Total combinations: ${#TRANSCRIBER_ARRAY[@]} × ${#PROCESSOR_ARRAY[@]} = $TOTAL_COMBINATIONS"
+
+if [ ${#TRANSCRIPT_FILES[@]} -eq 0 ]; then
+    echo "Error: No transcript files were generated"
+    exit 1
+fi
+
+# PHASE 2: Run all post-processing combinations
+echo "========================================================================"
+echo "PHASE 2: Post-Processing (${#TRANSCRIPT_FILES[@]} transcripts × ${#PROCESSOR_ARRAY[@]} processors)"
 echo "========================================================================"
 echo ""
 
 # Clean up any leftover Ollama processes
 echo "Cleaning up any leftover Ollama processes..."
 ollama stop 2>/dev/null || true
-
-SUCCESS_COUNT=0
-FAILED_COUNT=0
-SKIPPED_COUNT=0
-declare -a TRANSCRIPT_FILES
-
-# STEP 1: Run all transcriptions
-echo "========================================================================"
-echo "PHASE 1: Transcription (${#TRANSCRIBER_ARRAY[@]} services)"
-echo "========================================================================"
-echo ""
-
-for i in "${!TRANSCRIBER_ARRAY[@]}"; do
-    TRANSCRIBER="${TRANSCRIBER_ARRAY[$i]}"
-    STEP_NUM=$((i + 1))
-    
-    echo "STEP 1.$STEP_NUM: Transcribing with $TRANSCRIBER..."
-    echo "------------------------------------------------------------------------"
-    
-    # Run appropriate transcription script
-    case "$TRANSCRIBER" in
-        whisperx)
-            CMD="python3 scripts/transcribe_with_whisperx.py \"$AUDIO_FILE\""
-            if [ -n "$BATCH_SIZE" ]; then
-                CMD="$CMD --batch-size $BATCH_SIZE"
-            fi
-            TRANSCRIPT_FILE="intermediates/${BASE_NAME}_whisperx_transcript_with_speakers.txt"
-            ;;
-        deepgram)
-            if [ -z "${DEEPGRAM_API_KEY:-}" ]; then
-                echo "⊘ DEEPGRAM_API_KEY not set, skipping $TRANSCRIBER"
-                SKIPPED_COUNT=$((SKIPPED_COUNT + ${#PROCESSOR_ARRAY[@]}))
-                continue
-            fi
-            CMD="python3 scripts/transcribe_with_deepgram.py \"$AUDIO_FILE\""
-            TRANSCRIPT_FILE="intermediates/${BASE_NAME}_deepgram_transcript_with_speakers.txt"
-            ;;
-        assemblyai)
-            if [ -z "${ASSEMBLYAI_API_KEY:-}" ]; then
-                echo "⊘ ASSEMBLYAI_API_KEY not set, skipping $TRANSCRIBER"
-                SKIPPED_COUNT=$((SKIPPED_COUNT + ${#PROCESSOR_ARRAY[@]}))
-                continue
-            fi
-            CMD="python3 scripts/transcribe_with_assemblyai.py \"$AUDIO_FILE\""
-            TRANSCRIPT_FILE="intermediates/${BASE_NAME}_assemblyai_transcript_with_speakers.txt"
-            ;;
-        openai)
-            if [ -z "${OPENAI_API_KEY:-}" ]; then
-                echo "⊘ OPENAI_API_KEY not set, skipping $TRANSCRIBER"
-                SKIPPED_COUNT=$((SKIPPED_COUNT + ${#PROCESSOR_ARRAY[@]}))
-                continue
-            fi
-            CMD="python3 scripts/transcribe_with_openai.py \"$AUDIO_FILE\""
-            TRANSCRIPT_FILE="intermediates/${BASE_NAME}_openai_transcript_with_speakers.txt"
-            ;;
-        *)
-            echo "Error: Unknown transcriber: $TRANSCRIBER"
-            FAILED_COUNT=$((FAILED_COUNT + ${#PROCESSOR_ARRAY[@]}))
-            continue
-            ;;
-    esac
-    
-    # Run transcription
-    if eval $CMD; then
-        if [ -f "$TRANSCRIPT_FILE" ]; then
-            echo "✓ Transcript: $TRANSCRIPT_FILE"
-            TRANSCRIPT_FILES+=("$TRANSCRIPT_FILE")
-        else
-            echo "✗ Expected transcript not found: $TRANSCRIPT_FILE"
-            FAILED_COUNT=$((FAILED_COUNT + ${#PROCESSOR_ARRAY[@]}))
-        fi
-    else
-        echo "✗ Transcription failed for $TRANSCRIBER"
-        FAILED_COUNT=$((FAILED_COUNT + ${#PROCESSOR_ARRAY[@]}))
-    fi
-    
-    echo ""
-done
-
-# STEP 2: Run all post-processing combinations
-echo "========================================================================"
-echo "PHASE 2: Post-Processing (${#TRANSCRIPT_FILES[@]} transcripts × ${#PROCESSOR_ARRAY[@]} processors)"
-echo "========================================================================"
 echo ""
 
 COMBO_NUM=0
