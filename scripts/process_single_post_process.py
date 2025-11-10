@@ -412,17 +412,13 @@ def process_single_combination(transcript_path, provider, api_keys, context, oll
     base_name = transcript_file.stem
     
     for service in ['whisperx', 'assemblyai', 'deepgram', 'openai']:
-        if f'_{service}_transcript_with_speakers' in base_name:
+        if f'_{service}_raw' in base_name:
             transcriber = service
-            base_name = base_name.replace(f'_{service}_transcript_with_speakers', '')
+            base_name = base_name.replace(f'_{service}_raw', '')
             break
     
-    # Clean base name
-    base_name = base_name.replace('_lv2', '').replace('_lv3', '').replace('_dlv3', '')
-    base_name = base_name.replace('_lq', '').replace('_hq', '')
-    
     # Build output path
-    output_path = output_dir / f"{base_name}_{transcriber}_{provider}_corrected.txt"
+    output_path = output_dir / f"{base_name}_{transcriber}_{provider}_processed.txt"
     
     with open(output_path, 'w', encoding='utf-8') as f:
         f.write(corrected_clean)

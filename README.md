@@ -145,20 +145,27 @@ export MOONSHOT_API_KEY="sk-..."      # https://platform.moonshot.cn/
 ### Intermediates (Phase 1)
 ```
 intermediates/
-  audio_whisperx_transcript_with_speakers.txt    # WhisperX output
-  audio_deepgram_transcript_with_speakers.txt    # Deepgram output
-  audio_whisperx_transcript.md                   # Markdown version
+  audio_whisperx_raw.txt         # WhisperX output
+  audio_deepgram_raw.txt          # Deepgram output
+  audio_whisperx_raw.md           # Markdown version
 ```
 
 ### Final Outputs (Phase 2)
 ```
 outputs/
-  audio_whisperx_anthropic_corrected.txt         # WhisperX + Claude
-  audio_deepgram_openai_corrected.txt            # Deepgram + GPT-4
-  audio_whisperx_anthropic_corrected.md          # Markdown versions
+  audio_whisperx_anthropic_processed.txt         # WhisperX + Claude
+  audio_deepgram_openai_processed.txt            # Deepgram + GPT-4
+  audio_whisperx_anthropic_processed.md          # Markdown versions
 ```
 
-Naming: `{audio}_{transcriber}_{processor}_corrected.{txt|md}`
+**Naming Convention:**
+- **Intermediates:** `{basename}_{transcriber}_raw.{txt|md}`
+- **Final Outputs:** `{basename}_{transcriber}_{processor}_processed.{txt|md}`
+
+Where:
+- `{basename}` = Original audio filename without extension
+- `{transcriber}` = whisperx, deepgram, assemblyai, or openai
+- `{processor}` = anthropic, openai, gemini, deepseek, moonshot, or ollama
 
 ## GPU Support
 

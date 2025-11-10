@@ -271,7 +271,7 @@ def transcribe_whisperx(audio_path, output_dir, force_cpu=False):
         print(f"  → Detected {len(speakers)} speakers")
         
         # Step 4: Save
-        output_path = Path(output_dir) / f"{audio_path_obj.stem}_whisperx_transcript_with_speakers.txt"
+        output_path = Path(output_dir) / f"{audio_path_obj.stem}_whisperx_raw.txt"
         output_path.parent.mkdir(parents=True, exist_ok=True)
         
         with open(output_path, 'w', encoding='utf-8') as f:
@@ -286,7 +286,7 @@ def transcribe_whisperx(audio_path, output_dir, force_cpu=False):
                 f.write(f"[{start_time:.1f}s] {text}\n")
         
         # Save markdown
-        md_path = output_path.parent / f"{output_path.stem.replace('_transcript_with_speakers', '_transcript')}.md"
+        md_path = output_path.with_suffix('.md')
         with open(md_path, 'w', encoding='utf-8') as f:
             current_speaker = None
             for segment in result_with_speakers["segments"]:
@@ -377,7 +377,7 @@ def transcribe_deepgram(audio_path, output_dir):
             output_lines.append(f'[{timestamp}s] {text}')
     
     # Save
-    output_path = Path(output_dir) / f"{audio_file_path.stem}_deepgram_transcript_with_speakers.txt"
+    output_path = Path(output_dir) / f"{audio_file_path.stem}_deepgram_raw.txt"
     output_path.parent.mkdir(parents=True, exist_ok=True)
     
     with open(output_path, 'w', encoding='utf-8') as f:
@@ -443,7 +443,7 @@ def transcribe_assemblyai(audio_path, output_dir):
         formatted_lines.append(f"[0.0s] SPEAKER_00: {transcript.text}")
     
     # Save
-    output_path = Path(output_dir) / f"{audio_file_path.stem}_assemblyai_transcript_with_speakers.txt"
+    output_path = Path(output_dir) / f"{audio_file_path.stem}_assemblyai_raw.txt"
     output_path.parent.mkdir(parents=True, exist_ok=True)
     
     with open(output_path, 'w', encoding='utf-8') as f:
@@ -563,7 +563,7 @@ def transcribe_openai(audio_path, output_dir):
     # Save
     formatted = '\n~~~~~~\n'.join(all_transcripts)
     
-    output_path = Path(output_dir) / f"{audio_file_path.stem}_openai_transcript_with_speakers.txt"
+    output_path = Path(output_dir) / f"{audio_file_path.stem}_openai_raw.txt"
     output_path.parent.mkdir(parents=True, exist_ok=True)
     
     with open(output_path, 'w', encoding='utf-8') as f:
