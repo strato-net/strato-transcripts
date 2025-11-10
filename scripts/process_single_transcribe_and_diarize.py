@@ -428,8 +428,8 @@ def transcribe_deepgram(audio_path, output_dir):
         paragraphs=True,
         utterances=True,  # Returns speaker turns (see comment above)
         filler_words=True,  # Detect filler words (um, uh, ah, etc.)
-        keywords=[
-            # Blockchain/Crypto terms for improved accuracy
+        # Nova-3 uses 'keyterm' not 'keywords' - boost blockchain/crypto term accuracy
+        keyterm=[
             "Ethereum", "Bitcoin", "blockchain", "cryptocurrency", "smart contract",
             "DeFi", "NFT", "token", "wallet", "consensus", "proof of stake",
             "proof of work", "mining", "validator", "gas", "gwei", "wei",
