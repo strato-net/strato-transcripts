@@ -9,7 +9,6 @@ if [ $# -eq 0 ]; then
     echo "Usage: $0 <audio_file> [options]"
     echo ""
     echo "Options:"
-    echo "  --model <name>       Whisper model (large-v2, large-v3, turbo)"
     echo "  --batch-size <n>     Batch size (default: 16 GPU, 8 CPU)"
     echo "  --provider <name>    AI provider (anthropic, openai, gemini, deepseek, ollama)"
     echo "  --openai-model <name> OpenAI model (chatgpt-4o-latest, gpt-4o, etc.)"
@@ -48,7 +47,6 @@ AUDIO_FILE="$1"
 shift
 
 # Default options
-MODEL="large-v2"
 BATCH_SIZE=""
 AI_PROVIDER="openai"  # Default to OpenAI (ChatGPT-5)
 OPENAI_MODEL="chatgpt-4o-latest"
@@ -60,10 +58,6 @@ SKIP_CORRECTION=false
 # Parse optional arguments
 while [[ $# -gt 0 ]]; do
     case $1 in
-        --model)
-            MODEL="$2"
-            shift 2
-            ;;
         --batch-size)
             BATCH_SIZE="$2"
             shift 2
@@ -138,8 +132,8 @@ echo "========================================================================"
 echo "Complete Transcription Pipeline with AI Correction"
 echo "========================================================================"
 echo "Audio file: $AUDIO_FILE"
-echo "Whisper model: $MODEL"
-echo "Compute type: int8 (optimal quality/VRAM balance)"
+echo "Whisper model: large-v3 (hardcoded for best accuracy)"
+echo "Compute type: float16 (optimal quality/VRAM balance)"
 if [ -n "$BATCH_SIZE" ]; then
     echo "Batch size: $BATCH_SIZE"
 fi
@@ -161,11 +155,11 @@ echo "========================================================================"
 echo ""
 
 # Step 1: Transcribe with WhisperX
-echo "STEP 1: Transcribing with WhisperX (int8 quantization)..."
+echo "STEP 1: Transcribing with WhisperX (float16 quantization, large-v3)..."
 echo "------------------------------------------------------------------------"
 
 # Build command with optional batch size
-CMD="python3 scripts/transcribe_with_diarization.py \"$AUDIO_FILE\" --model \"$MODEL\""
+CMD="python3 scripts/transcribe_with_diarization.py \"$AUDIO_FILE\""
 if [ -n "$BATCH_SIZE" ]; then
     CMD="$CMD --batch-size $BATCH_SIZE"
 fi
@@ -178,22 +172,13 @@ if [ $? -ne 0 ]; then
 fi
 
 # Find the generated transcript file in intermediates
-# New format: filename_<model>_transcript_with_speakers.txt
+# Format: filename_transcript_with_speakers.txt (no model indicator)
 BASE_NAME=$(basename "$AUDIO_FILE" | sed 's/\.[^.]*$//')
-MODEL_SHORT=$(echo "$MODEL" | sed 's/distil-/d/;s/large-/l/')
-TRANSCRIPT="intermediates/${BASE_NAME}_${MODEL_SHORT}_transcript_with_speakers.txt"
+TRANSCRIPT="intermediates/${BASE_NAME}_transcript_with_speakers.txt"
 
-# If exact match not found, find most recent transcript
 if [ ! -f "$TRANSCRIPT" ]; then
-    FOUND=$(find intermediates -name "${BASE_NAME}*_transcript_with_speakers.txt" -type f -printf '%T@ %p\n' 2>/dev/null | sort -n | tail -1 | cut -d' ' -f2)
-    
-    if [ -z "$FOUND" ] || [ ! -f "$FOUND" ]; then
-        echo "Error: Could not find generated transcript in intermediates/"
-        exit 1
-    fi
-    
-    TRANSCRIPT="$FOUND"
-    echo "Found transcript: $TRANSCRIPT"
+    echo "Error: Could not find generated transcript: $TRANSCRIPT"
+    exit 1
 fi
 
 TRANSCRIPT_FULL="$TRANSCRIPT"
@@ -226,8 +211,8 @@ if [ "$SKIP_CORRECTION" = false ]; then
         echo "Warning: Post-processing failed, but transcript is still available"
         CORRECTED=""
     else
-        # Corrected files will be in outputs/ directory
-        CORRECTED="outputs/${BASE_NAME}_corrected.txt"
+        # Corrected files will be in outputs/ directory with provider name
+        CORRECTED="outputs/${BASE_NAME}_${AI_PROVIDER}_corrected.txt"
         echo ""
         echo "✓ Corrected transcript: $CORRECTED"
     fi
