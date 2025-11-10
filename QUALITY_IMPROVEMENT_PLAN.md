@@ -49,7 +49,7 @@ Projects: Ethereum Foundation, ConsenSys, Parity, OpenEthereum.
 ```
 
 #### 1.3 Add Script Support
-**File**: `transcribe_with_diarization.py`
+**File**: `transcribe_with_whisperx.py`
 
 Add parameters:
 ```python
@@ -279,7 +279,7 @@ HF_TOKEN="${HF_TOKEN}"
 ANTHROPIC_KEY="${ANTHROPIC_API_KEY}"
 
 # Step 1: Transcribe with WhisperX + initial prompt
-python3 transcribe_with_diarization.py "$AUDIO_FILE" \
+python3 transcribe_with_whisperx.py "$AUDIO_FILE" \
     --high-quality \
     --model large-v3 \
     --auto-prompt
@@ -339,7 +339,7 @@ model = WhisperForConditionalGeneration.from_pretrained("openai/whisper-large-v3
 ### Immediate (This Week)
 - ✅ Create this implementation plan
 - [ ] Build initial_prompt extraction scripts
-- [ ] Add --initial-prompt flag to transcribe_with_diarization.py
+- [ ] Add --initial-prompt flag to transcribe_with_whisperx.py
 - [ ] Test on 1 sample transcript
 
 ### Short-term (Next 2 Weeks)
@@ -415,7 +415,7 @@ model = WhisperForConditionalGeneration.from_pretrained("openai/whisper-large-v3
 
 ```
 stratomercata-transcripts/
-├── transcribe_with_diarization.py  # Enhanced with --initial-prompt
+├── transcribe_with_whisperx.py     # Enhanced with --initial-prompt
 ├── post_process_transcript.py      # New: GPT-4 correction
 ├── extract_people.py               # New: Name extraction
 ├── extract_terms.py                # New: Term extraction

@@ -173,7 +173,7 @@ for i in "${!TRANSCRIBER_ARRAY[@]}"; do
     # Run appropriate transcription script
     case "$TRANSCRIBER" in
         whisperx)
-            CMD="python3 scripts/transcribe_with_diarization.py \"$AUDIO_FILE\""
+            CMD="python3 scripts/transcribe_with_whisperx.py \"$AUDIO_FILE\""
             if [ -n "$BATCH_SIZE" ]; then
                 CMD="$CMD --batch-size $BATCH_SIZE"
             fi

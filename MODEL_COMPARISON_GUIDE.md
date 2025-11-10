@@ -24,7 +24,7 @@ The transcription script has been enhanced to support:
 ### Quick Test (Single Model)
 ```bash
 # Test with large-v3 (recommended for best quality)
-python3 scripts/transcribe_with_diarization.py audio.mp3 --model large-v3
+python3 scripts/transcribe_with_whisperx.py audio.mp3 --model large-v3
 ```
 
 ### Side-by-Side Comparison (Automated)
@@ -168,7 +168,7 @@ Smaller batch sizes are more thorough but slower.
 If you still get CUDA out of memory errors with int8:
 ```bash
 # Reduce batch size
-python3 scripts/transcribe_with_diarization.py audio.mp3 --batch-size 8
+python3 scripts/transcribe_with_whisperx.py audio.mp3 --batch-size 8
 ```
 
 ### Model Download Issues

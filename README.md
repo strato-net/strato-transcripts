@@ -104,7 +104,7 @@ source venv/bin/activate
 source setup_env.sh
 
 # Transcribe with speaker identification (forces English by default)
-python3 scripts/transcribe_with_diarization.py audio.mp3
+python3 scripts/transcribe_with_whisperx.py audio.mp3
 # Output: intermediates/audio_transcript_with_speakers.txt
 ```
 
@@ -169,12 +169,12 @@ The transcription script now forces English language by default to prevent the A
 
 ```bash
 # Default: English (recommended for all English content)
-python3 transcribe_with_diarization.py output.mp3
+python3 transcribe_with_whisperx.py output.mp3
 
 # Specify a different language if needed
-python3 transcribe_with_diarization.py output.mp3 --language de  # German
-python3 transcribe_with_diarization.py output.mp3 --language fr  # French
-python3 transcribe_with_diarization.py output.mp3 --language es  # Spanish
+python3 transcribe_with_whisperx.py output.mp3 --language de  # German
+python3 transcribe_with_whisperx.py output.mp3 --language fr  # French
+python3 transcribe_with_whisperx.py output.mp3 --language es  # Spanish
 ```
 
 Common language codes: `en` (English), `de` (German), `fr` (French), `es` (Spanish), `it` (Italian), `pt` (Portuguese), `zh` (Chinese), `ja` (Japanese), `ko` (Korean)
@@ -440,7 +440,7 @@ stratomercata-transcripts/
 ├── map_speakers_to_names.py               # Speaker label mapping
 ├── format_transcript_for_markdown.py      # Markdown formatter
 ├── batch_transcribe_all.sh                # Batch processing script
-├── transcribe_with_diarization.py         # Alternative transcription script
+├── transcribe_with_whisperx.py            # WhisperX transcription script
 ├── test_diarization.py                    # Diarization testing
 ├── test_diarization_hf.py                 # HuggingFace auth testing
 ├── test_cuda.py                           # NVIDIA GPU testing

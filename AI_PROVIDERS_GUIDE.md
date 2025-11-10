@@ -17,12 +17,12 @@ Before AI post-processing, you need to transcribe your audio. Here are your opti
 
 #### WhisperX (Local - Default)
 - **Cost**: FREE (requires GPU)
-- **Script**: `scripts/transcribe_with_diarization.py`
+- **Script**: `scripts/transcribe_with_whisperx.py`
 - **Best for**: Privacy, unlimited usage, no ongoing costs
 - **Requirements**: NVIDIA GPU with 6GB+ VRAM
 - **Setup**: Already configured in this project
 ```bash
-python3 scripts/transcribe_with_diarization.py audio.mp3
+python3 scripts/transcribe_with_whisperx.py audio.mp3
 ```
 
 #### Deepgram (Recommended Cloud Option)
