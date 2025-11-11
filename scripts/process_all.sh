@@ -3,7 +3,7 @@
 # Batch Process All MP3 Files in ~/Downloads with Multi-Provider AI Pipeline
 # ==============================================================================
 # - Loops through all MP3 files in ~/Downloads
-# - Calls transcribe_and_correct_multi.sh for each file
+# - Calls process_single_mp3.sh for each file
 # - Outputs to ./outputs directory
 # ==============================================================================
 
@@ -34,7 +34,7 @@ while [[ $# -gt 0 ]]; do
             echo ""
             echo "Options:"
             echo "  --transcribers <list>    Comma-separated transcription services"
-            echo "                           (whisperx, deepgram, assemblyai, openai)"
+            echo "                           (whisperx, deepgram, assemblyai, sonix, speechmatics)"
             echo "                           Default: whisperx"
             echo ""
             echo "  --processors <list>      Comma-separated AI post-processors"
@@ -48,8 +48,8 @@ while [[ $# -gt 0 ]]; do
             echo "  # Deepgram + Claude"
             echo "  $0 --transcribers deepgram --processors anthropic"
             echo ""
-            echo "  # All combinations (4 transcribers × 6 processors = 24)"
-            echo "  $0 --transcribers whisperx,deepgram,assemblyai,openai \\"
+            echo "  # All combinations (5 transcribers × 6 processors = 30)"
+            echo "  $0 --transcribers whisperx,deepgram,assemblyai,sonix,speechmatics \\"
             echo "     --processors anthropic,openai,gemini,deepseek,moonshot,ollama"
             exit 1
             ;;
@@ -136,7 +136,7 @@ for MP3_FILE in "${MP3_FILES[@]}"; do
     FILE_START=$(date +%s)
     
     # Call transcribe_and_correct_multi.sh with transcribers and processors
-    if ./scripts/transcribe_and_correct_multi.sh "$MP3_FILE" --transcribers "$TRANSCRIBERS" --processors "$PROCESSORS"; then
+    if ./scripts/process_single.sh "$MP3_FILE" --transcribers "$TRANSCRIBERS" --processors "$PROCESSORS"; then
         FILE_END=$(date +%s)
         FILE_DURATION=$((FILE_END - FILE_START))
         

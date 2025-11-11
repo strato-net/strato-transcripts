@@ -62,7 +62,7 @@ def test_openai():
 def test_anthropic():
     """Test Anthropic Claude connection"""
     print("\n" + "="*60)
-    print("Testing ANTHROPIC (claude-3-5-sonnet-20241022)")
+    print("Testing ANTHROPIC (claude-sonnet-4-5-20250929)")
     print("="*60)
     
     api_key = os.environ.get('ANTHROPIC_API_KEY')
@@ -74,8 +74,9 @@ def test_anthropic():
         import anthropic
         client = anthropic.Anthropic(api_key=api_key)
         
+        # Use Claude Sonnet 4.5 (latest stable model as of 2025-11-10)
         response = client.messages.create(
-            model="claude-3-5-sonnet-20241022",
+            model="claude-sonnet-4-5-20250929",
             max_tokens=10,
             messages=[{"role": "user", "content": "Say 'hello' in one word"}]
         )

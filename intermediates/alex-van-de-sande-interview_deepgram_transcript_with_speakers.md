@@ -57,7 +57,8 @@
 [560.7s] **SPEAKER_02:** because I felt that I knew someone bigger would come,
 [565.7s] **SPEAKER_02:** for Bitcoin.
 [566.9s] **SPEAKER_02:** And I just started following all sort of projects, like, colored coin,
-[572.6s] **SPEAKER_02:** Master coin, and things like that. Uh-huh. And so I found it here. And I was, wow, I was so blown away and captivated
+[572.6s] **SPEAKER_02:** Master coin, and things like that. Uh-huh. And so I found it here.
+[577.0s] **SPEAKER_02:** And I was, wow, I was so blown away and captivated
 [581.0s] **SPEAKER_02:** that I couldn't think of anything else. And I the the
 [585.2s] **SPEAKER_02:** people were still very active on the Reddit. Like, Vitalik would answer
 [590.3s] **SPEAKER_02:** questions personally.
@@ -79,7 +80,7 @@
 [695.1s] **SPEAKER_02:** And then I told my friends that I I wanted to leave this. They were like, are you, like, leaving the app you founded to work for a 19 year old? They're going to pay you in, like, makeup money that he invented.
 [709.2s] **SPEAKER_02:** I was like, yeah. Sure. That that seems like a great idea.
 [714.1s] **SPEAKER_01:** Yeah. That that's,
-[716.0s] **SPEAKER_01:** that's crazy, man. That's honestly the I mean, just your your,
+[716.1s] **SPEAKER_01:** that's crazy, man. That's honestly the I mean, just your your,
 [720.8s] **SPEAKER_01:** you know, your belief in in what this could turn out to ended up leading you to such, you know, success and a a pine you know, being a pioneer
 [728.7s] **SPEAKER_01:** in this space.
 [730.7s] **SPEAKER_01:** So when we talked before in the past, you told me you kinda helped assemble
@@ -141,7 +142,7 @@
 [1099.5s] **SPEAKER_02:** a a a web page that looks like an application, which is the standard today. Every page look like an application, but back then, it was actually very hard to do.
 [1108.6s] **SPEAKER_02:** And Meteor was a very
 [1110.8s] **SPEAKER_02:** popular library.
-[1112.6s] **SPEAKER_02:** Fabian basically wrote a book on Meteor.
+[1112.7s] **SPEAKER_02:** Fabian basically wrote a book on Meteor.
 [1116.3s] **SPEAKER_02:** So he was he was very deep into that.
 [1119.3s] **SPEAKER_00:** Wow.
 [1120.2s] **SPEAKER_00:** That's that's super interesting.
@@ -178,12 +179,13 @@
 [1241.5s] **SPEAKER_02:** someone started doing and then Mastercoin was like, oh, no. I think what we should do is that we should have
 [1248.5s] **SPEAKER_02:** an exchange inside. So you you can send the coin or ask for an exchange or send the token.
 [1255.4s] **SPEAKER_02:** And, basically, every time anyone wanted to do something new, they had to make a new opcode for Mastercoin.
-[1263.8s] **SPEAKER_02:** And Vitalik was working with Mastercoin and colored coins back then. And and that's when so it started to realize that's that's very inefficient, the idea that you have to either release a whole new blockchain whenever you someone else thinks about a new feature
+[1263.8s] **SPEAKER_02:** And Vitalik was working with Mastercoin and colored coins back then. And that's when so it started to realize that's that's very inefficient, the idea that you have to either release a whole new blockchain whenever
+[1275.4s] **SPEAKER_02:** you someone else thinks about a new feature
 [1278.1s] **SPEAKER_02:** or that you need to, like, create a whole new
 [1281.7s] **SPEAKER_02:** new upgrade to
 [1283.6s] **SPEAKER_02:** your blockchain.
 [1284.9s] **SPEAKER_02:** So
-[1288.7s] **SPEAKER_01:** I'm
+[1288.7s] **SPEAKER_02:** I'm
 [1292.7s] **SPEAKER_01:** I think you might have rubbed there.
 [1296.3s] **SPEAKER_01:** Can't hear you.
 [1298.0s] **SPEAKER_01:** Is it just me, Mac? Can you hear him?
@@ -290,23 +292,22 @@
 [1857.4s] **SPEAKER_02:** Here's something funny that I didn't expect. Right? So we really expect
 [1861.7s] **SPEAKER_02:** tokens themselves to be big.
 [1864.1s] **SPEAKER_02:** I did not expect
-[1865.5s] **SPEAKER_02:** the word ERC 20 to be so big. Right? The point,
+[1865.8s] **SPEAKER_02:** the word ERC 20 to be so big. Right? The point,
 [1870.9s] **SPEAKER_02:** that
 [1872.1s] **SPEAKER_02:** Bitcoin tokens are known as BRC
 [1875.4s] **SPEAKER_02:** 20 Mhmm. Which is sort of, like, laughable because
 [1879.6s] **SPEAKER_02:** it was
 [1880.6s] **SPEAKER_02:** like, it wasn't the 20 of anything.
-[1884.0s] **SPEAKER_02:** Right? 20 doesn't mean tokens.
-[1886.3s] **SPEAKER_02:** 20 was just a random number
+[1884.0s] **SPEAKER_02:** Right? 20 doesn't mean tokens. 20 was just a random number
 [1888.9s] **SPEAKER_02:** that happened to be the order which Fabian asked the questions of. So and suddenly, like,
 [1896.8s] **SPEAKER_02:** b or c 20 becomes the center. I think that's
 [1900.5s] **SPEAKER_02:** hilarious
 [1901.5s] **SPEAKER_01:** honestly. Yeah. I mean, that's,
 [1904.3s] **SPEAKER_01:** imitation
-[1905.3s] **SPEAKER_01:** is a serious form of flattery.
+[1905.3s] **SPEAKER_00:** is a serious form of flattery.
 [1907.5s] **SPEAKER_01:** They, it's it's kinda even though those, like, BRC twenties don't even have, like, smart contracts or anything like that, it's a totally different
 [1915.9s] **SPEAKER_01:** kind of tech.
-[1917.4s] **SPEAKER_01:** It's just it just pays homage to the fact of how, you know, important the ERC 20 was to kinda, you know, the development of the tech. I mean, you're a pioneer. I mean, you, Fabian, everyone that was a part of this, like, you guys created something.
+[1917.4s] **SPEAKER_01:** It's just it just pays homage to the fact of how, you know, important the ERC 20 was to kinda, you know, the development of the tech. I mean, you're a pioneer. I mean, you, Fabian, everyone that was a part of this. Like, you guys created something.
 [1931.1s] **SPEAKER_01:** Like, even though the miss miss wallet went and, you know, sunsetted at some point, like,
 [1936.2s] **SPEAKER_01:** the the, you know,
 [1937.8s] **SPEAKER_01:** the mark you guys had on on on just cryptocurrency
@@ -316,7 +317,7 @@
 [1960.0s] **SPEAKER_02:** right,
 [1960.8s] **SPEAKER_02:** you find that it's always, like it's very few people working there. Right? Whenever
 [1967.0s] **SPEAKER_02:** when when I got there, there was probably less than a 100 people
-[1970.8s] **SPEAKER_02:** working on anything Ethereum.
+[1970.7s] **SPEAKER_02:** working on anything Ethereum.
 [1972.9s] **SPEAKER_02:** So anything you do, if you if you start working on a project and then that project becomes big,
 [1979.7s] **SPEAKER_02:** then
 [1980.7s] **SPEAKER_02:** all those little marks that you do, of course, they also become big, and they also create ripples.
@@ -343,7 +344,8 @@
 [2090.8s] **SPEAKER_01:** And that to me is is a definition of pioneer whether you whether you
 [2095.6s] **SPEAKER_01:** had that mindset going into it, but, I think we all appreciate here you here and what you've done. But that that that would be my suggestion. Right? If if if anyone wants to,
 [2106.6s] **SPEAKER_02:** like, if anyone wants to, like, own a part of history, the best way to do it is to invent it and is to help write it. Right? I think that is the the beauty part. It is so I really urge everyone who, like, loves to look back at history is also to think that in twenty years, whatever you do now will be part of history. Right?
-[2127.1s] **SPEAKER_02:** So just, like, try to think enough. Try to think about, like, what is where you wanna be right now that probably can be something big in the future because that's exciting. And even if you bet on the wrong horse,
+[2127.1s] **SPEAKER_02:** So just, like, try to think enough.
+[2129.8s] **SPEAKER_02:** Try to think about, like, what is where you wanna be right now that probably can be something big in the future because that's exciting. And even if you bet on the wrong horse,
 [2140.2s] **SPEAKER_02:** just betting just just being able to build things that last and don't last is is a great experience. I built tons of things that were forgotten and didn't last and
 [2151.3s] **SPEAKER_02:** disappeared
 [2152.2s] **SPEAKER_02:** over the years
@@ -394,8 +396,8 @@
 [2332.9s] **SPEAKER_02:** it with another one.
 [2334.6s] **SPEAKER_02:** And so we I I worked for two years on smart wallets and things like that.
 [2339.7s] **SPEAKER_02:** Then at some point,
-[2341.6s] **SPEAKER_02:** they we hit the wall in which creating a smart wallet would cost you 500 like, a $100 just to acquire a new user. We had to close down the company.
-[2350.6s] **SPEAKER_02:** But a lot of those the idea that I I spent, like, two years talking, and I'm going to
+[2341.5s] **SPEAKER_02:** they we hit the wall in which creating a smart wallet would cost you 500 like, a $100 just to acquire a new user. We had to close down the company.
+[2350.6s] **SPEAKER_02:** But a lot of those the idea that I I spent, like, two years talking and I'm going to
 [2356.6s] **SPEAKER_02:** I'm trying to share
 [2358.5s] **SPEAKER_02:** and trying to, like,
 [2360.5s] **SPEAKER_02:** try and talk about in conferences.
@@ -405,7 +407,7 @@
 [2367.7s] **SPEAKER_02:** Because,
 [2368.8s] **SPEAKER_02:** people are, like today, the the word is, like, account obstruction.
 [2373.5s] **SPEAKER_02:** Right? And I think
-[2374.9s] **SPEAKER_02:** it's still one of the most important things to happen
+[2374.8s] **SPEAKER_02:** it's still one of the most important things to happen
 [2378.7s] **SPEAKER_02:** on if you wanted blockchains to go mainstream
 [2381.9s] **SPEAKER_02:** would be for users' nest that never have to care about private keys again. Right? Where you you just have a name,
 [2390.0s] **SPEAKER_02:** and that name is connected to a couple of multiple devices.
@@ -515,7 +517,7 @@
 [2838.5s] **SPEAKER_02:** The the animation can look fancy and can have a lot of cool things, but it's gonna take a week. There's no
 [2846.0s] **SPEAKER_01:** there's no way around that. Right? There's no putting deep stick on that field. Yeah. I think Mac was, talking about that earlier in the earlier space. Mac, you can come up and say something if if your mic sounds alright.
 [2862.9s] **SPEAKER_01:** Nope. Nope. Not gonna say anything. Okay. Sounds good. I'll go to my next question.
-[2869.7s] **SPEAKER_01:** I got a question to ask. Oh, okay. Yeah. Go ahead, brother.
+[2869.7s] **SPEAKER_04:** I got a question to ask. Oh, okay. Yeah. Go ahead, brother.
 [2873.4s] **SPEAKER_04:** Yeah.
 [2874.6s] **SPEAKER_04:** How's everybody doing? Good. Good. Good. Glad to have you up here. Didn't know me as magician, but you guys could just call me Mud.
 [2882.5s] **SPEAKER_04:** I have a question for Alex.
@@ -540,11 +542,11 @@
 [2952.3s] **SPEAKER_02:** That is a great question because I think
 [2955.5s] **SPEAKER_02:** I've
 [2956.5s] **SPEAKER_02:** that is an
-[2958.4s] **SPEAKER_02:** you that is how we work with a team. Right?
+[2958.5s] **SPEAKER_02:** you that is how we work with a team. Right?
 [2961.6s] **SPEAKER_02:** I think the best work I've I've ever drawn
 [2965.5s] **SPEAKER_02:** when I'm, like, I I've been working with remote teams for
 [2969.2s] **SPEAKER_02:** over ten years. Right? We
-[2972.0s] **SPEAKER_02:** way before, like, Zoom was a thing and and
+[2972.1s] **SPEAKER_02:** way before, like, Zoom was a thing and and
 [2976.5s] **SPEAKER_02:** and way before COVID was a thing. We we were
 [2980.0s] **SPEAKER_02:** remote teams, not because we wanted, but rather because there was no other way to get people from all over the world to work in a single project if you have to fly everyone to the same place. Right?
 [2994.3s] **SPEAKER_02:** And we we had to work remotely.
@@ -583,12 +585,13 @@
 [3146.1s] **SPEAKER_02:** Right?
 [3148.5s] **SPEAKER_04:** It's interesting.
 [3149.9s] **SPEAKER_04:** Thank you for the,
-[3151.7s] **SPEAKER_04:** answer you gave. You actually answered a a few questions I had in mind. That I think that's very valuable information for anybody who's
+[3151.7s] **SPEAKER_04:** answer you gave. You actually answered a a few questions I had in mind.
+[3156.2s] **SPEAKER_04:** That I think that's very valuable information for anybody who's
 [3159.5s] **SPEAKER_04:** attempting to,
 [3162.1s] **SPEAKER_04:** promote or push forward an idea, but also trying to work in a team.
 [3166.5s] **SPEAKER_04:** Thank
-[3168.2s] **SPEAKER_02:** you. For sure. Yeah. And and think about that. And it's also important. Right? A lot of the work I did often
-[3175.1s] **SPEAKER_02:** as as a designer
+[3168.2s] **SPEAKER_02:** you. For sure. Yeah. And and think about that. And it's also important. Right? A lot of the work I did often as
+[3175.8s] **SPEAKER_02:** as a designer
 [3177.3s] **SPEAKER_02:** was that I was just trying to communicate
 [3180.1s] **SPEAKER_02:** to the developers
 [3182.0s] **SPEAKER_02:** the things I was seeing that users needed.
@@ -601,10 +604,10 @@
 [3217.4s] **SPEAKER_02:** what you do a lot is just
 [3219.6s] **SPEAKER_02:** you're trying to communicate and having convincing people that this is a good thing worth building.
 [3226.2s] **SPEAKER_01:** Yeah. That yeah. That that's I I appreciate that question, Mark, because even though,
-[3231.7s] **SPEAKER_01:** it's a bit of a situation with me, but I'm dealing with the same thing when it comes to, you know, trying to find a healthy,
+[3231.6s] **SPEAKER_01:** it's a bit of a situation with me, but I'm dealing with the same thing when it comes to, you know, trying to find a healthy,
 [3237.7s] **SPEAKER_01:** positive, collaborative environment
 [3239.8s] **SPEAKER_01:** instead of, like, you know, being at each other's neck and trying to figure out who's right or what's the best way to go.
-[3245.7s] **SPEAKER_01:** Sometimes the collaborative, you know and there needs to be a a sense of positivity and realize that all the the end goal is the same for everybody. You know, how we get there is, you know, that's that's how you work together and figure out what's the best way to approach that problem. And, you know, it's tough to work with teams, especially
+[3245.7s] **SPEAKER_01:** Sometimes the collaborative, you know, and there needs to be a a sense of positivity and realize that all the the end goal is the same for everybody. You know, how we get there is, you know, that's that's how you work together and figure out what's the best way to approach that problem. And, you know, it's tough to work with teams, especially
 [3262.9s] **SPEAKER_01:** remote. You're not there to see, you know, people's reactions in person and judge body language. It's it's tough at times.
 [3272.0s] **SPEAKER_02:** Yeah. And you have to listen. Right? If if you like, if you feel that your ideas are pure
 [3278.3s] **SPEAKER_02:** beauty and genius
@@ -644,7 +647,7 @@
 [3482.3s] **SPEAKER_02:** First of all,
 [3487.1s] **SPEAKER_02:** first of all, because it's it's hard to do it.
 [3489.9s] **SPEAKER_02:** Often
-[3490.9s] **SPEAKER_02:** and that's just even sadder is that often the user doesn't really care. That's also a big problem. Always,
+[3491.0s] **SPEAKER_02:** and that's just even sadder is that often the user doesn't really care. That's also a big problem. Always,
 [3497.7s] **SPEAKER_02:** often, the user like, if you say, look, it's instead of taking, like, one gigabyte or 10 gigabyte, this thing is gonna stick a 100 megabytes.
 [3506.0s] **SPEAKER_02:** And the user is like, why do I even wanna, like, use this 200 megabytes if I can just connect to Etherscan or, like, whatever?
 [3515.5s] **SPEAKER_02:** And then
@@ -697,7 +700,7 @@
 [3784.5s] **SPEAKER_01:** How do I profit off this? Maybe How do I invest in this?
 [3789.9s] **SPEAKER_02:** Well, you should follow us.
 [3792.9s] **SPEAKER_02:** If you wanna be
-[3795.5s] **SPEAKER_02:** a a pioneer yourself, maybe you can participate on that somehow.
+[3795.4s] **SPEAKER_02:** a a pioneer yourself, maybe you can participate on that somehow.
 [3799.2s] **SPEAKER_01:** Right? I would like to be a pioneer like you, Alex. I really would.
 [3804.2s] **SPEAKER_01:** Is is that the high order company, or is that something else?
 [3808.0s] **SPEAKER_01:** Yeah. That's I'm definitely gonna, check that out and do some research because that that sounds amazing. And it sounds like the guy you got on board is definitely
@@ -713,7 +716,7 @@
 [3872.0s] **SPEAKER_04:** Yeah. That's great. That was great. How much longer are you gonna stay on?
 [3877.3s] **SPEAKER_01:** I I I don't know. I was just kinda letting him dip out to see what everybody thought. I thought that was really super super, you know, intense, informative.
 [3885.4s] **SPEAKER_04:** Yeah. You really held it down. Good job.
-[3888.1s] **SPEAKER_01:** I mean, I had a whole list of stuff I wanted to make sure I asked them, and I only got through, like, half of it. I would have been on here for another hour. But I appreciate that. Nonetheless.
+[3888.1s] **SPEAKER_01:** I mean, I had a whole list of stuff I wanted to make sure I asked them, and I only got through, like, half of it. I would have been on here for another hour, but I appreciate that. Nonetheless.
 [3898.5s] **SPEAKER_01:** Yeah. No. Yeah. That was it was really good. I wanna do this every Monday.
 [3903.7s] **SPEAKER_01:** So,
 [3904.6s] **SPEAKER_01:** yeah, I'm in in the chat as
@@ -727,7 +730,7 @@
 [3945.2s] **SPEAKER_01:** know, waiting for a number go up, which is great and stuff. And I love Mist,
 [3950.5s] **SPEAKER_01:** but I think there's a lot of opportunity here when it comes to community building
 [3954.7s] **SPEAKER_01:** or even just, you know, building in general. Like, this is one of the the older this is the oldest
-[3960.8s] **SPEAKER_01:** ERC 20,
+[3960.8s] **SPEAKER_01:** ERC twenty,
 [3962.2s] **SPEAKER_01:** the first ERC 20
 [3964.5s] **SPEAKER_01:** in, you know, all of Ethereum. There's a lot of cool things that we could do with this. We just need to, you know,
 [3971.0s] **SPEAKER_01:** make that community a bit,
@@ -740,7 +743,7 @@
 [4016.5s] **SPEAKER_04:** So I saw that
 [4017.9s] **SPEAKER_04:** this is on base now,
 [4019.7s] **SPEAKER_04:** which is amazing. I think that's a great opportunity
-[4022.7s] **SPEAKER_04:** for users to get,
+[4022.8s] **SPEAKER_04:** for users to get,
 [4025.8s] **SPEAKER_04:** some exposure.
 [4028.6s] **SPEAKER_03:** Is is it bridged, or is it just the
 [4031.3s] **SPEAKER_01:** I think there's, like Is it properly bridged? More It's bridged, but the liquidity is very, very small because
@@ -772,11 +775,11 @@
 [4114.0s] **SPEAKER_01:** enough to bridge over the base, maybe do a little bit of, like, a DAO incentive things because there is a DAO for Mist coin that I set up, via snapshot,
 [4123.7s] **SPEAKER_01:** and then go ahead and maybe pay out some developers for building cool things on top of Mist. Like, that 50 k would be very, very valuable if we could somehow
 [4133.0s] **SPEAKER_01:** snatch it up. But,
-[4135.0s] **SPEAKER_01:** what's going on, Victor? Oh, yeah. My bad.
+[4135.0s] **SPEAKER_04:** what's going on, Victor? Oh, yeah. My bad.
 [4137.5s] **SPEAKER_05:** No. You're good. Yes. Asen, first of all, congratulation for this initiative. I think that's great. Please keep it up because I think that this most Monday
 [4146.0s] **SPEAKER_05:** miss Monday is something that we we need to keep. And secondly, about the liquidity in base, just remember guys that Uniswap
 [4152.8s] **SPEAKER_05:** pools are permissionless. No? So everybody's free to to pull their own liquidity. And at the end of the day, I mean, if everybody,
-[4161.3s] **SPEAKER_05:** let's say, pulls, like, a 10% of their holdings of missed or five percent or just a tiny tiny amount, At the end, the liquidity there will be more healthy, and we will progressively be
+[4161.3s] **SPEAKER_05:** let's say, pulls, like, a 10% of their holdings of missed or 5% or just a tiny tiny amount, At the end, the liquidity there will be more healthy, and we will progressively be
 [4173.0s] **SPEAKER_05:** building more liquidity
 [4174.4s] **SPEAKER_05:** in base. You know? I mean,
 [4176.2s] **SPEAKER_05:** maybe now we don't have too much volume there because the liquidity is tiny, so nobody would be interested in trading there or no. But it's something like
@@ -851,7 +854,7 @@
 [4486.0s] **SPEAKER_04:** the fact that there's so many people, especially on this new chain because, like, base that are just buying whatever the, like, whatever the hell.
 [4494.0s] **SPEAKER_04:** This is actually I don't I I mean, just I don't know the the how the mechanics would work, but essentially, that's how, like, the the experience would go. Like, we're all in on it. We know what's up. We're already
 [4505.1s] **SPEAKER_04:** doing what we can. I see a few of us are already, like, you know, reposting stuff and posting memes and doing what we can to, like, you know, get it out there and get attention and market it. And that's, like, amazing.
-[4515.5s] **SPEAKER_04:** But just an idea, you know, of just so we can get some, like, new money in and we can actually use that for something. And as a community, we all agree. You Know what I mean? Mhmm. Full transparency. No wrong bullshit.
+[4515.5s] **SPEAKER_04:** But just an idea, you know, of just so we can get some, like, new money in and we can actually use that for something. And as a community, we all agree. You know what I mean? Mhmm. Full transparency. No wrong bullshit.
 [4527.0s] **SPEAKER_04:** I don't know. Just something think it's maybe it sounds gimmicky, but
 [4531.1s] **SPEAKER_04:** I don't know. Sometimes gimmicks work and,
 [4534.0s] **SPEAKER_04:** you know, people always wanna put their money in things. So I that that's just where my head was at. I would I would just caution against creating a new token willy nilly because, you know,
@@ -871,7 +874,7 @@
 [4610.9s] **SPEAKER_01:** What I was thinking Not doing properly, I should say. If we could. I mean, I kinda am starting this with, like, my Blockchain Historical Society and stuff is
 [4619.8s] **SPEAKER_01:** trying to get our hands on old
 [4622.3s] **SPEAKER_01:** relics
-[4623.4s] **SPEAKER_01:** and then potentially
+[4623.5s] **SPEAKER_01:** and then potentially
 [4625.4s] **SPEAKER_01:** using those as, like, a reward system
 [4628.6s] **SPEAKER_01:** for supplying liquidity or something like that. Like, there's a lot of different ways we can go about it and still kinda
 [4635.0s] **SPEAKER_01:** not launch our own token,
@@ -909,10 +912,10 @@
 [4783.2s] **SPEAKER_04:** dao or society about the relics and, you know, collecting
 [4786.9s] **SPEAKER_04:** and stuff like that. Uh-huh.
 [4789.2s] **SPEAKER_04:** Leads back to one another.
-[4791.4s] **SPEAKER_01:** Yeah. I think there's a huge,
+[4791.5s] **SPEAKER_01:** Yeah. I think there's a huge,
 [4793.4s] **SPEAKER_01:** huge market for this,
 [4795.5s] **SPEAKER_01:** these relics and stuff. And I'm, like, you know, I'm not gonna go through and shill any relics or anything like that.
-[4801.5s] **SPEAKER_01:** But there's a huge you know, like, with any market, you know, like, even like video games and stuff, like, people are paying
+[4801.4s] **SPEAKER_01:** But there's a huge you know, like, with any market, you know, like, even like video games and stuff, like, people are paying
 [4809.5s] **SPEAKER_01:** top dollar for the old early video games, you know, the ones that came out, some of the first ones.
 [4816.2s] **SPEAKER_01:** Like, you have you have some of those in in mint condition, you know. People are spending tens of thousands, if not hundreds of thousands of dollars for some of those things. You know, why does why is crypto any different? Especially, it's a in the fact of crypto is, like, one year in crypto is, like, ten years, you know. Like, it that's how fast it it kinda moves.
 [4836.6s] **SPEAKER_01:** So, like, I really see a huge opportunity in these early
@@ -935,7 +938,7 @@
 [4938.4s] **SPEAKER_04:** People like these. People love it.
 [4941.1s] **SPEAKER_01:** Yeah. No. Base is I have some questions about base on, you know, some things they said, like,
 [4946.5s] **SPEAKER_01:** you know, if something did go down, I think they would bend the knee to the SEC, and if you don't fucking give up your information, you won't be able to bridge out or something like that. It's always a possibility.
-[4957.2s] **SPEAKER_01:** Yeah. I see them handing out Wells notices and stuff. Like, I've been seeing that. I don't even know what that is, but it's probably like The Wells notice? Yeah.
+[4957.2s] **SPEAKER_04:** Yeah. I see them handing out Wells notices and stuff. Like, I've been seeing that. I don't even know what that is, but it's probably like The Wells notice? Yeah.
 [4965.8s] **SPEAKER_04:** Oh, it's just pretty much like,
 [4968.5s] **SPEAKER_04:** in layman's terms, it's kinda like a, a forewarning
 [4971.9s] **SPEAKER_04:** of
@@ -960,7 +963,7 @@
 [5064.9s] **SPEAKER_03:** yeah, I mean, if you didn't know, Joe Joe Lubin from Consensus is actually taking the SEC to court because of all this all these Wells notices to to different companies like like Uniswap. See that. Yeah. It's great.
 [5077.7s] **SPEAKER_01:** What's wrong? Gary didn't get, you know, didn't get the job at Binance, so now he's all salty and just so throwing notices at everybody.
 [5086.5s] **SPEAKER_01:** Fucking, I can't I have no
-[5089.0s] **SPEAKER_03:** idea. They're going off to MetaMask. They're going they they they're going back on
+[5089.0s] **SPEAKER_03:** idea. They're going off the MetaMask. They're going they they they're going back on
 [5094.1s] **SPEAKER_04:** All the wallets. They they it's like they're trying to just it's like operation choke point. We're still in it. Yeah. They're basically they're basically trying to now say, hey.
 [5104.1s] **SPEAKER_03:** You know, it is a security even though they've
 [5107.5s] **SPEAKER_03:** gone through
@@ -988,7 +991,7 @@
 [5177.3s] **SPEAKER_03:** in the same way that MetaMask is. Yeah. I wouldn't worry about I wouldn't worry about, like, you know, regulations
 [5183.7s] **SPEAKER_03:** for
 [5185.1s] **SPEAKER_03:** a token like a bridge token because
-[5189.4s] **SPEAKER_03:** the the onus is that you're bridging the the the origin is the mist, and none of us here are the creator of mist. So and that would basically just be like opening up
+[5189.5s] **SPEAKER_03:** the the onus is that you're bridging the the the origin is the mist, and none of us here are the creator of mist. So and that would basically just be like opening up
 [5202.8s] **SPEAKER_03:** making a case against a token
 [5205.4s] **SPEAKER_03:** that has already gone through the rigmarole. So, you know, I don't think we worry about bridge tokens. Been a wild precedent. Yeah. Yeah. I see where you're going.
 [5213.1s] **SPEAKER_03:** Every single bridge token would also need to then doubly
@@ -999,8 +1002,8 @@
 [5227.7s] **SPEAKER_03:** like, it's almost like a marketing campaign, like a onboarding campaign. There's
 [5231.8s] **SPEAKER_04:** I'm gonna also think about it and chat to you, AC, about I think we have the power to do it with with the amount of people that are already
 [5238.3s] **SPEAKER_04:** interested in Mist,
-[5241.4s] **SPEAKER_04:** Because of the just, like, the whole relic
-[5244.4s] **SPEAKER_04:** meta thing, like,
+[5240.8s] **SPEAKER_04:** Mhmm. Because of the just, like, the whole relic
+[5244.4s] **SPEAKER_04:** meta thing. Like,
 [5246.3s] **SPEAKER_04:** it's not just about price go up. Like, I think the biggest thing that attracted me to it was just not the marketability
 [5253.4s] **SPEAKER_04:** of Mist itself
 [5255.2s] **SPEAKER_04:** due to the the the provenance and the history
@@ -1015,7 +1018,7 @@
 [5279.4s] **SPEAKER_04:** the 2021
 [5280.8s] **SPEAKER_04:** blow off top, before
 [5282.6s] **SPEAKER_04:** meme coin mania, before Solana, before all that shit. Like, the OG feel, like, how it was back in the day. Like, people have something that they can actually call back to. Literally, it's what it's called a callback, like, in in in in writing or if if anybody
-[5298.4s] **SPEAKER_04:** writes screenplays or anything like that or has anything to do with entertainment, a callback is kinda like or like in a joke, a callback is like, you know, you're literally referring back to
+[5298.5s] **SPEAKER_04:** writes screenplays or anything like that or has anything to do with entertainment, a callback is kinda like or like in a joke, a callback is like, you know, you're literally referring back to
 [5308.2s] **SPEAKER_04:** something else that was said. I feel like Myst is kinda like a callback to a time. You know what I mean? Like a vibe Mhmm. On Ethereum that people can actually see. Plus, the timestamp thing is super, super, super smart. I don't know who came up with that,
 [5322.9s] **SPEAKER_04:** but that's really good. That's that's that's really good. Mhmm. Even even,
 [5327.6s] **SPEAKER_04:** even It embodies what I'm what I'm trying to get across.
@@ -1030,7 +1033,7 @@
 [5383.7s] **SPEAKER_01:** as, like, a reward or something if you, like, locked up some mist,
 [5388.8s] **SPEAKER_01:** but it's, like, impossible.
 [5390.5s] **SPEAKER_01:** They're, like, so
-[5392.2s] **SPEAKER_04:** I like where you're going with that, though. Like, stuff like that. You know? Yeah. I think that falls in the line. And then, also, it kind of
+[5392.2s] **SPEAKER_01:** I like where you're going with that, though. Like, stuff like that. You know? Yeah. I think that falls in the line. And then, also, it kind of
 [5399.9s] **SPEAKER_01:** gives us a bit of leeway when it comes to litigation because we didn't start these tokens. We're just
 [5405.6s] **SPEAKER_01:** giving them out. Do you know what I'm saying? Like, we didn't
 [5408.8s] **SPEAKER_01:** actually,
@@ -1067,7 +1070,7 @@
 [5602.4s] **SPEAKER_01:** I don't know, dude. I think Uniswap made that LP. I think Uniswap came up with the LP idea. Yeah. You might be right. But Because I remember trading on, like, DX, which was they use XRX. I'm pretty sure. Yeah. And,
 [5616.6s] **SPEAKER_01:** that was, like, 2019.
 [5618.0s] **SPEAKER_01:** That was, like, when all the fucking burn tokens came out, which I think there's actually, you know, potentially some opportunity there and stuff, some deflationary tokens, you know, with this whole inflationary shit going on.
-[5630.5s] **SPEAKER_01:** But yeah. No. It's it's been a it's been a crazy past I've been on, like, I've been in the game for, like, eight eight, nine years, so
+[5630.6s] **SPEAKER_01:** But yeah. No. It's it's been a it's been a crazy past I've been on, like, I've been in the game for, like, eight eight, nine years, so
 [5638.3s] **SPEAKER_01:** it's crazy to see how far it's came. But,
 [5642.1s] **SPEAKER_01:** I think that if anybody is interested and and wants to make a a Telegram
 [5647.1s] **SPEAKER_01:** group, just please message
