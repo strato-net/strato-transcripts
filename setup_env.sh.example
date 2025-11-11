@@ -47,6 +47,14 @@ export ASSEMBLYAI_API_KEY=""
 # Get key from: https://console.deepgram.com/
 export DEEPGRAM_API_KEY=""
 
+# Sonix (Professional transcription with speaker identification)
+# Get key from: https://sonix.ai/
+export SONIX_API_KEY=""
+
+# Speechmatics (Fast, accurate transcription with diarization)
+# Get key from: https://www.speechmatics.com/
+export SPEECHMATICS_API_KEY=""
+
 # Ollama - No API key needed (runs locally, FREE, private)
 # Just ensure service is running: ollama serve
 # Models available: qwen2.5:32b, llama3.1:70b, etc.
@@ -89,6 +97,30 @@ if [ -n "$MOONSHOT_API_KEY" ] && [ "$MOONSHOT_API_KEY" != "" ]; then
   echo "  MOONSHOT_API_KEY: SET"
 else
   echo "  MOONSHOT_API_KEY: NOT SET"
+fi
+
+if [ -n "$ASSEMBLYAI_API_KEY" ] && [ "$ASSEMBLYAI_API_KEY" != "" ]; then
+  echo "  ASSEMBLYAI_API_KEY: SET"
+else
+  echo "  ASSEMBLYAI_API_KEY: NOT SET"
+fi
+
+if [ -n "$DEEPGRAM_API_KEY" ] && [ "$DEEPGRAM_API_KEY" != "" ]; then
+  echo "  DEEPGRAM_API_KEY: SET"
+else
+  echo "  DEEPGRAM_API_KEY: NOT SET"
+fi
+
+if [ -n "$SONIX_API_KEY" ] && [ "$SONIX_API_KEY" != "" ]; then
+  echo "  SONIX_API_KEY: SET"
+else
+  echo "  SONIX_API_KEY: NOT SET"
+fi
+
+if [ -n "$SPEECHMATICS_API_KEY" ] && [ "$SPEECHMATICS_API_KEY" != "" ]; then
+  echo "  SPEECHMATICS_API_KEY: SET"
+else
+  echo "  SPEECHMATICS_API_KEY: NOT SET"
 fi
 echo ""
 echo "See README.md for usage examples and documentation."

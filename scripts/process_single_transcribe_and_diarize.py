@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Unified transcription script with speaker diarization
-Supports multiple providers: WhisperX (local), Deepgram, AssemblyAI
+Supports multiple providers: WhisperX (local), Deepgram, AssemblyAI, Sonix, Speechmatics
 All providers include speaker diarization support.
 """
 
@@ -151,7 +151,7 @@ def main():
     parser.add_argument(
         "--transcribers",
         required=True,
-        help="Comma-separated list of transcription services (whisperx,deepgram,assemblyai)"
+        help="Comma-separated list of transcription services (whisperx,deepgram,assemblyai,sonix,speechmatics)"
     )
     parser.add_argument("--output-dir", default="intermediates", help="Output directory")
     parser.add_argument("--force-cpu", action="store_true", help="Force CPU for WhisperX")
@@ -166,7 +166,7 @@ def main():
     
     # Parse transcribers
     transcribers = [t.strip() for t in args.transcribers.split(',')]
-    valid_transcribers = {'whisperx', 'deepgram', 'assemblyai'}
+    valid_transcribers = {'whisperx', 'deepgram', 'assemblyai', 'sonix', 'speechmatics'}
     
     for transcriber in transcribers:
         if transcriber not in valid_transcribers:
@@ -200,6 +200,10 @@ def main():
             _, skip_reason = validate_api_key('DEEPGRAM_API_KEY')
         elif transcriber == 'assemblyai':
             _, skip_reason = validate_api_key('ASSEMBLYAI_API_KEY')
+        elif transcriber == 'sonix':
+            _, skip_reason = validate_api_key('SONIX_API_KEY')
+        elif transcriber == 'speechmatics':
+            _, skip_reason = validate_api_key('SPEECHMATICS_API_KEY')
         elif transcriber == 'whisperx':
             _, skip_reason = validate_api_key('HF_TOKEN')
         
@@ -221,6 +225,10 @@ def main():
                 output_path = transcribe_deepgram(str(audio_path), args.output_dir)
             elif transcriber == 'assemblyai':
                 output_path = transcribe_assemblyai(str(audio_path), args.output_dir)
+            elif transcriber == 'sonix':
+                output_path = transcribe_sonix(str(audio_path), args.output_dir)
+            elif transcriber == 'speechmatics':
+                output_path = transcribe_speechmatics(str(audio_path), args.output_dir)
             
             elapsed = time.time() - transcriber_start
             results.append((transcriber, output_path, 'success', elapsed))
@@ -533,6 +541,250 @@ def transcribe_assemblyai(audio_path, output_dir):
     # Save using utility function
     formatted_text = '\n'.join(formatted_lines)
     return save_raw_transcript_from_text(output_dir, audio_file_path.stem, "assemblyai", formatted_text)
+
+
+def transcribe_sonix(audio_path, output_dir):
+    """Sonix cloud transcription with speaker diarization"""
+    import time
+    import requests
+    import json
+    
+    api_key = os.environ.get('SONIX_API_KEY')
+    if not api_key:
+        raise ValueError("SONIX_API_KEY environment variable not set")
+    
+    audio_file_path = Path(audio_path)
+    
+    print(f"  Uploading to Sonix...")
+    
+    # Upload file
+    headers = {'Authorization': f'Bearer {api_key}'}
+    
+    with open(audio_file_path, 'rb') as f:
+        files = {'file': (audio_file_path.name, f, 'audio/mpeg')}
+        data = {
+            'language': 'en',
+            'name': audio_file_path.stem,
+            'enable_speaker_identification': 'true'
+        }
+        
+        response = requests.post(
+            'https://api.sonix.ai/v1/media',
+            headers=headers,
+            files=files,
+            data=data
+        )
+        response.raise_for_status()
+        media_id = response.json()['id']
+    
+    print(f"  Transcribing (ID: {media_id})...")
+    
+    # Poll for completion
+    start_time = time.time()
+    while True:
+        response = requests.get(
+            f'https://api.sonix.ai/v1/media/{media_id}',
+            headers=headers
+        )
+        response.raise_for_status()
+        status = response.json()['status']
+        
+        if status == 'completed':
+            break
+        elif status == 'failed':
+            raise RuntimeError("Sonix transcription failed")
+        
+        time.sleep(5)
+    
+    elapsed = time.time() - start_time
+    print(f"  Transcribed in {elapsed:.1f}s")
+    
+    # Get transcript with speakers
+    response = requests.get(
+        f'https://api.sonix.ai/v1/media/{media_id}/transcript',
+        headers=headers
+    )
+    response.raise_for_status()
+    
+    # Debug: Check content type and response
+    print(f"  Response status: {response.status_code}")
+    print(f"  Content-Type: {response.headers.get('Content-Type', 'unknown')}")
+    
+    try:
+        transcript_data = response.json()
+    except json.JSONDecodeError as e:
+        print(f"  Response text preview: {response.text[:500]}")
+        raise RuntimeError(f"Failed to parse Sonix transcript as JSON: {e}")
+    
+    # Format output
+    formatted_lines = []
+    current_speaker = None
+    output_lines = []
+    
+    for word in transcript_data.get('words', []):
+        speaker = word.get('speaker', 0)
+        speaker_label = f"SPEAKER_{speaker:02d}"
+        start = word.get('start', 0)
+        text = word.get('text', '')
+        
+        if speaker_label != current_speaker:
+            if output_lines:
+                output_lines.append('')
+            output_lines.append(f'{speaker_label}:')
+            current_speaker = speaker_label
+        
+        formatted_lines.append(f"[{start:.1f}s] {speaker_label}: {text}")
+    
+    # Count speakers
+    speakers = set(word.get('speaker', 0) for word in transcript_data.get('words', []))
+    print(f"  Detected {len(speakers)} speakers")
+    
+    # Reconstruct sentences from words
+    # Group consecutive words by speaker
+    sentences = []
+    current_sentence = []
+    current_speaker = None
+    current_start = 0
+    
+    for word in transcript_data.get('words', []):
+        speaker = word.get('speaker', 0)
+        speaker_label = f"SPEAKER_{speaker:02d}"
+        
+        if speaker_label != current_speaker:
+            if current_sentence:
+                sentences.append((current_start, current_speaker, ' '.join(current_sentence)))
+            current_sentence = [word.get('text', '')]
+            current_speaker = speaker_label
+            current_start = word.get('start', 0)
+        else:
+            current_sentence.append(word.get('text', ''))
+    
+    if current_sentence:
+        sentences.append((current_start, current_speaker, ' '.join(current_sentence)))
+    
+    # Format final output
+    output_lines = []
+    last_speaker = None
+    for start, speaker, text in sentences:
+        if speaker != last_speaker:
+            if output_lines:
+                output_lines.append('')
+            output_lines.append(f'{speaker}:')
+            last_speaker = speaker
+        output_lines.append(f'[{start:.1f}s] {text}')
+    
+    formatted_text = '\n'.join(output_lines) + '\n'
+    return save_raw_transcript_from_text(output_dir, audio_file_path.stem, "sonix", formatted_text)
+
+
+def transcribe_speechmatics(audio_path, output_dir):
+    """Speechmatics cloud transcription with speaker diarization"""
+    import time
+    import requests
+    import json
+    
+    api_key = os.environ.get('SPEECHMATICS_API_KEY')
+    if not api_key:
+        raise ValueError("SPEECHMATICS_API_KEY environment variable not set")
+    
+    audio_file_path = Path(audio_path)
+    
+    print(f"  Uploading to Speechmatics...")
+    
+    # Prepare configuration
+    config = {
+        "type": "transcription",
+        "transcription_config": {
+            "language": "en",
+            "diarization": "speaker",
+            "operating_point": "enhanced"
+        }
+    }
+    
+    # Upload and transcribe
+    headers = {'Authorization': f'Bearer {api_key}'}
+    
+    with open(audio_file_path, 'rb') as f:
+        files = {
+            'data_file': (audio_file_path.name, f, 'audio/mpeg'),
+            'config': (None, json.dumps(config), 'application/json')
+        }
+        
+        start_time = time.time()
+        response = requests.post(
+            'https://asr.api.speechmatics.com/v2/jobs',
+            headers=headers,
+            files=files
+        )
+        response.raise_for_status()
+        job_id = response.json()['id']
+    
+    print(f"  Transcribing (Job ID: {job_id})...")
+    
+    # Poll for completion
+    while True:
+        response = requests.get(
+            f'https://asr.api.speechmatics.com/v2/jobs/{job_id}',
+            headers=headers
+        )
+        response.raise_for_status()
+        job_data = response.json()['job']
+        
+        if job_data['status'] == 'done':
+            break
+        elif job_data['status'] in ['rejected', 'deleted']:
+            raise RuntimeError(f"Speechmatics job {job_data['status']}")
+        
+        time.sleep(5)
+    
+    elapsed = time.time() - start_time
+    print(f"  Transcribed in {elapsed:.1f}s")
+    
+    # Get transcript
+    response = requests.get(
+        f'https://asr.api.speechmatics.com/v2/jobs/{job_id}/transcript?format=json-v2',
+        headers=headers
+    )
+    response.raise_for_status()
+    transcript_data = response.json()
+    
+    # Format output
+    output_lines = []
+    current_speaker = None
+    
+    for result in transcript_data.get('results', []):
+        for alternative in result.get('alternatives', []):
+            content = alternative.get('content', '')
+            speaker = alternative.get('speaker', 'SPEAKER_00')
+            start = result.get('start_time', 0)
+            
+            # Normalize speaker label
+            if not speaker.startswith('SPEAKER_'):
+                speaker_label = f"SPEAKER_{speaker:02d}" if isinstance(speaker, int) else speaker
+            else:
+                speaker_label = speaker
+            
+            if speaker_label != current_speaker:
+                if output_lines:
+                    output_lines.append('')
+                output_lines.append(f'{speaker_label}:')
+                current_speaker = speaker_label
+            
+            output_lines.append(f'[{start:.1f}s] {content}')
+    
+    # Count speakers
+    speakers = set()
+    for result in transcript_data.get('results', []):
+        for alternative in result.get('alternatives', []):
+            speaker = alternative.get('speaker', 'SPEAKER_00')
+            if not speaker.startswith('SPEAKER_'):
+                speaker = f"SPEAKER_{speaker:02d}" if isinstance(speaker, int) else speaker
+            speakers.add(speaker)
+    
+    print(f"  Detected {len(speakers)} speakers")
+    
+    formatted_text = '\n'.join(output_lines) + '\n'
+    return save_raw_transcript_from_text(output_dir, audio_file_path.stem, "speechmatics", formatted_text)
 
 
 if __name__ == "__main__":

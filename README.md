@@ -1,6 +1,6 @@
 # Audio Transcription Pipeline with Multi-Provider AI Processing
 
-Automated transcription with speaker identification using multiple transcription services (WhisperX local, Deepgram, AssemblyAI) and AI post-processing (Claude, GPT-4, Gemini, etc.) to correct technical terms and speaker names.
+Automated transcription with speaker identification using multiple transcription services (WhisperX local, Deepgram, AssemblyAI, Sonix, Speechmatics) and AI post-processing (Claude, GPT-4, Gemini, etc.) to correct technical terms and speaker names.
 
 ## Quick Start
 
@@ -29,7 +29,7 @@ process_single.sh (orchestration)
     ↓
 Phase 1: Transcription
     process_single_transcribe_and_diarize.py
-    - Runs all transcribers internally (whisperx, deepgram, assemblyai)
+    - Runs all transcribers internally (whisperx, deepgram, assemblyai, sonix, speechmatics)
     - Outputs: intermediates/*_raw.txt
     ↓
 Phase 2: Post-Processing  
@@ -47,6 +47,8 @@ All services include speaker diarization (identifying who said what).
 | **WhisperX** | Local GPU | FREE | 5-10 min |
 | **Deepgram** | Cloud API | $0.41 | 23 sec |
 | **AssemblyAI** | Cloud API | $1.44 | 3-4 min |
+| **Sonix** | Cloud API | $10.00 | ~2 min |
+| **Speechmatics** | Cloud API | $4.50 | ~1 min |
 
 ## AI Post-Processors
 
@@ -130,9 +132,11 @@ Add to `setup_env.sh`:
 export HF_TOKEN="hf_..."  # https://huggingface.co/settings/tokens
 
 # Optional: Cloud transcription services
-export DEEPGRAM_API_KEY="..."      # https://console.deepgram.com/
-export ASSEMBLYAI_API_KEY="..."    # https://www.assemblyai.com/
-export OPENAI_API_KEY="sk-..."     # https://platform.openai.com/
+export DEEPGRAM_API_KEY="..."       # https://console.deepgram.com/
+export ASSEMBLYAI_API_KEY="..."     # https://www.assemblyai.com/
+export SONIX_API_KEY="..."          # https://sonix.ai/
+export SPEECHMATICS_API_KEY="..."  # https://www.speechmatics.com/
+export OPENAI_API_KEY="sk-..."      # https://platform.openai.com/
 
 # Optional: AI post-processors
 export ANTHROPIC_API_KEY="sk-ant-..."  # https://console.anthropic.com/
@@ -165,7 +169,7 @@ outputs/
 
 Where:
 - `{basename}` = Original audio filename without extension
-- `{transcriber}` = whisperx, deepgram, or assemblyai
+- `{transcriber}` = whisperx, deepgram, assemblyai, sonix, or speechmatics
 - `{processor}` = anthropic, openai, gemini, deepseek, moonshot, or ollama
 
 ## GPU Support
