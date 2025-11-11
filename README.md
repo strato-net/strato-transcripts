@@ -29,7 +29,7 @@ process_single.sh (orchestration)
     ↓
 Phase 1: Transcription
     process_single_transcribe_and_diarize.py
-    - Runs all transcribers internally (whisperx, deepgram, assemblyai, sonix, speechmatics)
+    - Runs all transcribers internally (whisperx, deepgram, assemblyai, sonix, speechmatics, novita)
     - Outputs: intermediates/*_raw.txt
     ↓
 Phase 2: Post-Processing  
@@ -42,13 +42,14 @@ Phase 2: Post-Processing
 
 All services include speaker diarization (identifying who said what).
 
-| Service | Type | Cost/hour | Speed |
-|---------|------|-----------|-------|
-| **WhisperX** | Local GPU | FREE | 5-10 min |
-| **Deepgram** | Cloud API | $0.41 | 23 sec |
-| **AssemblyAI** | Cloud API | $1.44 | 3-4 min |
-| **Sonix** | Cloud API | $10.00 | ~2 min |
-| **Speechmatics** | Cloud API | $4.50 | ~1 min |
+| Service | Model | Type | Cost/hour | Speed |
+|---------|-------|------|-----------|-------|
+| **WhisperX** | large-v3 | Local GPU | FREE | 5-10 min |
+| **Deepgram** | nova-3-general | Cloud API | $0.41 | 23 sec |
+| **AssemblyAI** | Best | Cloud API | $1.44 | 3-4 min |
+| **Sonix** | Standard | Cloud API | $10.00 | ~2 min |
+| **Speechmatics** | Enhanced | Cloud API | $4.50 | ~1 min |
+| **Novita AI** | qwen2.5-omni | Cloud API | TBD | TBD |
 
 ## AI Post-Processors
 
@@ -169,7 +170,7 @@ outputs/
 
 Where:
 - `{basename}` = Original audio filename without extension
-- `{transcriber}` = whisperx, deepgram, assemblyai, sonix, or speechmatics
+- `{transcriber}` = whisperx, deepgram, assemblyai, sonix, speechmatics, or novita
 - `{processor}` = anthropic, openai, gemini, deepseek, moonshot, or ollama
 
 ## GPU Support
