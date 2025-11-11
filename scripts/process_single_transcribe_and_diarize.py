@@ -548,7 +548,7 @@ def transcribe_assemblyai(audio_path, output_dir):
 
 
 def transcribe_sonix(audio_path, output_dir):
-    """Sonix cloud transcription with speaker diarization"""
+    """Sonix cloud transcription with speaker diarization and enhanced parameters"""
     import time
     import requests
     import json
@@ -559,9 +559,13 @@ def transcribe_sonix(audio_path, output_dir):
     
     audio_file_path = Path(audio_path)
     
-    print(f"  Uploading to Sonix...")
+    print(f"  Uploading to Sonix with enhanced parameters...")
+    print(f"    - Speaker identification enabled")
+    print(f"    - Custom blockchain/crypto vocabulary")
+    print(f"    - Entity detection enabled")
+    print(f"    - Auto punctuation enabled")
     
-    # Upload file
+    # Upload file with enhanced parameters
     headers = {'Authorization': f'Bearer {api_key}'}
     
     with open(audio_file_path, 'rb') as f:
@@ -569,7 +573,21 @@ def transcribe_sonix(audio_path, output_dir):
         data = {
             'language': 'en',
             'name': audio_file_path.stem,
-            'enable_speaker_identification': 'true'
+            'enable_speaker_identification': 'true',
+            'enable_entity_detection': 'true',
+            'enable_auto_punctuation': 'true',
+            'profanity_filter': 'false',
+            'custom_vocab': ','.join([
+                'Ethereum', 'blockchain', 'cryptocurrency', 'Bitcoin',
+                'DeFi', 'NFT', 'smart contract', 'dApp', 'Web3',
+                'Solidity', 'EVM', 'Geth', 'Whisper', 'Swarm', 'Mist',
+                'proof-of-stake', 'proof-of-work', 'consensus',
+                'validator', 'mining', 'gas', 'gwei', 'wei',
+                'MetaMask', 'wallet', 'token', 'DAO', 'IPFS',
+                'ENS', 'layer-2', 'rollup', 'sharding', 'staking',
+                'DevCon', 'EthCC', 'testnet', 'mainnet', 'fork',
+                'PyEthereum', 'cpp-ethereum', 'go-ethereum'
+            ])
         }
         
         response = requests.post(
