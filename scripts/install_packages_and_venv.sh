@@ -221,16 +221,16 @@ source "$VENV_DIR/bin/activate"
 # ==============================================================================
 # Step 4: Install Base Packages
 # ==============================================================================
-# Installs WhisperX, AI provider SDKs, and dependencies from requirements-base.txt.
+# Installs WhisperX, AI provider SDKs, and dependencies from requirements.txt.
 # WhisperX will pull PyTorch 2.8.0, which we'll upgrade in the next step.
 # Includes transcription services (AssemblyAI, Deepgram, OpenAI, Kimi-Audio)
 # and post-processing services (Anthropic, Google Gemini, OpenAI).
 # ==============================================================================
 echo -e "${YELLOW}[4/14] Installing base packages...${NC}"
-echo "Installing WhisperX, AI provider SDKs, and dependencies from requirements-base.txt"
+echo "Installing WhisperX, AI provider SDKs, and dependencies from requirements.txt"
 echo "Note: WhisperX will pull PyTorch 2.8.0 (we'll upgrade to 2.9.0 next)"
 echo "This may take 5-10 minutes..."
-pip install -r "$PROJECT_DIR/requirements-base.txt"
+pip install -r "$PROJECT_DIR/requirements.txt"
 echo -e "${GREEN}✓ Base packages installed${NC}"
 echo ""
 
@@ -242,24 +242,24 @@ echo ""
 # CUDA 13.0 offers the latest optimizations and performance improvements.
 # Uses --force-reinstall to ensure correct CUDA/CPU variant is installed.
 # ==============================================================================
-echo -e "${YELLOW}[5/14] Upgrading PyTorch to latest...${NC}"
-echo "Upgrading PyTorch 2.8.0 → latest with correct build for detected hardware"
+echo -e "${YELLOW}[5/14] Upgrading PyTorch to 2.9.0...${NC}"
+echo "Upgrading PyTorch 2.8.0 → 2.9.0 with correct build for detected hardware"
 echo "Provides full Blackwell (sm_120) support for RTX 50-series GPUs"
 echo "This may take 2-5 minutes depending on internet speed..."
 if [ "$HAS_NVIDIA" = true ]; then
-    echo "Installing: PyTorch latest with CUDA 13.0 support"
+    echo "Installing: PyTorch 2.9.0 with CUDA 13.0 support"
     pip install --force-reinstall --index-url https://download.pytorch.org/whl/cu130 \
-        torch \
-        torchvision \
-        torchaudio
+        torch==2.9.0 \
+        torchvision==0.24.0 \
+        torchaudio==2.9.0
 else
-    echo "Installing: PyTorch latest CPU-only build"
+    echo "Installing: PyTorch 2.9.0 CPU-only build"
     pip install --force-reinstall --index-url https://download.pytorch.org/whl/cpu \
-        torch \
-        torchvision \
-        torchaudio
+        torch==2.9.0 \
+        torchvision==0.24.0 \
+        torchaudio==2.9.0
 fi
-echo -e "${GREEN}✓ PyTorch latest installed${NC}"
+echo -e "${GREEN}✓ PyTorch 2.9.0 installed${NC}"
 echo ""
 
 # ==============================================================================
@@ -491,11 +491,11 @@ echo ""
 # ==============================================================================
 # Step 12: Verify AI Provider SDKs
 # ==============================================================================
-# Verifies that AI provider SDKs were installed from requirements-base.txt.
+# Verifies that AI provider SDKs were installed from requirements.txt.
 # These packages were already installed in Step 4 along with WhisperX.
 # ==============================================================================
 echo -e "${YELLOW}[12/14] Verifying AI provider SDKs...${NC}"
-echo "Verifying packages installed from requirements-base.txt:"
+echo "Verifying packages installed from requirements.txt:"
 echo "  Cloud transcription: assemblyai, deepgram-sdk, openai"
 echo "  Kimi-Audio support: transformers, librosa"
 echo "  AI post-processing: anthropic, google-generativeai"

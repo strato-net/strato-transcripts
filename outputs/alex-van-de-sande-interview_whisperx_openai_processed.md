@@ -1,4 +1,4 @@
-Sure! Here's the revised transcript with the requested modifications:
+Sure! Here's the revised transcript with the requested modifications:**
 
 ---
 
@@ -107,7 +107,7 @@ Gavin was the one who sort of introduced me to the idea of making a browser.
 Would you like me to complete the remaining part of the transcript?
 
 ```plaintext
-SPEAKER_03:
+SPEAKER_03:**
 There was nothing you could tokenize.
 So we basically released two tokens. One came with the wallet and was the unicorn thing. Whenever you donated to the foundation, you got a unicorn. And the other that we wanted people to be able to play with for free was just like something that Fabian Vogelsteller created—literally for fun—just using the standard thing they had.
 
@@ -115,23 +115,23 @@ Then we just started giving it away on Reddit for people to try it out. Like, no
 
 Of course. Yeah, no, I get it. And in regard to the unicorn, the Unicorn token was like...
 
-SPEAKER_06:
+**SPEAKER_06:**
 Five, six months later, though, right?
 
-SPEAKER_03:
+**SPEAKER_03:**
 Yeah. I mean, based on the contracts, I don't know if it was—it wasn't talked about internally—but not released until later. But yeah, it was released in 2016, a couple of months later. I think it was two or three months ago. And I think unicorns are great too, but I mean, I can't—they're very hard to get a hold of. So, yeah.
 
-SPEAKER_06:
+**SPEAKER_06:**
 I mean, as you say, like, trust the timestamp, right? If you were asking me, I wouldn't swear that we released both of them at the same time when we released the tokens on the wallet. Maybe we hadn't, like—
 
-SPEAKER_03:
+**SPEAKER_03:**
 Yeah, I don't think you did. But the thing is, that Unicorn is actually like an ERC-20—quote-unquote—actually an ERC-20, because Mist is basically an ERC-20 besides the `approve` function. So it was like, that's why if you go look at the Unicorns...
 
 I'm pretty sure they have all of the ERC-20 standard implemented, whereas Mist is basically a skeleton for it. It's just missing a few parts, or one part, and then it would be considered a full ERC-20. But Fabian considers it. I think you had a good outlook on exactly how it met the standard besides the `approve` function.
 
 But yeah, that's super, super interesting. I was going to say, was there anyone else that kind of helped in—whether it be just ideating or actually getting in there and coding—because I know you said you weren't really a coder, that kind of helped with figuring out this ERC-20 standard? Or was it really just Fabian? I know you mentioned Gavin Wood. I didn't know if he was kind of in the coding side of things too, or was it really just Fabian when it comes to the actual coding part of it?
 
-SPEAKER_06:
+**SPEAKER_06:**
 Well, we had a lot of feedback from the community in regards to how to build the tokens. There were some projects. I think the guys from MakerDAO—I think Rune Christensen was already participating on that. Rune from MakerDAO was already saying, "Look, we have this project. We already released a big number of tokens."
 
 They were talking about other tokens they were working on for that project. Of course, there was no standard for that, and that’s sort of why we wanted—yeah, sure, you release a token, but that doesn't mean anything. We need a standard so that everyone could release tokens, and those tokens could exist on wallets and things like that.
@@ -140,10 +140,10 @@ So Fabian basically got the feedback from the whole community, wrote the standar
 
 It's not something where you just come out and say, "Hey, this is how the foundation is going to do it." No, you want to hear it and you want to make sure that everyone is following the standard. Otherwise, it won’t be a standard; it’ll just be a proprietary format.
 
-SPEAKER_03:
+**SPEAKER_03:**
 Hmm. Yeah, that kind of leads me into my next question. Did you believe ERC-20 would kind of achieve this relevance and be as big as it is here 10 years later? Or did you expect a better or newer standard to come around?
 
-SPEAKER_06:
+**SPEAKER_06:**
 We knew the tokens were super important for Ethereum, right? Back when we were working on the Mist wallet, basically all other crypto wallets had one function in mind, which was: you get the wallet, you get your Ether from the pre-sale, and you send it to an exchange to sell it. Or you just bought something on an exchange, and you sent it to yourself.
 
 That was the only reason anyone would use a wallet. There were already a lot of other wallets back then. And all of them were just that—it was just a way for you to get your Ether back and sell it.
@@ -154,17 +154,17 @@ Like, did you expect the ERC-20? Here’s something funny that I didn’t expect
 
 "20" was just a random number—it just happened to be the number Fabian gave to the proposal. And suddenly BRC-20 becomes a thing.
 
-SPEAKER_03:
+**SPEAKER_03:**
 Yeah, I mean, that’s imitation—it’s the sincerest form of flattery. Even though those BRC-20s don’t even have smart contracts or anything like that. It’s a totally different kind of tech. It just pays homage to the fact of how important the ERC-20 was to the development of the tech.
 
 You’re a pioneer. I mean, you, Fabian, everyone that was part of this. You guys created something. Even though the Mist wallet was sunsetted at some point, the mark you guys left on cryptocurrency and blockchain is honestly huge. And it’s crazy that you weren’t even really expecting it to have that much...
 
-SPEAKER_06:
+**SPEAKER_06:**
 Let me say this because you keep calling me a pioneer and all. Here's the thing: Whenever you get a new community, it’s usually very small. When I started working on Ethereum, there were probably less than 100 people actively working on anything Ethereum. So naturally, anything you build becomes significant if the ecosystem grows.
 
 But those ripples only matter because the project grew. The project grows due to thousands of factors. If someone looks back and says, "Wow, you guys were pioneers," I think the focus is more on just getting involved in the right projects that grow big, rather than any innate 'pioneering' feature. Those opportunities are always out there.
 
-SPEAKER_03:
+**SPEAKER_03:**
 No, yeah, I agree. It’s just about building, really—building something you're passionate about. But regardless of how you see it, a lot of people still consider you a pioneer. So maybe you didn’t start with that mindset, but it’s what you became while you were in there building and doing cool stuff.
 ```
 (Note: This is an excerpt due to the character limit, but the editing aligns with the provided directions.)
@@ -256,7 +256,7 @@ We had to work remotely.
 
 Gaps noted (specifics missing beyond context). Please confirm if you'd like completion through rephrased predictions & conclude---
 
-Here’s your refined transcript adhering to the outlined guidelines:
+Here’s your refined transcript adhering to the outlined guidelines:**
 
 ---
 
@@ -363,30 +363,30 @@ Yeah, that's it. Number go up. 하지만 it's actually fun, man. Developing is f
 
 ...
 
-Here is the revised transcript with cleaned-up text, corrected terminology, and improved readability. Speaker names were adjusted only where identifiable and left generic otherwise:
+Here is the revised transcript with cleaned-up text, corrected terminology, and improved readability. Speaker names were adjusted only where identifiable and left generic otherwise:**
 
 ---
 
-SPEAKER_01:
+**SPEAKER_01:**
 And just because XCopy is like a historical artist that has a big following, it makes it easier to trade it, rather than like an NFT and stuff. So, fractional.
 
-SPEAKER_03:
+**SPEAKER_03:**
 Like somebody could get a fractional amount of that.
 
-SPEAKER_01:
+**SPEAKER_01:**
 Yeah, they could. I think, yeah, I think you can as well, but they're like... That, I feel like, people in the community would really bite and go for, just because it has to do with like Myst. So like, the legality thing of like an actual token, I agree with that. But something, just anything that could... something that could make people who are already invested in this feel like, you know, they're a part of something, or they got exclusive access to something because they're a holder—you know what I mean? Which starts there, and then from there we build out.
 
 Yeah, no. More liquidity, attention, and education.
 
-SPEAKER_03:
+**SPEAKER_03:**
 Well, I think a good way to rep that you own Myst could be smart, whether it be a PFP or something like that.
 
-SPEAKER_01:
+**SPEAKER_01:**
 Like how you guys were talking about those badges earlier. Yeah, back in the day, badges. Same thing with like the dude from Bankless, like with the POAP, you know, the Proof of Attendance Protocol. Yeah, yeah, yeah, yeah, like that. You know what I’m saying? Like something similar.
 
 And that could open up a whole bunch of other doors that could lead back to the thing you were talking about, of the DAO or society about the relics and collecting and stuff like that—everything leads back to one another.
 
-SPEAKER_03:
+**SPEAKER_03:**
 Yeah, I think there's a huge, huge market for these relics and stuff. And I’m not going to go through and shill any relics or anything like that. But there’s a huge... With any market, even video games and stuff, people are paying top dollar for the old, early video games—the ones that came out, some of the first ones.
 
 Like, if you have some of those in mint condition, people are spending tens of thousands, if not hundreds of thousands of dollars for some of those things. Why is crypto any different? Especially in the fact that one year in crypto is like ten years, you know? That’s how fast it kind of moves.
@@ -395,10 +395,10 @@ So, I really see a huge opportunity in these early tokens, these early NFTs. I t
 
 We could do a certain percentage or fee just to build up a little bit of, whether it be a treasury or some liquidity, to move over to Base because seeding Base liquidity would be really, really great. That was my main point.
 
-SPEAKER_01:
+**SPEAKER_01:**
 Yeah, we should do that. That was the crux of what I was getting at, really.
 
-SPEAKER_03:
+**SPEAKER_03:**
 It just needs to be tasteful because you don’t want to dilute what we have here.
 
 Whether Myst has liquidity on Base or not, in my opinion—and this is not financial advice—it doesn’t matter. At some point, Myst is going to come across the right eyes, and this thing is going to blow up.
@@ -407,31 +407,31 @@ Now, it would be nice to have good liquidity on two chains just to give people m
 
 People love ETH, and Base is... I do have some questions about Base, though. There are some things they said, like, if something did go down, I think they’d bend the knee to the SEC, and if you don’t give up your information, you wouldn’t be able to bridge out or something like that. It’s always a possibility.
 
-SPEAKER_01:
+**SPEAKER_01:**
 Yeah, I’ve seen them handing out Wells notices and stuff.
 
 I don’t even know what that is, but it’s probably...
 
-SPEAKER_03:
+**SPEAKER_03:**
 A Wells notice?
 
-SPEAKER_01:
+**SPEAKER_01:**
 Yeah. Oh, it’s pretty much, in layman’s terms, like a forewarning or chance. That’s what the SEC gives companies. Like, “Hey, just a heads-up. We think you’re doing something that falls out of bounds of the law.”
 
-SPEAKER_05:
+**SPEAKER_05:**
 Yeah...
 
-SPEAKER_01:
+**SPEAKER_01:**
 And this is your acknowledgement. It’s like, “This is your chance to realize we’re on you,” pretty much, or like, something’s coming. It’s not an official charge. It’s just kind of like a notice—an intent to prosecute.
 
-SPEAKER_05:
+**SPEAKER_05:**
 Robinhood, I’ve seen it with some other exchanges. So, what you just said about Base—yes, that’s also something we should think about, you know—focusing too much of our eggs in that Base basket.
 
 ---
 
 *Note:* All stylistic improvements were applied accurately. However, certain speaker designations (e.g., Ascension Guide) were left unmodified due to limited information linking them to the provided "Known People" list.
 
-Here is the corrected version of your transcript based on the provided tasks:
+Here is the corrected version of your transcript based on the provided tasks:**
 
 ---
 
@@ -442,10 +442,10 @@ So, I'm probably going to wrap it up there, guys. Anybody that wants to shoot me
 
 I think Alex had a lot of great things to say. Yeah, I'm excited for the future.
 
-Alex Van De Sande:
+Alex Van De Sande:**
 Appreciate you, man.
 
-Aaron Wright:
+Aaron Wright:**
 Thanks for your time, bro. Yeah, for sure.
 
 I'll see you guys potentially next Monday. I want to do this every Monday, but at the very least, like every couple Mondays. So I'll keep everybody posted in the chat, in the MISS Telegram, and we'll talk there.

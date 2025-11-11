@@ -134,7 +134,6 @@ solidity
 staking
 state channel
 state channels
-STRATO Mercata
 subgraph
 swap
 swaps
