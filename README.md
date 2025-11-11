@@ -51,7 +51,7 @@ Phase 2: Post-Processing
 
 | Provider | Model | Cost | Features |
 |----------|-------|------|----------|
-| **Anthropic** | Claude 3.5 Sonnet | $3/M tokens | Streaming, 64K output |
+| **Anthropic** | Claude Sonnet 4.5 | $3/M tokens | Streaming, 64K output |
 | **OpenAI** | GPT-4o | $2.50/M tokens | Chunking, reliable |
 | **Gemini** | Gemini 2.5 Pro | $1.25/M tokens | 2M context |
 | **DeepSeek** | DeepSeek Chat | $0.14/M tokens | Cost-effective |
