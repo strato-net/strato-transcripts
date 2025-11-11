@@ -166,8 +166,21 @@ def load_glossary():
     }
 
 def load_people_list():
-    """Load ethereum_people.txt if available"""
+    """Load ethereum_people.txt, generating it if needed"""
     people_file = Path("intermediates/ethereum_people.txt")
+    
+    # Generate if doesn't exist
+    if not people_file.exists():
+        extract_script = Path("scripts/extract_people.py")
+        if extract_script.exists():
+            import subprocess
+            try:
+                print("  Generating ethereum_people.txt...")
+                subprocess.run(["python3", str(extract_script)], 
+                             check=True, capture_output=True, text=True)
+            except subprocess.CalledProcessError:
+                # Silent failure - file may not be critical
+                pass
     
     if people_file.exists():
         with open(people_file, 'r', encoding='utf-8') as f:
@@ -176,8 +189,21 @@ def load_people_list():
     return []
 
 def load_terms_list():
-    """Load ethereum_technical_terms.txt if available"""
+    """Load ethereum_technical_terms.txt, generating it if needed"""
     terms_file = Path("intermediates/ethereum_technical_terms.txt")
+    
+    # Generate if doesn't exist
+    if not terms_file.exists():
+        extract_script = Path("scripts/extract_terms.py")
+        if extract_script.exists():
+            import subprocess
+            try:
+                print("  Generating ethereum_technical_terms.txt...")
+                subprocess.run(["python3", str(extract_script)], 
+                             check=True, capture_output=True, text=True)
+            except subprocess.CalledProcessError:
+                # Silent failure - file may not be critical
+                pass
     
     if terms_file.exists():
         with open(terms_file, 'r', encoding='utf-8') as f:
@@ -187,6 +213,8 @@ def load_terms_list():
 
 def build_context_summary():
     """Build a concise context summary from available resources"""
+    import subprocess
+    
     context_parts = []
     
     # Add glossary info if available
@@ -200,11 +228,35 @@ def build_context_summary():
     
     # Try to load from separate files if glossary doesn't exist
     if not glossary["people"]:
+        # Generate people list if it doesn't exist
+        people_file = Path("intermediates/ethereum_people.txt")
+        if not people_file.exists():
+            extract_script = Path("scripts/extract_people.py")
+            if extract_script.exists():
+                try:
+                    print("  Generating ethereum_people.txt...")
+                    subprocess.run(["python3", str(extract_script)], 
+                                 check=True, capture_output=True, text=True, cwd=Path.cwd())
+                except subprocess.CalledProcessError:
+                    pass  # Silent failure - file may not be critical
+        
         people = load_people_list()
         if people:
             context_parts.append(f"Known People ({len(people)}): {', '.join(people[:30])}")
     
     if not glossary["technical_terms"]:
+        # Generate technical terms if it doesn't exist
+        terms_file = Path("intermediates/ethereum_technical_terms.txt")
+        if not terms_file.exists():
+            extract_script = Path("scripts/extract_terms.py")
+            if extract_script.exists():
+                try:
+                    print("  Generating ethereum_technical_terms.txt...")
+                    subprocess.run(["python3", str(extract_script)], 
+                                 check=True, capture_output=True, text=True, cwd=Path.cwd())
+                except subprocess.CalledProcessError:
+                    pass  # Silent failure - file may not be critical
+        
         terms = load_terms_list()
         if terms:
             context_parts.append(f"Technical Terms ({len(terms)}): {', '.join(terms[:50])}")

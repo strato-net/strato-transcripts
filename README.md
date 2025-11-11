@@ -45,6 +45,7 @@ All services include speaker diarization (identifying who said what).
 | Service | Model | Type | Cost/hour | Speed |
 |---------|-------|------|-----------|-------|
 | **WhisperX** | large-v3 | Local GPU | FREE | 5-10 min |
+| **Kimi-Audio** | 7B-Instruct | Local GPU | FREE | ~1.5x RT |
 | **Deepgram** | nova-3-general | Cloud API | $0.41 | 23 sec |
 | **AssemblyAI** | Best | Cloud API | $1.44 | 3-4 min |
 | **Sonix** | Standard | Cloud API | $10.00 | ~2 min |
@@ -152,6 +153,7 @@ export MOONSHOT_API_KEY="sk-..."      # https://platform.moonshot.cn/
 ```
 intermediates/
   audio_whisperx_raw.txt         # WhisperX output
+  audio_kimi_raw.txt             # Kimi-Audio output
   audio_deepgram_raw.txt          # Deepgram output
   audio_whisperx_raw.md           # Markdown version
 ```
@@ -170,7 +172,7 @@ outputs/
 
 Where:
 - `{basename}` = Original audio filename without extension
-- `{transcriber}` = whisperx, deepgram, assemblyai, sonix, speechmatics, or novita
+- `{transcriber}` = whisperx, kimi, deepgram, assemblyai, sonix, speechmatics, or novita
 - `{processor}` = anthropic, openai, gemini, deepseek, moonshot, or ollama
 
 ## GPU Support
