@@ -797,15 +797,17 @@ def transcribe_speechmatics(audio_path, output_dir):
     response.raise_for_status()
     transcript_data = response.json()
     
-    # Format output
-    output_lines = []
-    current_speaker = None
-    
+    # Collect all words with speaker info (Speechmatics returns word-level data)
+    words_by_speaker = []
     for result in transcript_data.get('results', []):
         for alternative in result.get('alternatives', []):
-            content = alternative.get('content', '')
+            content = alternative.get('content', '').strip()
+            if not content:
+                continue
+                
             speaker = alternative.get('speaker', 'SPEAKER_00')
             start = result.get('start_time', 0)
+            word_type = alternative.get('type', 'word')
             
             # Normalize speaker label
             if not speaker.startswith('SPEAKER_'):
@@ -813,23 +815,80 @@ def transcribe_speechmatics(audio_path, output_dir):
             else:
                 speaker_label = speaker
             
-            if speaker_label != current_speaker:
-                if output_lines:
-                    output_lines.append('')
-                output_lines.append(f'{speaker_label}:')
-                current_speaker = speaker_label
-            
-            output_lines.append(f'[{start:.1f}s] {content}')
+            words_by_speaker.append({
+                'speaker': speaker_label,
+                'start': start,
+                'content': content,
+                'type': word_type
+            })
     
-    # Count speakers
-    speakers = set()
-    for result in transcript_data.get('results', []):
-        for alternative in result.get('alternatives', []):
-            speaker = alternative.get('speaker', 'SPEAKER_00')
-            if not speaker.startswith('SPEAKER_'):
-                speaker = f"SPEAKER_{speaker:02d}" if isinstance(speaker, int) else speaker
-            speakers.add(speaker)
+    # Group consecutive words by speaker into phrases
+    phrases = []
+    current_phrase = []
+    current_speaker = None
+    current_start = 0
     
+    for word_data in words_by_speaker:
+        speaker = word_data['speaker']
+        content = word_data['content']
+        start = word_data['start']
+        word_type = word_data['type']
+        
+        # Start new phrase on speaker change
+        if speaker != current_speaker:
+            if current_phrase:
+                phrases.append({
+                    'speaker': current_speaker,
+                    'start': current_start,
+                    'text': ' '.join(current_phrase)
+                })
+            current_phrase = [content]
+            current_speaker = speaker
+            current_start = start
+        else:
+            # Add to current phrase
+            # Handle punctuation (don't add space before punctuation)
+            if word_type == 'punctuation':
+                if current_phrase:
+                    current_phrase[-1] = current_phrase[-1] + content
+                else:
+                    current_phrase.append(content)
+            else:
+                current_phrase.append(content)
+        
+        # Break phrases at sentence endings for readability
+        if content in ['.', '?', '!'] and len(current_phrase) > 10:
+            phrases.append({
+                'speaker': current_speaker,
+                'start': current_start,
+                'text': ' '.join(current_phrase)
+            })
+            current_phrase = []
+            current_start = start
+    
+    # Add final phrase
+    if current_phrase:
+        phrases.append({
+            'speaker': current_speaker,
+            'start': current_start,
+            'text': ' '.join(current_phrase)
+        })
+    
+    # Format output
+    output_lines = []
+    last_speaker = None
+    
+    for phrase in phrases:
+        speaker = phrase['speaker']
+        if speaker != last_speaker:
+            if output_lines:
+                output_lines.append('')
+            output_lines.append(f'{speaker}:')
+            last_speaker = speaker
+        output_lines.append(f'[{phrase["start"]:.1f}s] {phrase["text"]}')
+    
+    # Count unique speakers
+    speakers = set(phrase['speaker'] for phrase in phrases)
     print(f"  Detected {len(speakers)} speakers")
     
     formatted_text = '\n'.join(output_lines) + '\n'
@@ -988,7 +1047,7 @@ def transcribe_kimi_audio(audio_path, output_dir, force_cpu=False):
     
     # Load model and processor
     print("  → Loading model...")
-    model_id = "FunAudioLLM/Kimi-Audio-7B-Instruct"
+    model_id = "moonshotai/Kimi-Audio-7B-Instruct"
     
     try:
         processor = AutoProcessor.from_pretrained(
