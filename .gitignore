@@ -1,47 +1,215 @@
-# Jekyll build output
-_site/
+# Audio Transcription Project .gitignore
 
-# Jekyll cache
-.jekyll-cache/
-.jekyll-metadata
+# ============================================================================
+# Project Output Directories
+# ============================================================================
+# Transcription intermediates and final outputs
+/intermediates/
+/outputs/
 
-# Sass cache
-.sass-cache/
+# ============================================================================
+# Python
+# ============================================================================
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
 
-# Ruby/Bundler
-.bundle/*
-!.bundle/config
-vendor/
+# C extensions
+*.so
 
-# OS generated files
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+
+# Virtual environments
+venv/
+venv311/
+ENV/
+env/
+.venv
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# pyenv
+.python-version
+
+# Celery
+celerybeat-schedule
+celerybeat.pid
+
+# SageMath parsed files
+*.sage.py
+
+# Spyder project settings
+.spyderproject
+.spyproject
+
+# Rope project settings
+.ropeproject
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre type checker
+.pyre/
+
+# ============================================================================
+# Audio Files (if tracking source files separately)
+# ============================================================================
+# Uncomment if you want to exclude audio files from git
+# *.mp3
+# *.wav
+# *.m4a
+# *.flac
+# *.ogg
+# *.aac
+
+# ============================================================================
+# ML Models & Caches
+# ============================================================================
+# HuggingFace model cache
+.cache/
+*.pt
+*.pth
+*.bin
+*.safetensors
+
+# WhisperX/Whisper models (if downloaded locally)
+models/
+
+# ============================================================================
+# Environment Variables & Secrets
+# ============================================================================
+.env
+.env.local
+.env.*.local
+setup_env.sh
+
+# API keys and tokens
+*.key
+secrets.txt
+
+# ============================================================================
+# Operating System
+# ============================================================================
+# macOS
 .DS_Store
 .DS_Store?
 ._*
 .Spotlight-V100
 .Trashes
-ehthumbs.db
-Thumbs.db
+.AppleDouble
+.LSOverride
 
-# Editor files
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# ============================================================================
+# IDEs & Editors
+# ============================================================================
+# VSCode
 .vscode/
+*.code-workspace
+
+# PyCharm
 .idea/
+*.iml
+*.iws
+*.ipr
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Vim
 *.swp
 *.swo
+*.swn
+.*.sw[a-p]
 *~
+.netrwhist
 
-# Logs
+# Emacs
+*~
+\#*\#
+.\#*
+.projectile
+
+# ============================================================================
+# Logs & Temporary Files
+# ============================================================================
 *.log
+*.tmp
+*.temp
+*.bak
+*.backup
 
-# Node modules (if using any Node.js tools)
-node_modules/
+# Process IDs
+*.pid
+*.seed
+*.pid.lock
 
-# Environment variables
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-setup_env.sh
+# ============================================================================
+# Other
+# ============================================================================
+# Compressed files (if accidentally created)
+*.zip
+*.tar.gz
+*.rar
 
-venv
-venv311
+# Database files
+*.db
+*.sqlite
+*.sqlite3
