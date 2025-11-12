@@ -51,10 +51,6 @@ export SONIX_API_KEY=""
 # Get key from: https://www.speechmatics.com/
 export SPEECHMATICS_API_KEY=""
 
-# Novita AI (Cloud transcription with Qwen2.5-Omni model)
-# Get key from: https://novita.ai/
-export NOVITA_API_KEY=""
-
 # Ollama - No API key needed (runs locally, FREE, private)
 # Just ensure service is running: ollama serve
 # Models available: qwen2.5:32b, llama3.1:70b, etc.
@@ -115,12 +111,6 @@ if [ -n "$SPEECHMATICS_API_KEY" ] && [ "$SPEECHMATICS_API_KEY" != "" ]; then
   echo "  SPEECHMATICS_API_KEY: SET"
 else
   echo "  SPEECHMATICS_API_KEY: NOT SET"
-fi
-
-if [ -n "$NOVITA_API_KEY" ] && [ "$NOVITA_API_KEY" != "" ]; then
-  echo "  NOVITA_API_KEY: SET"
-else
-  echo "  NOVITA_API_KEY: NOT SET"
 fi
 echo ""
 echo "See README.md for usage examples and documentation."

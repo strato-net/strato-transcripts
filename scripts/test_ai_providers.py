@@ -238,16 +238,6 @@ def test_whisperx():
         print(f"❌ Error: {e}")
         return False
 
-        else:
-            print(f"⚠️  No GPU detected (CPU mode)")
-            return True
-    except ImportError as e:
-        print(f"❌ Required package not installed: {e}")
-        return False
-    except Exception as e:
-        print(f"❌ Error: {e}")
-        return False
-
 def test_sonix():
     """Test Sonix transcription service"""
     print("\n" + "="*60)
@@ -329,53 +319,6 @@ def test_speechmatics():
         print(f"❌ Error: {e}")
         return False
 
-def test_novita():
-    """Test Novita AI transcription service"""
-    print("\n" + "="*60)
-    print("Testing NOVITA AI (transcription service)")
-    print("="*60)
-    
-    api_key = os.environ.get('NOVITA_API_KEY')
-    if not api_key or api_key == "" or api_key == "your_novita_api_key_here":
-        print("⚠️  API key not configured - skipping")
-        return "skipped"
-    
-    try:
-        import requests
-        
-        # Try v2 API endpoint for models list
-        headers = {
-            'Authorization': f'Bearer {api_key}',
-            'Content-Type': 'application/json'
-        }
-        
-        # Try accessing models endpoint
-        response = requests.get('https://api.novita.ai/v2/models', headers=headers, timeout=10)
-        
-        if response.status_code == 200:
-            print(f"✅ API key valid and models accessible")
-            return True
-        elif response.status_code == 401:
-            print(f"❌ API key invalid (401 Unauthorized)")
-            return False
-        elif response.status_code == 403:
-            print(f"❌ API key unauthorized (403 Forbidden)")
-            return False
-        else:
-            # Try alternative endpoint
-            response2 = requests.get('https://api.novita.ai/v3/models', headers=headers, timeout=10)
-            if response2.status_code == 200:
-                print(f"✅ API key valid (v3 endpoint)")
-                return True
-            
-            print(f"⚠️  API returned status codes: v2={response.status_code}, v3={response2.status_code}")
-            print(f"   Note: API key may be valid but endpoints returned unexpected responses")
-            # Consider it a pass if not explicit auth error
-            return True if response.status_code not in [401, 403, 404] else False
-    except Exception as e:
-        print(f"❌ Error: {e}")
-        return False
-
 def main():
     print("="*60)
     print("AI Provider Connectivity Test")
@@ -397,7 +340,6 @@ def main():
     results['deepgram'] = test_deepgram()
     results['sonix'] = test_sonix()
     results['speechmatics'] = test_speechmatics()
-    results['novita'] = test_novita()
     
     # Test AI post-processing providers
     print("\n" + "="*60)

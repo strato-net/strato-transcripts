@@ -29,7 +29,7 @@ process_single.sh (orchestration)
     ↓
 Phase 1: Transcription
     process_single_transcribe_and_diarize.py
-    - Runs all transcribers internally (whisperx, deepgram, assemblyai, sonix, speechmatics, novita)
+    - Runs all transcribers internally (whisperx, deepgram, assemblyai, sonix, speechmatics)
     - Outputs: intermediates/*_raw.txt
     ↓
 Phase 2: Post-Processing  
@@ -49,7 +49,6 @@ All services include speaker diarization (identifying who said what).
 | **AssemblyAI** | Best | Cloud API | $1.44 | 3-4 min |
 | **Sonix** | Standard | Cloud API | $10.00 | ~2 min |
 | **Speechmatics** | Enhanced | Cloud API | $4.50 | ~1 min |
-| **Novita AI** | qwen2.5-omni | Cloud API | TBD | TBD |
 
 ## AI Post-Processors
 
@@ -138,7 +137,6 @@ export DEEPGRAM_API_KEY="..."         # https://console.deepgram.com/
 export ASSEMBLYAI_API_KEY="..."       # https://www.assemblyai.com/
 export SONIX_API_KEY="..."            # https://sonix.ai/
 export SPEECHMATICS_API_KEY="..."     # https://www.speechmatics.com/
-export NOVITA_API_KEY="..."           # https://novita.ai/
 
 # Optional: AI post-processors
 export ANTHROPIC_API_KEY="sk-ant-..."  # https://console.anthropic.com/
@@ -171,7 +169,7 @@ outputs/
 
 Where:
 - `{basename}` = Original audio filename without extension
-- `{transcriber}` = whisperx, deepgram, assemblyai, sonix, speechmatics, or novita
+- `{transcriber}` = whisperx, deepgram, assemblyai, sonix, or speechmatics
 - `{processor}` = anthropic, openai, gemini, deepseek, or ollama
 
 ## GPU Support
@@ -211,7 +209,6 @@ stratomercata-transcripts/
 ### Transcription Services
 - [AssemblyAI](https://www.assemblyai.com/docs) - Cloud transcription with speaker diarization
 - [Deepgram](https://developers.deepgram.com/) - Cloud speech-to-text API
-- [Novita AI](https://novita.ai/) - Cloud transcription service
 - [Sonix](https://sonix.ai/) - Cloud transcription with speaker identification
 - [Speechmatics](https://www.speechmatics.com/) - Enhanced cloud transcription API
 - [WhisperX](https://github.com/m-bain/whisperX) - GPU-accelerated Whisper with diarization

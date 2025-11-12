@@ -166,7 +166,7 @@ def main():
     
     # Parse transcribers
     transcribers = [t.strip() for t in args.transcribers.split(',')]
-    valid_transcribers = {'whisperx', 'deepgram', 'assemblyai', 'sonix', 'speechmatics', 'novita'}
+    valid_transcribers = {'whisperx', 'deepgram', 'assemblyai', 'sonix', 'speechmatics'}
     
     for transcriber in transcribers:
         if transcriber not in valid_transcribers:
@@ -229,8 +229,6 @@ def main():
             _, skip_reason = validate_api_key('SPEECHMATICS_API_KEY')
         elif transcriber == 'whisperx':
             _, skip_reason = validate_api_key('HF_TOKEN')
-        elif transcriber == 'novita':
-            _, skip_reason = validate_api_key('NOVITA_API_KEY')
         
         if skip_reason:
             print(skip(f"{transcriber}: {skip_reason}"))
@@ -254,8 +252,6 @@ def main():
                 output_path = transcribe_sonix(str(audio_path), args.output_dir)
             elif transcriber == 'speechmatics':
                 output_path = transcribe_speechmatics(str(audio_path), args.output_dir)
-            elif transcriber == 'novita':
-                output_path = transcribe_novita(str(audio_path), args.output_dir)
             
             elapsed = time.time() - transcriber_start
             results.append((transcriber, output_path, 'success', elapsed))
@@ -889,125 +885,6 @@ def transcribe_speechmatics(audio_path, output_dir):
     
     formatted_text = '\n'.join(output_lines) + '\n'
     return save_raw_transcript_from_text(output_dir, audio_file_path.stem, "speechmatics", formatted_text)
-
-
-def transcribe_novita(audio_path, output_dir):
-    """Novita AI transcription with speaker diarization using Qwen2.5-Omni"""
-    import time
-    import requests
-    import json
-    
-    api_key = os.environ.get('NOVITA_API_KEY')
-    if not api_key:
-        raise ValueError("NOVITA_API_KEY environment variable not set")
-    
-    audio_file_path = Path(audio_path)
-    
-    print(f"  Model: Qwen2.5-Omni")
-    print(f"  Uploading and transcribing...")
-    
-    headers = {
-        'Authorization': f'Bearer {api_key}',
-        'Content-Type': 'application/json'
-    }
-    
-    start_time = time.time()
-    
-    # Read audio file and encode to base64 for API
-    import base64
-    with open(audio_file_path, 'rb') as f:
-        audio_data = base64.b64encode(f.read()).decode('utf-8')
-    
-    # Novita AI API request
-    # Using their audio transcription endpoint with Qwen2.5-Omni model
-    payload = {
-        "model": "qwen2.5-omni",
-        "audio": audio_data,
-        "language": "en",
-        "enable_speaker_diarization": True,
-        "format": "json"
-    }
-    
-    try:
-        response = requests.post(
-            'https://api.novita.ai/v3/async/audio/transcription',
-            headers=headers,
-            json=payload,
-            timeout=30
-        )
-        response.raise_for_status()
-        task_id = response.json().get('task_id')
-        
-        if not task_id:
-            raise RuntimeError("No task_id received from Novita AI")
-        
-        print(f"  Task ID: {task_id}")
-        
-        # Poll for completion
-        while True:
-            time.sleep(5)
-            status_response = requests.get(
-                f'https://api.novita.ai/v3/async/task/{task_id}',
-                headers=headers,
-                timeout=30
-            )
-            status_response.raise_for_status()
-            status_data = status_response.json()
-            
-            status = status_data.get('status')
-            if status == 'completed':
-                elapsed = time.time() - start_time
-                print(f"  Transcribed in {elapsed:.1f}s")
-                transcript_data = status_data.get('result', {})
-                break
-            elif status in ['failed', 'cancelled']:
-                error_msg = status_data.get('error', 'Unknown error')
-                raise RuntimeError(f"Novita AI transcription {status}: {error_msg}")
-            elif status not in ['pending', 'processing']:
-                raise RuntimeError(f"Unexpected status: {status}")
-    
-    except requests.exceptions.RequestException as e:
-        raise RuntimeError(f"Novita AI API error: {e}")
-    
-    # Format output from Novita AI response
-    output_lines = []
-    current_speaker = None
-    
-    # Parse transcript data (adjust based on actual Novita AI response format)
-    segments = transcript_data.get('segments', [])
-    
-    if not segments and 'text' in transcript_data:
-        # Fallback: no diarization, single speaker
-        print("  Warning: No speaker diarization available, using single speaker")
-        output_lines.append('SPEAKER_00:')
-        output_lines.append('[0.0s] ' + transcript_data['text'])
-        speakers_count = 1
-    else:
-        # Process segments with speaker information
-        speakers = set()
-        for segment in segments:
-            speaker_id = segment.get('speaker', 0)
-            speaker_label = f"SPEAKER_{speaker_id:02d}"
-            speakers.add(speaker_label)
-            
-            start = segment.get('start', 0.0)
-            text = segment.get('text', '').strip()
-            
-            if speaker_label != current_speaker:
-                if output_lines:
-                    output_lines.append('')
-                output_lines.append(f'{speaker_label}:')
-                current_speaker = speaker_label
-            
-            output_lines.append(f'[{start:.1f}s] {text}')
-        
-        speakers_count = len(speakers)
-    
-    print(f"  Detected {speakers_count} speakers")
-    
-    # Save using utility function
-    formatted_text = '\n'.join(output_lines) + '\n'
-    return save_raw_transcript_from_text(output_dir, audio_file_path.stem, "novita", formatted_text)
 
 
 if __name__ == "__main__":
