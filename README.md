@@ -58,6 +58,7 @@ All services include speaker diarization (identifying who said what).
 | **OpenAI** | GPT-4o | Cloud API | 128K | $2.50/M tokens | Reliable, fast |
 | **Gemini** | Gemini 2.5 Pro | Cloud API | 128K | $1.25/M tokens | Best for long transcripts |
 | **DeepSeek** | DeepSeek Chat | Cloud API | 64K | $0.14/M tokens | Cost-effective |
+| **Novita** | Kimi K2 Thinking | Cloud API | 128K+ | Varies | Advanced reasoning |
 | **Qwen (Ollama)** | Qwen2.5:7b | Local | 32K | FREE | Local, private ⚠️ |
 
 **Note on Qwen:** Alibaba's Qwen 2.5 model served locally via Ollama. The 32K context limit is suitable for transcripts up to ~40 minutes. Typical 60-90 minute transcripts (~45K tokens) may be truncated. For longer content, use cloud providers.
@@ -84,7 +85,7 @@ All services include speaker diarization (identifying who said what).
 # 2 transcribers × 3 processors = 6 combinations
 ./scripts/process_single.sh interview.mp3 \
   --transcribers whisperx,deepgram \
-  --processors anthropic,openai,ollama
+  --processors anthropic,openai,novita
 ```
 
 ### Batch Processing
@@ -143,6 +144,7 @@ export ANTHROPIC_API_KEY="sk-ant-..."  # https://console.anthropic.com/
 export OPENAI_API_KEY="sk-..."         # https://platform.openai.com/
 export GOOGLE_API_KEY="..."            # https://makersuite.google.com/
 export DEEPSEEK_API_KEY="sk-..."       # https://platform.deepseek.com/
+export NOVITA_API_KEY="..."            # https://novita.ai/
 ```
 
 ## Output Files
@@ -170,7 +172,7 @@ outputs/
 Where:
 - `{basename}` = Original audio filename without extension
 - `{transcriber}` = whisperx, deepgram, assemblyai, sonix, or speechmatics
-- `{processor}` = anthropic, openai, gemini, deepseek, or ollama
+- `{processor}` = anthropic, openai, gemini, deepseek, novita, or ollama
 
 ## GPU Support
 
@@ -217,6 +219,7 @@ stratomercata-transcripts/
 - [Anthropic Claude](https://docs.anthropic.com/) - AI text processing with large context windows
 - [DeepSeek](https://www.deepseek.com/) - Cost-effective AI processing
 - [Google Gemini](https://ai.google.dev/) - AI processing optimized for long transcripts
+- [Novita AI](https://novita.ai/) - Moonshot Kimi K2 Thinking model with advanced reasoning
 - [Ollama](https://ollama.com/) - Local AI model hosting (Qwen 2.5)
 - [OpenAI GPT-4](https://platform.openai.com/docs) - Reliable AI post-processing
 

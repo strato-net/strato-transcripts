@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Multi-provider AI transcript post-processor for Ethereum/blockchain content
-Supports: Claude (Anthropic), ChatGPT-5 (OpenAI), Gemini (Google), DeepSeek, Gwen (Qwen2.5-7B-Instruct local)
+Supports: Claude (Anthropic), ChatGPT-5 (OpenAI), Gemini (Google), DeepSeek, Novita (Kimi K2), Gwen (Qwen2.5-7B-Instruct local)
 Uses domain context to correct technical terms and speaker names
 
 Now supports batch processing of multiple transcripts × processors internally
@@ -399,6 +399,49 @@ def process_with_deepseek(transcript, api_key, context):
     print(" ✓")
     return result
 
+def process_with_novita(transcript, api_key, context):
+    """Process transcript using Novita AI's Moonshot Kimi K2 Thinking model with streaming
+    
+    Uses moonshotai/kimi-k2-thinking - advanced reasoning model with massive context window
+    Excellent for long transcripts with complex technical content and reasoning tasks
+    """
+    model = "moonshotai/kimi-k2-thinking"
+    try:
+        import openai
+    except ImportError:
+        raise ImportError("openai package not installed")
+    
+    client = openai.OpenAI(api_key=api_key, base_url="https://api.novita.ai/openai/v1")
+    prompt = build_prompt(context, transcript)
+    
+    print(f"      Transcript size: {len(transcript)} chars")
+    print(f"      Model: {model}")
+    print(f"      Processing: ", end='', flush=True)
+    
+    result = ""
+    chunk_count = 0
+    
+    stream = client.chat.completions.create(
+        model=model,
+        messages=[
+            {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "user", "content": prompt}
+        ],
+        max_tokens=32768,  # Large output for detailed transcripts
+        temperature=0.3,   # Lower temperature for more consistent, accurate output
+        stream=True
+    )
+    
+    for chunk in stream:
+        if chunk.choices[0].delta.content:
+            result += chunk.choices[0].delta.content
+            chunk_count += 1
+            if chunk_count % 100 == 0:
+                print(".", end='', flush=True)
+    
+    print(" ✓")
+    return result
+
 def estimate_tokens(text):
     """Rough token estimation (words * 1.3)"""
     return int(len(text.split()) * 1.3)
@@ -556,6 +599,8 @@ def process_single_combination(transcript_path, provider, api_keys, context, oll
             corrected = process_with_gemini(transcript, api_keys['gemini'], context)
         elif provider == "deepseek":
             corrected = process_with_deepseek(transcript, api_keys['deepseek'], context)
+        elif provider == "novita":
+            corrected = process_with_novita(transcript, api_keys['novita'], context)
         elif provider == "gwen":
             corrected, new_ollama_process = process_with_gwen(transcript, context, ollama_process)
     except Exception as e:
@@ -609,7 +654,7 @@ def main():
     
     parser.add_argument("transcripts", nargs='+', help="Transcript file path(s)")
     parser.add_argument("--processors", required=True,
-                       help="Comma-separated list of processors (anthropic,openai,gemini,deepseek,gwen)")
+                       help="Comma-separated list of processors (anthropic,openai,gemini,deepseek,novita,gwen)")
     
     args = parser.parse_args()
     
@@ -637,7 +682,7 @@ def main():
     
     # Parse processors
     processors = [p.strip() for p in args.processors.split(',')]
-    valid_processors = {'anthropic', 'openai', 'gemini', 'deepseek', 'gwen'}
+    valid_processors = {'anthropic', 'openai', 'gemini', 'deepseek', 'novita', 'gwen'}
     
     for proc in processors:
         if proc not in valid_processors:
@@ -654,7 +699,8 @@ def main():
         'anthropic': 'ANTHROPIC_API_KEY',
         'openai': 'OPENAI_API_KEY',
         'gemini': 'GOOGLE_API_KEY',
-        'deepseek': 'DEEPSEEK_API_KEY'
+        'deepseek': 'DEEPSEEK_API_KEY',
+        'novita': 'NOVITA_API_KEY'
     }
     
     for proc in processors:
