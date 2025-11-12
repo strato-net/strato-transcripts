@@ -626,7 +626,6 @@ def main():
                              stdout=subprocess.DEVNULL, 
                              stderr=subprocess.DEVNULL,
                              timeout=5)
-                import time
                 time.sleep(2)  # Give it time to stop
                 print("✓ Cleared")
         except:
