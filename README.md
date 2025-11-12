@@ -56,7 +56,7 @@ All services include speaker diarization (identifying who said what).
 | Provider | Model | Type | Context | Cost (Input/Output) | Best For |
 |----------|-------|------|---------|---------------------|----------|
 | **Anthropic** | Claude Sonnet 4.5 | Cloud API | 200K | $3/$15 per MTok | Complex technical content, long transcripts |
-| **OpenAI** | o3-mini | Cloud API | 200K | $1.10/$4.40 per MTok | Fast reasoning, cost-effective |
+| **OpenAI** | chatgpt-4o-latest | Cloud API | 128K | $2.50/$10 per MTok | Latest flagship model, best text processing |
 | **Gemini** | Gemini 2.5 Pro | Cloud API | 128K | ~$1.25 per MTok | Very long transcripts, multilingual |
 | **Kimi** | K2 Thinking (Moonshot via Novita) | Cloud API | 262K | $0.60/$2.50 per MTok | Advanced reasoning, cost-effective |
 | **Qwen3Max** | Qwen 3 Max (Alibaba via Novita) | Cloud API | 128K | $2.11/$8.45 per MTok | Flagship Qwen model, strong reasoning |
@@ -64,7 +64,7 @@ All services include speaker diarization (identifying who said what).
 | **Qwen** | Qwen2.5:7b (local via Ollama) | Local | 32K | FREE | Local, private, 12GB GPU ⚠️ |
 
 **Model Selection Notes:**
-- **For best quality:** Use Anthropic Claude Sonnet 4.5 or OpenAI o3-mini
+- **For best quality:** Use Anthropic Claude Sonnet 4.5 or OpenAI chatgpt-4o-latest
 - **For cost-effectiveness:** Novita Kimi K2 or DeepSeek offer excellent value
 - **For maximum context:** Novita Kimi K2 (262K) or Anthropic Claude (200K)
 - **For privacy:** Run Qwen locally via Ollama (requires 12GB+ GPU)
@@ -83,7 +83,7 @@ All services include speaker diarization (identifying who said what).
   --transcribers whisperx \
   --processors anthropic
 
-# Deepgram (cloud) + o3-mini
+# Deepgram (cloud) + chatgpt-4o-latest
 ./scripts/process_single.sh interview.mp3 \
   --transcribers deepgram \
   --processors openai
@@ -171,7 +171,7 @@ intermediates/
 ```
 outputs/
   audio_whisperx_anthropic_processed.txt         # WhisperX + Claude
-  audio_deepgram_openai_processed.txt            # Deepgram + o3-mini
+  audio_deepgram_openai_processed.txt            # Deepgram + chatgpt-4o-latest
   audio_whisperx_anthropic_processed.md          # Markdown versions
 ```
 
@@ -232,7 +232,7 @@ stratomercata-transcripts/
 - [Google Gemini](https://ai.google.dev/) - AI processing optimized for long transcripts
 - [Novita AI](https://novita.ai/) - Moonshot Kimi K2 Thinking model with advanced reasoning
 - [Ollama](https://ollama.com/) - Local AI model hosting (Qwen 2.5)
-- [OpenAI o3-mini](https://platform.openai.com/docs) - Fast reasoning AI post-processing
+- [OpenAI chatgpt-4o-latest](https://platform.openai.com/docs) - Latest flagship GPT-4o model with auto-updates
 
 ## License
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Multi-provider AI transcript post-processor for Ethereum/blockchain content
-Supports: Claude (Anthropic), o3-mini (OpenAI), Gemini (Google), DeepSeek, Kimi K2 (Moonshot via Novita), Qwen3Max (via Novita), Qwen (local via Ollama)
+Supports: Claude (Anthropic), chatgpt-4o-latest (OpenAI), Gemini (Google), DeepSeek, Kimi K2 (Moonshot via Novita), Qwen3Max (via Novita), Qwen (local via Ollama)
 Uses domain context to correct technical terms and speaker names
 
 Now supports batch processing of multiple transcripts × processors internally
@@ -297,8 +297,8 @@ def process_with_anthropic(transcript, api_key, context):
     return result
 
 def process_with_openai(transcript, api_key, context):
-    """Process transcript using OpenAI o3-mini with streaming"""
-    model = "o3-mini"
+    """Process transcript using OpenAI chatgpt-4o-latest with streaming"""
+    model = "chatgpt-4o-latest"
     try:
         import openai
     except ImportError:
