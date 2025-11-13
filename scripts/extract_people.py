@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Extract people names from EarlyDaysOfEthereum project
-Creates a comprehensive list of Ethereum ecosystem contributors
+Extract people names from EarlyDaysOfEthereum project.
+Creates list of Ethereum ecosystem contributors.
 """
 
 import os

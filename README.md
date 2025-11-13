@@ -1,6 +1,6 @@
 # Audio Transcription Pipeline with Multi-Provider AI Processing
 
-Automated transcription with speaker diarization plus AI post-processing to correct technical terms and speaker names.
+Transcription with speaker diarization plus AI post-processing for technical term correction.
 
 ## Usage
 

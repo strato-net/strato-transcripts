@@ -9,9 +9,13 @@
 
 set -e
 
-# Defaults: WhisperX (local/FREE) + GPT-4o (ChatGPT-5, highest quality)
+# Source shared utilities
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/shell_utils.sh"
+
+# Defaults: WhisperX (local/FREE) + Claude Sonnet 4.5 (highest quality)
 DEFAULT_TRANSCRIBERS="whisperx"
-DEFAULT_PROCESSORS="openai"
+DEFAULT_PROCESSORS="sonnet"
 
 # Parse arguments
 TRANSCRIBERS="$DEFAULT_TRANSCRIBERS"
@@ -39,29 +43,22 @@ while [[ $# -gt 0 ]]; do
             echo ""
             echo "  --processors <list>      Comma-separated AI post-processors"
             echo "                           (sonnet, chatgpt, gemini, llama, qwen)"
-            echo "                           Default: chatgpt (ChatGPT-4o-latest)"
+            echo "                           Default: sonnet (Claude Sonnet 4.5)"
             echo ""
             echo "Examples:"
-            echo "  # Use defaults (whisperx + openai)"
+            echo "  # Use defaults (whisperx + sonnet)"
             echo "  $0"
             echo ""
-            echo "  # Deepgram + Claude"
-            echo "  $0 --transcribers deepgram --processors anthropic"
+            echo "  # Deepgram + ChatGPT"
+            echo "  $0 --transcribers deepgram --processors chatgpt"
             echo ""
             echo "  # Multiple combinations"
             echo "  $0 --transcribers whisperx,deepgram \\"
-            echo "     --processors anthropic,openai,gemini"
+            echo "     --processors sonnet,chatgpt,gemini"
             exit 1
             ;;
     esac
 done
-
-# Colors
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-BLUE='\033[0;34m'
-NC='\033[0m'
 
 # Directories
 PROJECT_DIR="/home/zombietiger/Projects/stratomercata-transcripts"
@@ -96,22 +93,6 @@ fi
 
 echo -e "${GREEN}Found $TOTAL MP3 files to process${NC}"
 echo ""
-
-# Timing function
-format_duration() {
-    local seconds=$1
-    local hours=$((seconds / 3600))
-    local minutes=$(((seconds % 3600) / 60))
-    local secs=$((seconds % 60))
-    
-    if [ $hours -gt 0 ]; then
-        printf "%dh %dm %ds" $hours $minutes $secs
-    elif [ $minutes -gt 0 ]; then
-        printf "%dm %ds" $minutes $secs
-    else
-        printf "%ds" $secs
-    fi
-}
 
 # Timing arrays
 declare -a FILE_NAMES
@@ -222,6 +203,6 @@ for TRANSCRIBER in "${TRANSCRIBER_ARRAY[@]}"; do
 done
 echo ""
 echo -e "${GREEN}Customize settings:${NC}"
-echo "  Defaults: --transcribers whisperx --processors openai"
-echo "  Example: $0 --transcribers deepgram --processors anthropic,gemini"
+echo "  Defaults: --transcribers whisperx --processors sonnet"
+echo "  Example: $0 --transcribers deepgram --processors chatgpt,gemini"
 echo ""

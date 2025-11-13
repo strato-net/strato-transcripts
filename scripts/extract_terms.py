@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Extract technical terms from Ethereum documentation and articles
-Creates a comprehensive list of blockchain/Ethereum terminology
+Extract technical terms from Ethereum documentation and articles.
+Creates list of blockchain/Ethereum terminology.
 """
 
 import re

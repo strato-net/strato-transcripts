@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
 AI transcript post-processor for Ethereum/blockchain content.
+Batch process transcripts with multiple AI providers.
 Supports: sonnet, chatgpt, gemini, llama, qwen.
-Batch processes multiple transcripts × processors.
 """
 
 import os
@@ -12,37 +12,17 @@ import time
 from pathlib import Path
 import argparse
 
-# ANSI color codes
-class Colors:
-    GREEN = '\033[92m'
-    RED = '\033[91m'
-    YELLOW = '\033[93m'
-    RESET = '\033[0m'
-
-def success(msg):
-    return f"{Colors.GREEN}✓{Colors.RESET} {msg}"
-
-def failure(msg):
-    return f"{Colors.RED}✗{Colors.RESET} {msg}"
-
-def skip(msg):
-    return f"{Colors.YELLOW}⊘{Colors.RESET} {msg}"
+# Import shared utilities
+from common import Colors, success, failure, skip, validate_api_key, load_people_list, load_terms_list
 
 
 # ============================================================================
 # Utility Functions
 # ============================================================================
 
-def validate_api_key(env_var):
-    """Check if API key environment variable is set. Returns (key, error_message)."""
-    key = os.environ.get(env_var, '').strip()
-    if not key:
-        return None, f"{env_var} not set"
-    return key, None
-
 
 def extract_transcriber_from_filename(filepath):
-    """Extract transcriber name from intermediate filename."""
+    """Parse transcriber name from intermediate filename."""
     filename = Path(filepath).stem
     
     for service in ['whisperx', 'assemblyai', 'deepgram', 'openai']:
@@ -50,12 +30,11 @@ def extract_transcriber_from_filename(filepath):
             basename = filename.replace(f'_{service}_raw', '')
             return basename, service
     
-    # Fallback if no match
     return filename, "whisperx"
 
 
 def save_processed_files(output_dir, basename, transcriber, processor, content):
-    """Save processed transcript in txt (no timestamps) and md (with timestamps) formats."""
+    """Save txt (clean) and md (with timestamps)."""
     import re
     
     output_path = Path(output_dir) / f"{basename}_{transcriber}_{processor}_processed.txt"
@@ -103,30 +82,38 @@ Your tasks:
 1. Fix technical term spellings and capitalization (e.g., "etherium" → "Ethereum", "nfts" → "NFTs")
 2. Correct proper names using the people list provided
 3. Fix blockchain concept terminology to match standard usage
-4. Identify and replace generic speaker labels (SPEAKER_01, SPEAKER_02, etc.).  Do not add actual names.  Start at 01.
+4. Use generic labels SPEAKER_01, SPEAKER_02, etc. (do not add actual names)
 5. Improve punctuation and sentence structure for readability
 6. Add paragraph breaks at natural conversation transitions
 7. **CRITICAL: PRESERVE ALL TIMESTAMPS**
-8. Maintain the speaker label format (lines starting with speaker name followed by colon)
+8. Maintain speaker label format (speaker name followed by colon)
 
 **TIMESTAMP FORMAT REQUIREMENT (MANDATORY):**
-Every line of dialogue MUST retain its timestamp in [XX.Xs] format at the start of the line.
+Every line of dialogue MUST retain its timestamp in [MM:SS] format at the start of the line.
 
-CORRECT FORMAT EXAMPLE:
+Format specifications:
+- Use minutes:seconds format: [MM:SS]
+- Always use 2 digits for both minutes and seconds (e.g., 00:05, 02:12, 15:47)
+- No decimal fractions - round to nearest second
+- First minute should be 00 (e.g., [00:15] for 15 seconds)
+
+CORRECT FORMAT EXAMPLES:
 ```
 **SPEAKER_01:**
-[1.8s] Okay, welcome everyone.
-[3.4s] We have a very special topic today.
+[00:01] Okay, welcome everyone.
+[00:03] We have a very special topic today.
+[02:12] Let me explain the technical details.
 ```
 
-INCORRECT FORMAT (DO NOT DO THIS):
+INCORRECT FORMATS (DO NOT USE):
 ```
 **SPEAKER_01:**
-Okay, welcome everyone.
-We have a very special topic today.
+[1.8s] Wrong - no decimal fractions allowed
+[132.2s] Wrong - must use MM:SS format
+Okay, welcome everyone. Wrong - missing timestamp entirely
 ```
 
-The timestamps [XX.Xs] are REQUIRED and must appear at the beginning of every text line. This is non-negotiable.
+The timestamps [MM:SS] are REQUIRED and must appear at the beginning of every text line. This is non-negotiable.
 
 Important: 
 - Only make changes where you are confident
@@ -153,52 +140,6 @@ def load_glossary():
         "projects": [],
         "abbreviations": {}
     }
-
-def load_people_list():
-    """Load ethereum_people.txt, generating if needed."""
-    people_file = Path("intermediates/ethereum_people.txt")
-    
-    # Generate if doesn't exist
-    if not people_file.exists():
-        extract_script = Path("scripts/extract_people.py")
-        if extract_script.exists():
-            import subprocess
-            try:
-                print("  Generating ethereum_people.txt...")
-                subprocess.run(["python3", str(extract_script)], 
-                             check=True, capture_output=True, text=True)
-            except subprocess.CalledProcessError:
-                # Silent failure - file may not be critical
-                pass
-    
-    if people_file.exists():
-        with open(people_file, 'r', encoding='utf-8') as f:
-            return [line.strip() for line in f if line.strip()]
-    
-    return []
-
-def load_terms_list():
-    """Load ethereum_technical_terms.txt, generating if needed."""
-    terms_file = Path("intermediates/ethereum_technical_terms.txt")
-    
-    # Generate if doesn't exist
-    if not terms_file.exists():
-        extract_script = Path("scripts/extract_terms.py")
-        if extract_script.exists():
-            import subprocess
-            try:
-                print("  Generating ethereum_technical_terms.txt...")
-                subprocess.run(["python3", str(extract_script)], 
-                             check=True, capture_output=True, text=True)
-            except subprocess.CalledProcessError:
-                # Silent failure - file may not be critical
-                pass
-    
-    if terms_file.exists():
-        with open(terms_file, 'r', encoding='utf-8') as f:
-            return [line.strip() for line in f if line.strip()]
-    
-    return []
 
 def build_context_summary():
     """Build context summary from available resources."""

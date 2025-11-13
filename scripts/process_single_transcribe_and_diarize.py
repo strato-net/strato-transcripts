@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 """
-Unified transcription script with speaker diarization
-Supports multiple providers: WhisperX (local), Deepgram, AssemblyAI
-All providers include speaker diarization support.
+Unified transcription with speaker diarization.
+Supports: WhisperX (local), Deepgram, AssemblyAI.
 """
 
 import sys
@@ -11,44 +10,13 @@ import argparse
 import time
 from pathlib import Path
 
-# ANSI color codes
-class Colors:
-    GREEN = '\033[92m'
-    RED = '\033[91m'
-    YELLOW = '\033[93m'
-    BLUE = '\033[94m'
-    RESET = '\033[0m'
-    BOLD = '\033[1m'
-
-def success(msg):
-    return f"{Colors.GREEN}✓{Colors.RESET} {msg}"
-
-def failure(msg):
-    return f"{Colors.RED}✗{Colors.RESET} {msg}"
-
-def skip(msg):
-    return f"{Colors.YELLOW}⊘{Colors.RESET} {msg}"
+# Import shared utilities
+from common import Colors, success, failure, skip, validate_api_key, load_vocabulary, save_transcript_dual_format
 
 
 # ============================================================================
 # Utility Functions
 # ============================================================================
-
-def validate_api_key(env_var):
-    """
-    Check if API key environment variable is set.
-    
-    Args:
-        env_var: Name of environment variable to check
-    
-    Returns:
-        Tuple of (key, error_message). If key exists, error_message is None.
-        If key missing, key is None and error_message describes the issue.
-    """
-    key = os.environ.get(env_var, '').strip()
-    if not key:
-        return None, f"{env_var} not set"
-    return key, None
 
 
 def save_transcript_files(output_dir, basename, service_name, segments, speaker_key="speaker"):
@@ -141,25 +109,6 @@ def save_raw_transcript_from_text(output_dir, basename, service_name, formatted_
         f.write(md_content)
     
     return output_path
-
-
-def load_custom_vocabulary():
-    """Load Ethereum-specific vocabulary from files for transcription services."""
-    vocab = []
-    
-    # Load technical terms
-    terms_file = Path("intermediates/ethereum_technical_terms.txt")
-    if terms_file.exists():
-        with open(terms_file, 'r', encoding='utf-8') as f:
-            vocab.extend([line.strip() for line in f if line.strip()])
-    
-    # Load people names
-    people_file = Path("intermediates/ethereum_people.txt")
-    if people_file.exists():
-        with open(people_file, 'r', encoding='utf-8') as f:
-            vocab.extend([line.strip() for line in f if line.strip()])
-    
-    return vocab
 
 
 # ============================================================================
@@ -460,7 +409,7 @@ def transcribe_deepgram(audio_path, output_dir):
     start_time = time.time()
     
     # Load custom vocabulary (people names + technical terms)
-    custom_vocab = load_custom_vocabulary()
+    custom_vocab = load_vocabulary()
     print(f"  Loaded {len(custom_vocab)} custom terms")
     
     # Model: nova-3-general (updated 2025-11-10)
@@ -562,7 +511,7 @@ def transcribe_assemblyai(audio_path, output_dir):
     audio_file_path = Path(audio_path)
     
     # Load custom vocabulary (people names + technical terms)
-    custom_vocab = load_custom_vocabulary()
+    custom_vocab = load_vocabulary()
     print(f"  Loaded {len(custom_vocab)} custom terms")
     
     print(f"  Uploading and transcribing...")
