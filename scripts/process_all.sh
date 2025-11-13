@@ -34,7 +34,7 @@ while [[ $# -gt 0 ]]; do
             echo ""
             echo "Options:"
             echo "  --transcribers <list>    Comma-separated transcription services"
-            echo "                           (whisperx, deepgram, assemblyai, revai, sonix, speechmatics)"
+            echo "                           (whisperx, deepgram, assemblyai, revai)"
             echo "                           Default: whisperx"
             echo ""
             echo "  --processors <list>      Comma-separated AI post-processors"

@@ -55,14 +55,6 @@ export DEEPGRAM_API_KEY=""
 # Get key from: https://www.rev.ai/
 export REVAI_API_KEY=""
 
-# Sonix (Professional transcription with speaker identification)
-# Get key from: https://sonix.ai/
-export SONIX_API_KEY=""
-
-# Speechmatics (Fast, accurate transcription with diarization)
-# Get key from: https://www.speechmatics.com/
-export SPEECHMATICS_API_KEY=""
-
 # Ollama - No API key needed (runs locally, FREE, private)
 # Just ensure service is running: ollama serve
 # Models available: qwen2.5:32b
@@ -131,16 +123,5 @@ else
   echo "  REVAI_API_KEY: NOT SET"
 fi
 
-if [ -n "$SONIX_API_KEY" ] && [ "$SONIX_API_KEY" != "" ]; then
-  echo "  SONIX_API_KEY: SET"
-else
-  echo "  SONIX_API_KEY: NOT SET"
-fi
-
-if [ -n "$SPEECHMATICS_API_KEY" ] && [ "$SPEECHMATICS_API_KEY" != "" ]; then
-  echo "  SPEECHMATICS_API_KEY: SET"
-else
-  echo "  SPEECHMATICS_API_KEY: NOT SET"
-fi
 echo ""
 echo "See README.md for usage examples and documentation."

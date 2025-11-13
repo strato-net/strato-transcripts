@@ -31,8 +31,6 @@ All services include speaker diarization (identifying who said what).
 | **Deepgram** | nova-3-general | Cloud API | $0.41 | 23 sec |
 | **AssemblyAI** | Best | Cloud API | $1.44 | 3-4 min |
 | **Rev.ai** | v3 Human | Cloud API | $1.50 | ~3 min |
-| **Sonix** | Standard | Cloud API | $10.00 | ~2 min |
-| **Speechmatics** | Enhanced | Cloud API | $4.50 | ~1 min |
 
 ## AI Post-Processors
 

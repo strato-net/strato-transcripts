@@ -238,87 +238,6 @@ def test_whisperx():
         print(f"❌ Error: {e}")
         return False
 
-def test_sonix():
-    """Test Sonix transcription service"""
-    print("\n" + "="*60)
-    print("Testing SONIX (transcription service)")
-    print("="*60)
-    
-    api_key = os.environ.get('SONIX_API_KEY')
-    if not api_key or api_key == "" or api_key == "your_sonix_api_key_here":
-        print("⚠️  API key not configured - skipping")
-        return "skipped"
-    
-    try:
-        import requests
-        
-        # Try multiple auth formats - Sonix docs are unclear
-        auth_formats = [
-            {'Authorization': f'Bearer {api_key}'},  # Standard Bearer token
-            {'Authorization': api_key},               # Raw key
-            {'Api-Key': api_key},                    # Custom header
-        ]
-        
-        endpoints = [
-            'https://api.sonix.ai/v1/media',
-            'https://api.sonix.ai/v1/folders',
-        ]
-        
-        for i, headers in enumerate(auth_formats):
-            for endpoint in endpoints:
-                try:
-                    response = requests.get(endpoint, headers=headers, timeout=10)
-                    
-                    if response.status_code == 200:
-                        print(f"✅ API key valid with auth format #{i+1}")
-                        print(f"   Endpoint: {endpoint}")
-                        return True
-                    elif response.status_code not in [401, 403]:
-                        # Non-auth error might still indicate valid key
-                        print(f"✅ API key appears valid (status: {response.status_code})")
-                        print(f"   Note: Endpoint returned non-auth error, key is likely valid")
-                        return True
-                except:
-                    continue
-        
-        # All attempts failed
-        print(f"❌ All authentication methods failed (401 Unauthorized)")
-        print(f"   Note: API key may be invalid or test/demo key")
-        return False
-        
-    except Exception as e:
-        print(f"❌ Error: {e}")
-        return False
-
-def test_speechmatics():
-    """Test Speechmatics transcription service"""
-    print("\n" + "="*60)
-    print("Testing SPEECHMATICS (transcription service)")
-    print("="*60)
-    
-    api_key = os.environ.get('SPEECHMATICS_API_KEY')
-    if not api_key or api_key == "" or api_key == "your_speechmatics_api_key_here":
-        print("⚠️  API key not configured - skipping")
-        return "skipped"
-    
-    try:
-        import requests
-        
-        # Test API connectivity
-        headers = {'Authorization': f'Bearer {api_key}'}
-        response = requests.get('https://asr.api.speechmatics.com/v2/', headers=headers, timeout=10)
-        
-        # Speechmatics returns 401 for invalid key, 200 or other for valid
-        if response.status_code != 401:
-            print(f"✅ API key configured (status: {response.status_code})")
-            return True
-        else:
-            print(f"❌ API key invalid (401 Unauthorized)")
-            return False
-    except Exception as e:
-        print(f"❌ Error: {e}")
-        return False
-
 def main():
     print("="*60)
     print("AI Provider Connectivity Test")
@@ -338,8 +257,6 @@ def main():
     print("="*60)
     results['assemblyai'] = test_assemblyai()
     results['deepgram'] = test_deepgram()
-    results['sonix'] = test_sonix()
-    results['speechmatics'] = test_speechmatics()
     
     # Test AI post-processing providers
     print("\n" + "="*60)
