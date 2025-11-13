@@ -103,7 +103,7 @@ Your tasks:
 1. Fix technical term spellings and capitalization (e.g., "etherium" → "Ethereum", "nfts" → "NFTs")
 2. Correct proper names using the people list provided
 3. Fix blockchain concept terminology to match standard usage
-4. Identify and replace generic speaker labels (SPEAKER_00, SPEAKER_01, etc.) with actual names if you can determine them from context
+4. Identify and replace generic speaker labels (SPEAKER_01, SPEAKER_02, etc.).  Do not add actual names.  Start at 01.
 5. Improve punctuation and sentence structure for readability
 6. Add paragraph breaks at natural conversation transitions
 7. **CRITICAL: PRESERVE ALL TIMESTAMPS**
@@ -114,14 +114,14 @@ Every line of dialogue MUST retain its timestamp in [XX.Xs] format at the start 
 
 CORRECT FORMAT EXAMPLE:
 ```
-**SPEAKER_01 (Victor):**
+**SPEAKER_01:**
 [1.8s] Okay, welcome everyone.
 [3.4s] We have a very special topic today.
 ```
 
 INCORRECT FORMAT (DO NOT DO THIS):
 ```
-**SPEAKER_01 (Victor):**
+**SPEAKER_01:**
 Okay, welcome everyone.
 We have a very special topic today.
 ```
@@ -130,7 +130,7 @@ The timestamps [XX.Xs] are REQUIRED and must appear at the beginning of every te
 
 Important: 
 - Only make changes where you are confident
-- If unsure about a speaker's identity or technical term, leave it as-is
+- If unsure about a technical term, leave it as-is
 - NEVER remove timestamps - they are structural requirements, not optional metadata
 
 Output the corrected transcript maintaining the exact same format structure with all timestamps intact."""
