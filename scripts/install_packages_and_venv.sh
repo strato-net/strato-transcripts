@@ -184,18 +184,31 @@ if command -v ollama &> /dev/null; then
         echo "✓ Ollama service already running"
     fi
     
-    echo "Pulling Ollama model for qwen (qwen2.5:32b - optimized for 12GB+ GPU)..."
+    echo "Pulling Ollama models for qwen (both 7B and 32B variants)..."
+    echo "This allows automatic hardware-appropriate model selection at runtime"
+    echo ""
+    
+    echo "Pulling qwen2.5:7b (CPU-friendly, ~4.7GB)..."
+    if ollama pull qwen2.5:7b 2>&1 | grep -q "success"; then
+        echo -e "${GREEN}✓ Model qwen2.5:7b downloaded${NC}"
+    else
+        echo -e "${YELLOW}⚠ Model qwen2.5:7b pull completed (check with: ollama list)${NC}"
+    fi
+    
+    echo ""
+    echo "Pulling qwen2.5:32b (GPU-optimized, ~19GB)..."
     echo "This will download ~19GB - may take 10-20 minutes depending on your internet speed..."
     if ollama pull qwen2.5:32b 2>&1 | grep -q "success"; then
-        echo -e "${GREEN}✓ Model qwen2.5:32b downloaded and ready for local post-processing${NC}"
+        echo -e "${GREEN}✓ Model qwen2.5:32b downloaded${NC}"
     else
-        # Try anyway, sometimes it succeeds but doesn't output "success"
-        echo -e "${YELLOW}⚠ Model pull completed (check with: ollama list)${NC}"
+        echo -e "${YELLOW}⚠ Model qwen2.5:32b pull completed (check with: ollama list)${NC}"
     fi
-    echo "Note: This 32B model provides much better quality than the old 7B default"
-    echo "  Uses ~8-9GB VRAM (fits comfortably on 12GB GPUs like RTX 5070)"
-    echo "  For smaller GPUs (8GB), you can switch to 7B: ollama pull qwen2.5:7b"
-    echo "  For larger GPUs (24GB+), consider 70B: ollama pull qwen2.5:72b"
+    
+    echo ""
+    echo -e "${GREEN}✓ Both Qwen models ready for hardware-adaptive selection:${NC}"
+    echo "  • qwen2.5:7b  - Used on CPU-only systems (~4.7GB)"
+    echo "  • qwen2.5:32b - Used on GPU systems with 12GB+ VRAM (~19GB)"
+    echo "  Runtime selection is automatic based on detected hardware"
 fi
 echo ""
 

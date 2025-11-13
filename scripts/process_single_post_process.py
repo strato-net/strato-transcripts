@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 AI transcript post-processor for Ethereum/blockchain content.
-Supports: sonnet, chatgpt, gemini, llama, kimi, qwen3max, deepseek, qwen.
+Supports: sonnet, chatgpt, gemini, llama, qwen.
 Batch processes multiple transcripts × processors.
 """
 
@@ -362,149 +362,12 @@ def process_with_groq(transcript, api_key, context):
     print(" ✓")
     return result
 
-def process_with_deepseek(transcript, api_key, context):
-    """Process transcript using DeepSeek Chat with streaming."""
-    model = "deepseek-chat"
-    try:
-        import openai
-    except ImportError:
-        raise ImportError("openai package not installed")
-    
-    client = openai.OpenAI(api_key=api_key, base_url="https://api.deepseek.com")
-    prompt = build_prompt(context, transcript)
-    
-    print(f"      Processing: ", end='', flush=True)
-    
-    result = ""
-    chunk_count = 0
-    
-    stream = client.chat.completions.create(
-        model=model,
-        messages=[
-            {"role": "system", "content": SYSTEM_PROMPT},
-            {"role": "user", "content": prompt}
-        ],
-        max_tokens=8192,
-        stream=True
-    )
-    
-    for chunk in stream:
-        if chunk.choices[0].delta.content:
-            result += chunk.choices[0].delta.content
-            chunk_count += 1
-            if chunk_count % 100 == 0:
-                print(".", end='', flush=True)
-    
-    print(" ✓")
-    return result
-
-def process_with_qwen3max(transcript, api_key, context):
-    """Process transcript using Qwen 3 Max (via Novita) with streaming."""
-    model = "qwen/qwen3-max"
-    try:
-        import openai
-    except ImportError:
-        raise ImportError("openai package not installed")
-    
-    client = openai.OpenAI(api_key=api_key, base_url="https://api.novita.ai/openai/v1")
-    prompt = build_prompt(context, transcript)
-    
-    print(f"      Model: {model}")
-    print(f"      Processing: ", end='', flush=True)
-    
-    result = ""
-    chunk_count = 0
-    
-    stream = client.chat.completions.create(
-        model=model,
-        messages=[
-            {"role": "system", "content": SYSTEM_PROMPT},
-            {"role": "user", "content": prompt}
-        ],
-        max_tokens=32768,  # Large output for detailed transcripts
-        temperature=0.3,   # Lower temperature for more consistent, accurate output
-        stream=True
-    )
-    
-    for chunk in stream:
-        # Some chunks have empty choices[] array from Novita API, check before accessing
-        if chunk.choices and len(chunk.choices) > 0:
-            if chunk.choices[0].delta.content:
-                result += chunk.choices[0].delta.content
-                chunk_count += 1
-                if chunk_count % 100 == 0:
-                    print(".", end='', flush=True)
-    
-    print(" ✓")
-    return result
-
-def process_with_kimi(transcript, api_key, context):
-    """Process transcript using Kimi K2 (via Novita) with streaming."""
-    import time as time_module
-    model = "moonshotai/kimi-k2-thinking"
-    try:
-        import openai
-    except ImportError:
-        raise ImportError("openai package not installed")
-    
-    client = openai.OpenAI(api_key=api_key, base_url="https://api.novita.ai/openai/v1")
-    prompt = build_prompt(context, transcript)
-    
-    print(f"      Model: {model}")
-    print(f"      Processing: ", end='', flush=True)
-    
-    result = ""
-    chunk_count = 0
-    last_progress_time = time_module.time()
-    
-    stream = client.chat.completions.create(
-        model=model,
-        messages=[
-            {"role": "system", "content": SYSTEM_PROMPT},
-            {"role": "user", "content": prompt}
-        ],
-        max_tokens=32768,  # Large output for detailed transcripts
-        temperature=0.3,   # Lower temperature for more consistent, accurate output
-        stream=True
-    )
-    
-    for chunk in stream:
-        # Kimi K2 is a reasoning model - may have long thinking pauses
-        # Show progress dots even during thinking phase (every 30 seconds)
-        current_time = time_module.time()
-        if current_time - last_progress_time > 30:
-            print(".", end='', flush=True)
-            last_progress_time = current_time
-        
-        # Some chunks have empty choices[] array, so check before accessing
-        if chunk.choices and len(chunk.choices) > 0:
-            delta = chunk.choices[0].delta
-            
-            # Check for both regular content and reasoning content
-            if hasattr(delta, 'content') and delta.content:
-                result += delta.content
-                chunk_count += 1
-                if chunk_count % 100 == 0:
-                    print(".", end='', flush=True)
-                    last_progress_time = current_time
-            
-            # Reasoning models may also emit reasoning_content (though we don't save it)
-            # But we can use it to show progress
-            elif hasattr(delta, 'reasoning_content') and delta.reasoning_content:
-                # Don't add to result, but show we're making progress
-                if current_time - last_progress_time > 10:
-                    print(".", end='', flush=True)
-                    last_progress_time = current_time
-    
-    print(" ✓")
-    return result
-
 def estimate_tokens(text):
     """Estimate tokens (words × 1.3)."""
     return int(len(text.split()) * 1.3)
 
 def process_with_qwen(transcript, context, ollama_process=None):
-    """Process transcript using Qwen 2.5 32B (via Ollama). 32K token limit."""
+    """Process transcript using Qwen 2.5 (via Ollama) with hardware-adaptive model selection."""
     import subprocess
     import time
     
@@ -514,7 +377,23 @@ def process_with_qwen(transcript, context, ollama_process=None):
     except ImportError:
         raise ImportError("requests package not installed")
     
-    model = "qwen2.5:32b"
+    # Auto-select model based on hardware
+    try:
+        import torch
+        has_gpu = torch.cuda.is_available()
+        if has_gpu:
+            # Check VRAM - need 12GB+ for 32B model
+            gpu_memory_gb = torch.cuda.get_device_properties(0).total_memory / (1024**3)
+            use_32b = gpu_memory_gb >= 12
+        else:
+            use_32b = False
+    except:
+        use_32b = False  # Default to 7B if torch unavailable
+    
+    model = "qwen2.5:32b" if use_32b else "qwen2.5:7b"
+    model_size = "32B (GPU)" if use_32b else "7B (CPU)"
+    print(f"      Auto-selected: {model_size}")
+    
     started_ollama = False
     
     try:
@@ -563,7 +442,10 @@ def process_with_qwen(transcript, context, ollama_process=None):
         if estimated_tokens > 28000:
             print(f"      ⚠️  CAUTION: ~{estimated_tokens:,} tokens approaching Qwen's 32K limit")
         
-        print(f"      Processing with {model}: ", end='', flush=True)
+        print(f"      Processing: ", end='', flush=True)
+        
+        # Adjust max tokens based on model
+        max_tokens = 32000 if use_32b else 16000
         
         response = requests.post(
             "http://localhost:11434/api/generate",
@@ -573,7 +455,7 @@ def process_with_qwen(transcript, context, ollama_process=None):
                 "stream": True,
                 "options": {
                     "temperature": 0.3,
-                    "num_predict": 32000,  # Increased from 16000 for longer transcripts
+                    "num_predict": max_tokens,
                     "stop": []  # Override default stop sequences
                 }
             },
@@ -652,12 +534,6 @@ def process_single_combination(transcript_path, provider, api_keys, context, oll
             corrected = process_with_gemini(transcript, api_keys['gemini'], context)
         elif provider == "llama":
             corrected = process_with_groq(transcript, api_keys['llama'], context)
-        elif provider == "deepseek":
-            corrected = process_with_deepseek(transcript, api_keys['deepseek'], context)
-        elif provider == "kimi":
-            corrected = process_with_kimi(transcript, api_keys['kimi'], context)
-        elif provider == "qwen3max":
-            corrected = process_with_qwen3max(transcript, api_keys['qwen3max'], context)
         elif provider == "qwen":
             corrected, new_ollama_process = process_with_qwen(transcript, context, ollama_process)
     except Exception as e:
@@ -712,7 +588,7 @@ def main():
     
     parser.add_argument("transcripts", nargs='+', help="Transcript file path(s)")
     parser.add_argument("--processors", required=True,
-                       help="Comma-separated list of processors (sonnet,chatgpt,gemini,llama,deepseek,kimi,qwen3max,qwen)")
+                       help="Comma-separated list of processors (sonnet,chatgpt,gemini,llama,qwen)")
     
     args = parser.parse_args()
     
@@ -740,7 +616,7 @@ def main():
     
     # Parse processors
     processors = [p.strip() for p in args.processors.split(',')]
-    valid_processors = {'sonnet', 'chatgpt', 'gemini', 'llama', 'deepseek', 'kimi', 'qwen3max', 'qwen'}
+    valid_processors = {'sonnet', 'chatgpt', 'gemini', 'llama', 'qwen'}
     
     for proc in processors:
         if proc not in valid_processors:
@@ -757,10 +633,7 @@ def main():
         'sonnet': 'ANTHROPIC_API_KEY',     # Claude Sonnet 4.5 via Anthropic
         'chatgpt': 'OPENAI_API_KEY',       # ChatGPT-4o-latest via OpenAI
         'gemini': 'GOOGLE_API_KEY',        # Gemini 2.5 Pro via Google
-        'llama': 'GROQ_API_KEY',           # Llama 3.3 70B via Groq
-        'deepseek': 'DEEPSEEK_API_KEY',    # DeepSeek Chat
-        'kimi': 'NOVITA_API_KEY',          # Kimi K2 via Novita
-        'qwen3max': 'NOVITA_API_KEY'       # Qwen 3 Max via Novita
+        'llama': 'GROQ_API_KEY'            # Llama 3.3 70B via Groq
     }
     
     for proc in processors:

@@ -30,7 +30,6 @@ All services include speaker diarization (identifying who said what).
 | **WhisperX** | large-v3 | Local GPU | FREE | 5-10 min |
 | **Deepgram** | nova-3-general | Cloud API | $0.41 | 23 sec |
 | **AssemblyAI** | Best | Cloud API | $1.44 | 3-4 min |
-| **Rev.ai** | v3 Human | Cloud API | $1.50 | ~3 min |
 
 ## AI Post-Processors
 
@@ -40,10 +39,7 @@ All services include speaker diarization (identifying who said what).
 | **chatgpt** | ChatGPT-4o-latest | OpenAI | 128K | $2.50/$10 per MTok | Latest flagship model, best text processing |
 | **gemini** | Gemini 2.5 Pro | Google | 128K | ~$1.25 per MTok | Very long transcripts, multilingual |
 | **llama** | Llama 3.3 70B | Groq | 128K | $0.59/$0.79 per MTok | ⚡ BLAZING FAST (300+ tok/s), Meta's latest |
-| **kimi** | K2 Thinking | Novita | 262K | $0.60/$2.50 per MTok | Advanced reasoning, cost-effective |
-| **qwen3max** | Qwen 3 Max | Novita | 128K | $2.11/$8.45 per MTok | Flagship Qwen model, strong reasoning |
-| **deepseek** | DeepSeek Chat | DeepSeek | 64K | $0.27/$1.12 per MTok | Budget-friendly, good quality |
-| **qwen** | Qwen2.5:7b | Ollama (local) | 32K | FREE | Local, private, 12GB GPU ⚠️ |
+| **qwen** | Qwen2.5:32b | Ollama (local) | 32K | FREE | Local, private, 12GB GPU |
 
 ## Setup
 
@@ -66,7 +62,7 @@ export GROQ_API_KEY="gsk_..."
 
 Example: `interview_deepgram_llama_processed.txt`
 
-Processors: `sonnet`, `chatgpt`, `gemini`, `llama`, `kimi`, `qwen3max`, `deepseek`, `qwen`
+Processors: `sonnet`, `chatgpt`, `gemini`, `llama`, `qwen`
 
 ## License
 

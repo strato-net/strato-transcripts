@@ -88,32 +88,58 @@ def test_anthropic():
         print(f"❌ Error: {e}")
         return False
 
-def test_gwen():
-    """Test Gwen (Qwen2.5-7B-Instruct via Ollama)"""
+def test_qwen():
+    """Test Qwen (Qwen2.5 via Ollama) with hardware-adaptive model selection"""
+    import subprocess
+    import time
+    
+    # Auto-select model based on hardware
+    try:
+        import torch
+        has_gpu = torch.cuda.is_available()
+        if has_gpu:
+            gpu_memory_gb = torch.cuda.get_device_properties(0).total_memory / (1024**3)
+            use_32b = gpu_memory_gb >= 12
+        else:
+            use_32b = False
+    except:
+        use_32b = False
+    
+    model = "qwen2.5:32b" if use_32b else "qwen2.5:7b"
+    model_size = "32B (GPU)" if use_32b else "7B (CPU)"
+    
     print("\n" + "="*60)
-    print("Testing GWEN (qwen2.5:7b via Ollama)")
+    print(f"Testing QWEN ({model} via Ollama)")
     print("="*60)
+    print(f"Auto-selected: {model_size}")
+    
+    ollama_process = None
+    started_ollama = False
     
     try:
         import requests
         
-        # Check if Ollama is running
+        # Check if Ollama is running, start if needed
         try:
             response = requests.get("http://localhost:11434/api/tags", timeout=2)
             if response.status_code != 200:
-                print("❌ Ollama service not running")
-                print("   Start with: ollama serve")
-                return False
-        except requests.exceptions.ConnectionError:
-            print("❌ Ollama service not accessible at localhost:11434")
-            print("   Start with: ollama serve")
-            return False
+                raise Exception("Ollama not responding")
+        except:
+            print("Starting Ollama service...")
+            ollama_process = subprocess.Popen(
+                ['ollama', 'serve'],
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL
+            )
+            started_ollama = True
+            time.sleep(3)  # Give service time to start
+            print("✓ Ollama started")
         
-        # Test generation with qwen2.5:7b
+        # Test generation with selected model
         response = requests.post(
             "http://localhost:11434/api/generate",
             json={
-                "model": "qwen2.5:7b",
+                "model": model,
                 "prompt": "Say 'hello' in one word",
                 "stream": False,
                 "options": {"num_predict": 10}
@@ -125,45 +151,25 @@ def test_gwen():
             result = response.json()
             print(f"✅ Connected successfully")
             print(f"Response: {result['response'][:100]}")
-            return True
+            success = True
         else:
             print(f"❌ HTTP {response.status_code}: {response.text}")
-            return False
+            success = False
             
     except Exception as e:
         print(f"❌ Error: {e}")
-        return False
-
-def test_deepseek():
-    """Test DeepSeek connection"""
-    print("\n" + "="*60)
-    print("Testing DEEPSEEK (deepseek-chat)")
-    print("="*60)
+        success = False
+    finally:
+        # Stop Ollama if we started it
+        if started_ollama and ollama_process:
+            print("Stopping Ollama service...")
+            ollama_process.terminate()
+            try:
+                ollama_process.wait(timeout=5)
+            except:
+                ollama_process.kill()
     
-    api_key = os.environ.get('DEEPSEEK_API_KEY')
-    if not api_key or api_key == "" or api_key == "your_deepseek_api_key_here":
-        print("⚠️  API key not configured - skipping")
-        return "skipped"
-    
-    try:
-        import openai
-        client = openai.OpenAI(
-            api_key=api_key,
-            base_url="https://api.deepseek.com"
-        )
-        
-        response = client.chat.completions.create(
-            model="deepseek-chat",
-            messages=[{"role": "user", "content": "Say 'hello' in one word"}],
-            max_tokens=10
-        )
-        
-        print(f"✅ Connected successfully")
-        print(f"Response: {response.choices[0].message.content}")
-        return True
-    except Exception as e:
-        print(f"❌ Error: {e}")
-        return False
+    return success
 
 def test_assemblyai():
     """Test AssemblyAI transcription service"""
@@ -265,8 +271,7 @@ def main():
     results['anthropic'] = test_anthropic()
     results['openai'] = test_openai()
     results['gemini'] = test_gemini()
-    results['deepseek'] = test_deepseek()
-    results['gwen'] = test_gwen()
+    results['qwen'] = test_qwen()
     
     # Summary
     print("\n" + "="*60)
