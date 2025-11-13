@@ -58,6 +58,7 @@ All services include speaker diarization (identifying who said what).
 | **Anthropic** | Claude Sonnet 4.5 | Cloud API | 200K | $3/$15 per MTok | Complex technical content, long transcripts |
 | **OpenAI** | chatgpt-4o-latest | Cloud API | 128K | $2.50/$10 per MTok | Latest flagship model, best text processing |
 | **Gemini** | Gemini 2.5 Pro | Cloud API | 128K | ~$1.25 per MTok | Very long transcripts, multilingual |
+| **Groq** | Llama 3.3 70B | Cloud API | 128K | $0.59/$0.79 per MTok | ⚡ BLAZING FAST (300+ tok/s), Meta's latest |
 | **Kimi** | K2 Thinking (Moonshot via Novita) | Cloud API | 262K | $0.60/$2.50 per MTok | Advanced reasoning, cost-effective |
 | **Qwen3Max** | Qwen 3 Max (Alibaba via Novita) | Cloud API | 128K | $2.11/$8.45 per MTok | Flagship Qwen model, strong reasoning |
 | **DeepSeek** | DeepSeek Chat | Cloud API | 64K | $0.27/$1.12 per MTok | Budget-friendly, good quality |
@@ -65,7 +66,8 @@ All services include speaker diarization (identifying who said what).
 
 **Model Selection Notes:**
 - **For best quality:** Use Anthropic Claude Sonnet 4.5 or OpenAI chatgpt-4o-latest
-- **For cost-effectiveness:** Novita Kimi K2 or DeepSeek offer excellent value
+- **For blazing speed + low cost:** Groq Llama 3.3 70B (10-15x faster than OpenAI, $0.59/$0.79 per MTok)
+- **For cost-effectiveness:** Groq, Novita Kimi K2, or DeepSeek offer excellent value
 - **For maximum context:** Novita Kimi K2 (262K) or Anthropic Claude (200K)
 - **For privacy:** Run Qwen locally via Ollama (requires 12GB+ GPU)
 
@@ -153,6 +155,7 @@ export SPEECHMATICS_API_KEY="..."     # https://www.speechmatics.com/
 export ANTHROPIC_API_KEY="sk-ant-..."  # https://console.anthropic.com/
 export OPENAI_API_KEY="sk-..."         # https://platform.openai.com/
 export GOOGLE_API_KEY="..."            # https://makersuite.google.com/
+export GROQ_API_KEY="gsk_..."          # https://console.groq.com/
 export DEEPSEEK_API_KEY="sk-..."       # https://platform.deepseek.com/
 export NOVITA_API_KEY="..."            # https://novita.ai/
 ```
@@ -230,6 +233,7 @@ stratomercata-transcripts/
 - [Anthropic Claude](https://docs.anthropic.com/) - AI text processing with large context windows
 - [DeepSeek](https://www.deepseek.com/) - Cost-effective AI processing
 - [Google Gemini](https://ai.google.dev/) - AI processing optimized for long transcripts
+- [Groq](https://groq.com/) - Extremely fast inference with Meta's Llama 3.3 70B (300+ tokens/sec)
 - [Novita AI](https://novita.ai/) - Moonshot Kimi K2 Thinking model with advanced reasoning
 - [Ollama](https://ollama.com/) - Local AI model hosting (Qwen 2.5)
 - [OpenAI chatgpt-4o-latest](https://platform.openai.com/docs) - Latest flagship GPT-4o model with auto-updates

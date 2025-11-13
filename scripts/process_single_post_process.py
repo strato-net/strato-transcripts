@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Multi-provider AI transcript post-processor for Ethereum/blockchain content
-Supports: Claude (Anthropic), chatgpt-4o-latest (OpenAI), Gemini (Google), DeepSeek, Kimi K2 (Moonshot via Novita), Qwen3Max (via Novita), Qwen (local via Ollama)
+Supports: Claude (Anthropic), chatgpt-4o-latest (OpenAI), Gemini (Google), Llama 3.3 70B (Groq), DeepSeek, Kimi K2 (Moonshot via Novita), Qwen3Max (via Novita), Qwen (local via Ollama)
 Uses domain context to correct technical terms and speaker names
 
 Now supports batch processing of multiple transcripts × processors internally
@@ -363,6 +363,49 @@ def process_with_gemini(transcript, api_key, context):
     print(" ✓")
     return result
 
+def process_with_groq(transcript, api_key, context):
+    """Process transcript using Groq Llama 3.3 70B with streaming
+    
+    Uses llama-3.3-70b-versatile - Meta's latest and most capable Llama model
+    Extremely fast inference (300+ tokens/sec) with excellent text processing
+    """
+    model = "llama-3.3-70b-versatile"
+    try:
+        import openai
+    except ImportError:
+        raise ImportError("openai package not installed")
+    
+    client = openai.OpenAI(api_key=api_key, base_url="https://api.groq.com/openai/v1")
+    prompt = build_prompt(context, transcript)
+    
+    print(f"      Transcript size: {len(transcript)} chars")
+    print(f"      Model: {model}")
+    print(f"      Processing: ", end='', flush=True)
+    
+    result = ""
+    chunk_count = 0
+    
+    stream = client.chat.completions.create(
+        model=model,
+        messages=[
+            {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "user", "content": prompt}
+        ],
+        max_tokens=8000,
+        temperature=0.3,
+        stream=True
+    )
+    
+    for chunk in stream:
+        if chunk.choices[0].delta.content:
+            result += chunk.choices[0].delta.content
+            chunk_count += 1
+            if chunk_count % 100 == 0:
+                print(".", end='', flush=True)
+    
+    print(" ✓")
+    return result
+
 def process_with_deepseek(transcript, api_key, context):
     """Process transcript using DeepSeek Chat with streaming"""
     model = "deepseek-chat"
@@ -641,6 +684,8 @@ def process_single_combination(transcript_path, provider, api_keys, context, oll
             corrected = process_with_openai(transcript, api_keys['openai'], context)
         elif provider == "gemini":
             corrected = process_with_gemini(transcript, api_keys['gemini'], context)
+        elif provider == "groq":
+            corrected = process_with_groq(transcript, api_keys['groq'], context)
         elif provider == "deepseek":
             corrected = process_with_deepseek(transcript, api_keys['deepseek'], context)
         elif provider == "kimi":
@@ -700,7 +745,7 @@ def main():
     
     parser.add_argument("transcripts", nargs='+', help="Transcript file path(s)")
     parser.add_argument("--processors", required=True,
-                       help="Comma-separated list of processors (anthropic,openai,gemini,deepseek,kimi,qwen3max,qwen)")
+                       help="Comma-separated list of processors (anthropic,openai,gemini,groq,deepseek,kimi,qwen3max,qwen)")
     
     args = parser.parse_args()
     
@@ -728,7 +773,7 @@ def main():
     
     # Parse processors
     processors = [p.strip() for p in args.processors.split(',')]
-    valid_processors = {'anthropic', 'openai', 'gemini', 'deepseek', 'kimi', 'qwen3max', 'qwen'}
+    valid_processors = {'anthropic', 'openai', 'gemini', 'groq', 'deepseek', 'kimi', 'qwen3max', 'qwen'}
     
     for proc in processors:
         if proc not in valid_processors:
@@ -745,6 +790,7 @@ def main():
         'anthropic': 'ANTHROPIC_API_KEY',
         'openai': 'OPENAI_API_KEY',
         'gemini': 'GOOGLE_API_KEY',
+        'groq': 'GROQ_API_KEY',         # Groq Llama 3.3 70B
         'deepseek': 'DEEPSEEK_API_KEY',
         'kimi': 'NOVITA_API_KEY',      # Kimi K2 via Novita platform
         'qwen3max': 'NOVITA_API_KEY'   # Qwen 3 Max via Novita platform
