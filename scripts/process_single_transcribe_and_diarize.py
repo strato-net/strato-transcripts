@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Unified transcription script with speaker diarization
-Supports multiple providers: WhisperX (local), Deepgram, AssemblyAI, Sonix, Speechmatics
+Supports multiple providers: WhisperX (local), Deepgram, AssemblyAI
 All providers include speaker diarization support.
 """
 
@@ -130,11 +130,36 @@ def save_raw_transcript_from_text(output_dir, basename, service_name, formatted_
     
     # Save markdown version (WITH timestamps, convert SPEAKER_ labels to bold)
     md_path = output_path.with_suffix('.md')
-    md_content = formatted_text.replace('SPEAKER_', '**SPEAKER_').replace(':', ':**', 1)
+    md_lines = []
+    for line in formatted_text.split('\n'):
+        # Bold speaker labels: SPEAKER_XX: becomes **SPEAKER_XX:**
+        if re.match(r'^SPEAKER_\d+:', line):
+            line = line.replace('SPEAKER_', '**SPEAKER_').replace(':', ':**', 1)
+        md_lines.append(line)
+    md_content = '\n'.join(md_lines)
     with open(md_path, 'w', encoding='utf-8') as f:
         f.write(md_content)
     
     return output_path
+
+
+def load_custom_vocabulary():
+    """Load Ethereum-specific vocabulary from files for transcription services."""
+    vocab = []
+    
+    # Load technical terms
+    terms_file = Path("intermediates/ethereum_technical_terms.txt")
+    if terms_file.exists():
+        with open(terms_file, 'r', encoding='utf-8') as f:
+            vocab.extend([line.strip() for line in f if line.strip()])
+    
+    # Load people names
+    people_file = Path("intermediates/ethereum_people.txt")
+    if people_file.exists():
+        with open(people_file, 'r', encoding='utf-8') as f:
+            vocab.extend([line.strip() for line in f if line.strip()])
+    
+    return vocab
 
 
 # ============================================================================
@@ -151,7 +176,7 @@ def main():
     parser.add_argument(
         "--transcribers",
         required=True,
-        help="Comma-separated list of transcription services (whisperx,deepgram,assemblyai,sonix,speechmatics)"
+        help="Comma-separated list of transcription services (whisperx,deepgram,assemblyai)"
     )
     parser.add_argument("--output-dir", default="intermediates", help="Output directory")
     parser.add_argument("--force-cpu", action="store_true", help="Force CPU for WhisperX")
@@ -166,7 +191,7 @@ def main():
     
     # Parse transcribers
     transcribers = [t.strip() for t in args.transcribers.split(',')]
-    valid_transcribers = {'whisperx', 'deepgram', 'assemblyai', 'sonix', 'speechmatics', 'novita'}
+    valid_transcribers = {'whisperx', 'deepgram', 'assemblyai'}
     
     for transcriber in transcribers:
         if transcriber not in valid_transcribers:
@@ -223,14 +248,8 @@ def main():
             _, skip_reason = validate_api_key('DEEPGRAM_API_KEY')
         elif transcriber == 'assemblyai':
             _, skip_reason = validate_api_key('ASSEMBLYAI_API_KEY')
-        elif transcriber == 'sonix':
-            _, skip_reason = validate_api_key('SONIX_API_KEY')
-        elif transcriber == 'speechmatics':
-            _, skip_reason = validate_api_key('SPEECHMATICS_API_KEY')
         elif transcriber == 'whisperx':
             _, skip_reason = validate_api_key('HF_TOKEN')
-        elif transcriber == 'novita':
-            _, skip_reason = validate_api_key('NOVITA_API_KEY')
         
         if skip_reason:
             print(skip(f"{transcriber}: {skip_reason}"))
@@ -250,12 +269,6 @@ def main():
                 output_path = transcribe_deepgram(str(audio_path), args.output_dir)
             elif transcriber == 'assemblyai':
                 output_path = transcribe_assemblyai(str(audio_path), args.output_dir)
-            elif transcriber == 'sonix':
-                output_path = transcribe_sonix(str(audio_path), args.output_dir)
-            elif transcriber == 'speechmatics':
-                output_path = transcribe_speechmatics(str(audio_path), args.output_dir)
-            elif transcriber == 'novita':
-                output_path = transcribe_novita(str(audio_path), args.output_dir)
             
             elapsed = time.time() - transcriber_start
             results.append((transcriber, output_path, 'success', elapsed))
@@ -335,7 +348,7 @@ def transcribe_whisperx(audio_path, output_dir, force_cpu=False):
     
     model_name = "large-v3"
     compute_type = "float16" if device == "cuda" else "int8"
-    batch_size = 16 if device == "cuda" else 8
+    batch_size = 32 if device == "cuda" else 8  # Optimized for 12GB+ GPUs like RTX 5070
     
     print(f"  Device: {device}")
     print(f"  Model: {model_name}")
@@ -446,6 +459,10 @@ def transcribe_deepgram(audio_path, output_dir):
     
     start_time = time.time()
     
+    # Load custom vocabulary (people names + technical terms)
+    custom_vocab = load_custom_vocabulary()
+    print(f"  Loaded {len(custom_vocab)} custom terms")
+    
     # Model: nova-3-general (updated 2025-11-10)
     # Best accuracy for multi-speaker conversations and technical content
     # utterances=True: Returns transcript organized by speaker turns (continuous speech segments)
@@ -459,14 +476,10 @@ def transcribe_deepgram(audio_path, output_dir):
         punctuate=True,
         paragraphs=True,
         utterances=True,  # Returns speaker turns (see comment above)
-        filler_words=True,  # Detect filler words (um, uh, ah, etc.)
-        # Nova-3 uses 'keyterm' not 'keywords' - boost blockchain/crypto term accuracy
-        keyterm=[
-            "Ethereum", "Bitcoin", "blockchain", "cryptocurrency", "smart contract",
-            "DeFi", "NFT", "token", "wallet", "consensus", "proof of stake",
-            "proof of work", "mining", "validator", "gas", "gwei", "wei",
-            "Solidity", "EVM", "dApp", "Web3", "MetaMask", "staking"
-        ],
+        filler_words=False,  # Don't include filler words in transcript
+        # Boost accuracy for Ethereum people/terms from vocabulary files
+        # Deepgram may limit array size, using first 100 items
+        keyterm=custom_vocab[:100],
     )
     
     elapsed = time.time() - start_time
@@ -490,7 +503,7 @@ def transcribe_deepgram(audio_path, output_dir):
             text = getattr(alternative, 'transcript', "")
             formatted_lines.append(f"[0.0s] SPEAKER_00: {text}")
     
-    # Reformat to WhisperX style
+    # Reformat to WhisperX style - split text into proper sentences WITH timestamps
     current_speaker = None
     output_lines = []
     
@@ -503,7 +516,24 @@ def transcribe_deepgram(audio_path, output_dir):
                     output_lines.append('')
                 output_lines.append(f'{speaker}:')
                 current_speaker = speaker
-            output_lines.append(f'[{timestamp}s] {text}')
+            
+            # Split text into sentences
+            sentences = re.split(r'([.!?])\s+', text)
+            
+            # Rejoin punctuation with sentences and add timestamps
+            current_sentence = ''
+            for part in sentences:
+                if part in '.!?':
+                    current_sentence += part
+                    if current_sentence.strip():
+                        output_lines.append(f'[{timestamp}s] {current_sentence.strip()}')
+                    current_sentence = ''
+                elif part.strip():
+                    current_sentence += part + ' '
+            
+            # Add any remaining text with timestamp
+            if current_sentence.strip():
+                output_lines.append(f'[{timestamp}s] {current_sentence.strip()}')
     
     # Count speakers
     speakers = set()
@@ -531,11 +561,20 @@ def transcribe_assemblyai(audio_path, output_dir):
     aai.settings.api_key = api_key
     audio_file_path = Path(audio_path)
     
+    # Load custom vocabulary (people names + technical terms)
+    custom_vocab = load_custom_vocabulary()
+    print(f"  Loaded {len(custom_vocab)} custom terms")
+    
     print(f"  Uploading and transcribing...")
     
     config = aai.TranscriptionConfig(
         speaker_labels=True,
-        speakers_expected=None
+        speakers_expected=None,
+        format_text=True,  # Auto-format for readability
+        punctuate=True,
+        disfluencies=False,  # Remove filler words (um, uh, etc.)
+        word_boost=custom_vocab,  # Boost accuracy for Ethereum people/terms
+        boost_param='high'  # Aggressively boost custom vocabulary
     )
     
     transcriber = aai.Transcriber()
@@ -548,450 +587,15 @@ def transcribe_assemblyai(audio_path, output_dir):
     if transcript.status == aai.TranscriptStatus.error:
         raise RuntimeError(f"Transcription failed: {transcript.error}")
     
-    # Format output
-    formatted_lines = []
+    # Format output - build sentences like WhisperX WITH timestamps
+    output_lines = []
+    current_speaker = None
     
     if transcript.utterances:
         for utterance in transcript.utterances:
-            start_time = utterance.start / 1000.0
             speaker_num = ord(utterance.speaker) - ord('A')
             speaker_label = f"SPEAKER_{speaker_num:02d}"
-            text = utterance.text.strip()
-            formatted_lines.append(f"[{start_time:.1f}s] {speaker_label}: {text}")
-    else:
-        formatted_lines.append(f"[0.0s] SPEAKER_00: {transcript.text}")
-    
-    # Count speakers
-    num_speakers = len(set(utterance.speaker for utterance in transcript.utterances)) if transcript.utterances else 1
-    print(f"  Detected {num_speakers} speakers")
-    
-    # Save using utility function
-    formatted_text = '\n'.join(formatted_lines)
-    return save_raw_transcript_from_text(output_dir, audio_file_path.stem, "assemblyai", formatted_text)
-
-
-def transcribe_sonix(audio_path, output_dir):
-    """Sonix cloud transcription with speaker diarization and enhanced parameters"""
-    import time
-    import requests
-    import json
-    
-    api_key = os.environ.get('SONIX_API_KEY')
-    if not api_key:
-        raise ValueError("SONIX_API_KEY environment variable not set")
-    
-    audio_file_path = Path(audio_path)
-    
-    print(f"  Uploading to Sonix with enhanced parameters...")
-    print(f"    - Speaker identification enabled")
-    print(f"    - Custom blockchain/crypto vocabulary")
-    print(f"    - Entity detection enabled")
-    print(f"    - Auto punctuation enabled")
-    
-    # Upload file with enhanced parameters
-    headers = {'Authorization': f'Bearer {api_key}'}
-    
-    with open(audio_file_path, 'rb') as f:
-        files = {'file': (audio_file_path.name, f, 'audio/mpeg')}
-        data = {
-            'language': 'en',
-            'name': audio_file_path.stem,
-            'enable_speaker_identification': 'true',
-            'enable_entity_detection': 'true',
-            'enable_auto_punctuation': 'true',
-            'profanity_filter': 'false',
-            'custom_vocab': ','.join([
-                'Ethereum', 'blockchain', 'cryptocurrency', 'Bitcoin',
-                'DeFi', 'NFT', 'smart contract', 'dApp', 'Web3',
-                'Solidity', 'EVM', 'Geth', 'Whisper', 'Swarm', 'Mist',
-                'proof-of-stake', 'proof-of-work', 'consensus',
-                'validator', 'mining', 'gas', 'gwei', 'wei',
-                'MetaMask', 'wallet', 'token', 'DAO', 'IPFS',
-                'ENS', 'layer-2', 'rollup', 'sharding', 'staking',
-                'DevCon', 'EthCC', 'testnet', 'mainnet', 'fork',
-                'PyEthereum', 'cpp-ethereum', 'go-ethereum'
-            ])
-        }
-        
-        response = requests.post(
-            'https://api.sonix.ai/v1/media',
-            headers=headers,
-            files=files,
-            data=data
-        )
-        response.raise_for_status()
-        media_id = response.json()['id']
-    
-    print(f"  Transcribing (ID: {media_id})...")
-    
-    # Poll for completion
-    start_time = time.time()
-    while True:
-        response = requests.get(
-            f'https://api.sonix.ai/v1/media/{media_id}',
-            headers=headers
-        )
-        response.raise_for_status()
-        status = response.json()['status']
-        
-        if status == 'completed':
-            break
-        elif status == 'failed':
-            raise RuntimeError("Sonix transcription failed")
-        
-        time.sleep(5)
-    
-    elapsed = time.time() - start_time
-    print(f"  Transcribed in {elapsed:.1f}s")
-    
-    # Get transcript with speakers
-    response = requests.get(
-        f'https://api.sonix.ai/v1/media/{media_id}/transcript',
-        headers=headers
-    )
-    response.raise_for_status()
-    
-    # Debug: Check content type and response
-    print(f"  Response status: {response.status_code}")
-    print(f"  Content-Type: {response.headers.get('Content-Type', 'unknown')}")
-    
-    try:
-        transcript_data = response.json()
-    except json.JSONDecodeError as e:
-        print(f"  Response text preview: {response.text[:500]}")
-        raise RuntimeError(f"Failed to parse Sonix transcript as JSON: {e}")
-    
-    # Format output
-    formatted_lines = []
-    current_speaker = None
-    output_lines = []
-    
-    for word in transcript_data.get('words', []):
-        speaker = word.get('speaker', 0)
-        speaker_label = f"SPEAKER_{speaker:02d}"
-        start = word.get('start', 0)
-        text = word.get('text', '')
-        
-        if speaker_label != current_speaker:
-            if output_lines:
-                output_lines.append('')
-            output_lines.append(f'{speaker_label}:')
-            current_speaker = speaker_label
-        
-        formatted_lines.append(f"[{start:.1f}s] {speaker_label}: {text}")
-    
-    # Count speakers
-    speakers = set(word.get('speaker', 0) for word in transcript_data.get('words', []))
-    print(f"  Detected {len(speakers)} speakers")
-    
-    # Reconstruct sentences from words
-    # Group consecutive words by speaker
-    sentences = []
-    current_sentence = []
-    current_speaker = None
-    current_start = 0
-    
-    for word in transcript_data.get('words', []):
-        speaker = word.get('speaker', 0)
-        speaker_label = f"SPEAKER_{speaker:02d}"
-        
-        if speaker_label != current_speaker:
-            if current_sentence:
-                sentences.append((current_start, current_speaker, ' '.join(current_sentence)))
-            current_sentence = [word.get('text', '')]
-            current_speaker = speaker_label
-            current_start = word.get('start', 0)
-        else:
-            current_sentence.append(word.get('text', ''))
-    
-    if current_sentence:
-        sentences.append((current_start, current_speaker, ' '.join(current_sentence)))
-    
-    # Format final output
-    output_lines = []
-    last_speaker = None
-    for start, speaker, text in sentences:
-        if speaker != last_speaker:
-            if output_lines:
-                output_lines.append('')
-            output_lines.append(f'{speaker}:')
-            last_speaker = speaker
-        output_lines.append(f'[{start:.1f}s] {text}')
-    
-    formatted_text = '\n'.join(output_lines) + '\n'
-    return save_raw_transcript_from_text(output_dir, audio_file_path.stem, "sonix", formatted_text)
-
-
-def transcribe_speechmatics(audio_path, output_dir):
-    """Speechmatics cloud transcription with speaker diarization"""
-    import time
-    import requests
-    import json
-    
-    api_key = os.environ.get('SPEECHMATICS_API_KEY')
-    if not api_key:
-        raise ValueError("SPEECHMATICS_API_KEY environment variable not set")
-    
-    audio_file_path = Path(audio_path)
-    
-    print(f"  Uploading to Speechmatics...")
-    
-    # Prepare configuration
-    config = {
-        "type": "transcription",
-        "transcription_config": {
-            "language": "en",
-            "diarization": "speaker",
-            "operating_point": "enhanced"
-        }
-    }
-    
-    # Upload and transcribe
-    headers = {'Authorization': f'Bearer {api_key}'}
-    
-    with open(audio_file_path, 'rb') as f:
-        files = {
-            'data_file': (audio_file_path.name, f, 'audio/mpeg'),
-            'config': (None, json.dumps(config), 'application/json')
-        }
-        
-        start_time = time.time()
-        response = requests.post(
-            'https://asr.api.speechmatics.com/v2/jobs',
-            headers=headers,
-            files=files
-        )
-        response.raise_for_status()
-        job_id = response.json()['id']
-    
-    print(f"  Transcribing (Job ID: {job_id})...")
-    
-    # Poll for completion
-    while True:
-        response = requests.get(
-            f'https://asr.api.speechmatics.com/v2/jobs/{job_id}',
-            headers=headers
-        )
-        response.raise_for_status()
-        job_data = response.json()['job']
-        
-        if job_data['status'] == 'done':
-            break
-        elif job_data['status'] in ['rejected', 'deleted']:
-            raise RuntimeError(f"Speechmatics job {job_data['status']}")
-        
-        time.sleep(5)
-    
-    elapsed = time.time() - start_time
-    print(f"  Transcribed in {elapsed:.1f}s")
-    
-    # Get transcript
-    response = requests.get(
-        f'https://asr.api.speechmatics.com/v2/jobs/{job_id}/transcript?format=json-v2',
-        headers=headers
-    )
-    response.raise_for_status()
-    transcript_data = response.json()
-    
-    # Collect all words with speaker info (Speechmatics returns word-level data)
-    words_by_speaker = []
-    for result in transcript_data.get('results', []):
-        for alternative in result.get('alternatives', []):
-            content = alternative.get('content', '').strip()
-            if not content:
-                continue
-                
-            speaker = alternative.get('speaker', 'SPEAKER_00')
-            start = result.get('start_time', 0)
-            word_type = alternative.get('type', 'word')
-            
-            # Normalize speaker label
-            if not speaker.startswith('SPEAKER_'):
-                speaker_label = f"SPEAKER_{speaker:02d}" if isinstance(speaker, int) else speaker
-            else:
-                speaker_label = speaker
-            
-            words_by_speaker.append({
-                'speaker': speaker_label,
-                'start': start,
-                'content': content,
-                'type': word_type
-            })
-    
-    # Group consecutive words by speaker into phrases
-    phrases = []
-    current_phrase = []
-    current_speaker = None
-    current_start = 0
-    
-    for word_data in words_by_speaker:
-        speaker = word_data['speaker']
-        content = word_data['content']
-        start = word_data['start']
-        word_type = word_data['type']
-        
-        # Start new phrase on speaker change
-        if speaker != current_speaker:
-            if current_phrase:
-                phrases.append({
-                    'speaker': current_speaker,
-                    'start': current_start,
-                    'text': ' '.join(current_phrase)
-                })
-            current_phrase = [content]
-            current_speaker = speaker
-            current_start = start
-        else:
-            # Add to current phrase
-            # Handle punctuation (don't add space before punctuation)
-            if word_type == 'punctuation':
-                if current_phrase:
-                    current_phrase[-1] = current_phrase[-1] + content
-                else:
-                    current_phrase.append(content)
-            else:
-                current_phrase.append(content)
-        
-        # Break phrases at sentence endings for readability
-        if content in ['.', '?', '!'] and len(current_phrase) > 10:
-            phrases.append({
-                'speaker': current_speaker,
-                'start': current_start,
-                'text': ' '.join(current_phrase)
-            })
-            current_phrase = []
-            current_start = start
-    
-    # Add final phrase
-    if current_phrase:
-        phrases.append({
-            'speaker': current_speaker,
-            'start': current_start,
-            'text': ' '.join(current_phrase)
-        })
-    
-    # Format output
-    output_lines = []
-    last_speaker = None
-    
-    for phrase in phrases:
-        speaker = phrase['speaker']
-        if speaker != last_speaker:
-            if output_lines:
-                output_lines.append('')
-            output_lines.append(f'{speaker}:')
-            last_speaker = speaker
-        output_lines.append(f'[{phrase["start"]:.1f}s] {phrase["text"]}')
-    
-    # Count unique speakers
-    speakers = set(phrase['speaker'] for phrase in phrases)
-    print(f"  Detected {len(speakers)} speakers")
-    
-    formatted_text = '\n'.join(output_lines) + '\n'
-    return save_raw_transcript_from_text(output_dir, audio_file_path.stem, "speechmatics", formatted_text)
-
-
-def transcribe_novita(audio_path, output_dir):
-    """Novita AI transcription with speaker diarization using Qwen2.5-Omni"""
-    import time
-    import requests
-    import json
-    
-    api_key = os.environ.get('NOVITA_API_KEY')
-    if not api_key:
-        raise ValueError("NOVITA_API_KEY environment variable not set")
-    
-    audio_file_path = Path(audio_path)
-    
-    print(f"  Model: Qwen2.5-Omni")
-    print(f"  Uploading and transcribing...")
-    
-    headers = {
-        'Authorization': f'Bearer {api_key}',
-        'Content-Type': 'application/json'
-    }
-    
-    start_time = time.time()
-    
-    # Read audio file and encode to base64 for API
-    import base64
-    with open(audio_file_path, 'rb') as f:
-        audio_data = base64.b64encode(f.read()).decode('utf-8')
-    
-    # Novita AI API request
-    # Using their audio transcription endpoint with Qwen2.5-Omni model
-    payload = {
-        "model": "qwen2.5-omni",
-        "audio": audio_data,
-        "language": "en",
-        "enable_speaker_diarization": True,
-        "format": "json"
-    }
-    
-    try:
-        response = requests.post(
-            'https://api.novita.ai/v3/async/audio/transcription',
-            headers=headers,
-            json=payload,
-            timeout=30
-        )
-        response.raise_for_status()
-        task_id = response.json().get('task_id')
-        
-        if not task_id:
-            raise RuntimeError("No task_id received from Novita AI")
-        
-        print(f"  Task ID: {task_id}")
-        
-        # Poll for completion
-        while True:
-            time.sleep(5)
-            status_response = requests.get(
-                f'https://api.novita.ai/v3/async/task/{task_id}',
-                headers=headers,
-                timeout=30
-            )
-            status_response.raise_for_status()
-            status_data = status_response.json()
-            
-            status = status_data.get('status')
-            if status == 'completed':
-                elapsed = time.time() - start_time
-                print(f"  Transcribed in {elapsed:.1f}s")
-                transcript_data = status_data.get('result', {})
-                break
-            elif status in ['failed', 'cancelled']:
-                error_msg = status_data.get('error', 'Unknown error')
-                raise RuntimeError(f"Novita AI transcription {status}: {error_msg}")
-            elif status not in ['pending', 'processing']:
-                raise RuntimeError(f"Unexpected status: {status}")
-    
-    except requests.exceptions.RequestException as e:
-        raise RuntimeError(f"Novita AI API error: {e}")
-    
-    # Format output from Novita AI response
-    output_lines = []
-    current_speaker = None
-    
-    # Parse transcript data (adjust based on actual Novita AI response format)
-    segments = transcript_data.get('segments', [])
-    
-    if not segments and 'text' in transcript_data:
-        # Fallback: no diarization, single speaker
-        print("  Warning: No speaker diarization available, using single speaker")
-        output_lines.append('SPEAKER_00:')
-        output_lines.append('[0.0s] ' + transcript_data['text'])
-        speakers_count = 1
-    else:
-        # Process segments with speaker information
-        speakers = set()
-        for segment in segments:
-            speaker_id = segment.get('speaker', 0)
-            speaker_label = f"SPEAKER_{speaker_id:02d}"
-            speakers.add(speaker_label)
-            
-            start = segment.get('start', 0.0)
-            text = segment.get('text', '').strip()
+            start_time = utterance.start / 1000.0  # Convert ms to seconds
             
             if speaker_label != current_speaker:
                 if output_lines:
@@ -999,15 +603,37 @@ def transcribe_novita(audio_path, output_dir):
                 output_lines.append(f'{speaker_label}:')
                 current_speaker = speaker_label
             
-            output_lines.append(f'[{start:.1f}s] {text}')
-        
-        speakers_count = len(speakers)
+            # Split text into sentences
+            text = utterance.text.strip()
+            import re
+            sentences = re.split(r'([.!?])\s+', text)
+            
+            # Rejoin punctuation with sentences and add timestamps
+            current_sentence = ''
+            for i, part in enumerate(sentences):
+                if part in '.!?':
+                    current_sentence += part
+                    if current_sentence.strip():
+                        # Add timestamp to sentence
+                        output_lines.append(f'[{start_time:.1f}s] {current_sentence.strip()}')
+                    current_sentence = ''
+                elif part.strip():
+                    current_sentence += part + ' '
+            
+            # Add any remaining text with timestamp
+            if current_sentence.strip():
+                output_lines.append(f'[{start_time:.1f}s] {current_sentence.strip()}')
+    else:
+        output_lines.append('SPEAKER_00:')
+        output_lines.append('[0.0s] ' + transcript.text)
     
-    print(f"  Detected {speakers_count} speakers")
+    # Count speakers
+    num_speakers = len(set(utterance.speaker for utterance in transcript.utterances)) if transcript.utterances else 1
+    print(f"  Detected {num_speakers} speakers")
     
     # Save using utility function
     formatted_text = '\n'.join(output_lines) + '\n'
-    return save_raw_transcript_from_text(output_dir, audio_file_path.stem, "novita", formatted_text)
+    return save_raw_transcript_from_text(output_dir, audio_file_path.stem, "assemblyai", formatted_text)
 
 
 if __name__ == "__main__":

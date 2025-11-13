@@ -11,8 +11,7 @@ POST-PROCESSING PROVIDERS TESTED:
 - Anthropic (Claude Sonnet 4.5)
 - OpenAI (GPT-4o)
 - Google (Gemini 2.5 Pro)
-- DeepSeek (Chat)
-- Gwen (Qwen2.5-7B-Instruct local)
+- Qwen (Qwen2.5-32B-Instruct local)
 
 TRANSCRIPTION PROVIDERS (audio length limits, not context windows):
 - WhisperX (local GPU) - No length limit
@@ -24,7 +23,7 @@ TRANSCRIPTION PROVIDERS (audio length limits, not context windows):
 
 Usage:
     python3 scripts/test_context_limits.py
-    python3 scripts/test_context_limits.py --providers anthropic,openai,deepseek
+    python3 scripts/test_context_limits.py --providers anthropic,openai,gemini
     python3 scripts/test_context_limits.py --quick  # Fast test with smaller increments
 """
 
@@ -317,140 +316,116 @@ def test_gemini_context(test_sizes=[10000, 50000, 100000, 120000, 128000]):
     return results
 
 
-def test_deepseek_context(test_sizes=[10000, 30000, 50000, 64000]):
-    """Test DeepSeek context limits"""
-    try:
-        import openai
-    except ImportError:
-        return {"error": "openai package not installed", "status": "skip"}
+def test_qwen_context(test_sizes=[2000, 8000, 16000, 24000, 32000]):
+    """Test Qwen 32B (GPU-only via Ollama) context limits"""
+    import subprocess
+    import time
     
-    api_key = os.environ.get('DEEPSEEK_API_KEY')
-    if not api_key:
-        return {"error": "DEEPSEEK_API_KEY not set", "status": "skip"}
-    
-    print_info("Testing DeepSeek Chat...")
-    client = openai.OpenAI(
-        api_key=api_key,
-        base_url="https://api.deepseek.com"
-    )
-    
-    results = {
-        "provider": "DeepSeek",
-        "model": "deepseek-chat",
-        "advertised": "64,000 tokens",
-        "tested": [],
-        "max_working": 0,
-        "status": "tested"
-    }
-    
-    for size in test_sizes:
-        print(f"  Testing {size:,} tokens...", end=" ", flush=True)
-        payload, actual_tokens = generate_test_payload(size)
-        
-        try:
-            start = time.time()
-            response = client.chat.completions.create(
-                model="deepseek-chat",
-                max_tokens=50,
-                messages=[{
-                    "role": "user",
-                    "content": f"{payload}\n\nRespond with just: OK"
-                }]
-            )
-            elapsed = time.time() - start
-            
-            print_success(f"{actual_tokens:,} tokens OK ({elapsed:.1f}s)")
-            results["tested"].append({
-                "target": size,
-                "actual": actual_tokens,
-                "success": True,
-                "time": elapsed
-            })
-            results["max_working"] = actual_tokens
-            time.sleep(1)
-            
-        except Exception as e:
-            error_msg = str(e)
-            print_failure(f"Failed - {error_msg[:100]}")
-            results["tested"].append({
-                "target": size,
-                "actual": actual_tokens,
-                "success": False,
-                "error": error_msg[:200]
-            })
-            break
-    
-    return results
-
-
-def test_gwen_context(test_sizes=[2000, 8000, 16000, 24000, 32000]):
-    """Test Gwen (Qwen2.5-7B-Instruct via Ollama) context limits"""
     try:
         import requests
     except ImportError:
         return {"error": "requests package not installed", "status": "skip"}
     
-    print_info("Testing Gwen (Qwen2.5-7B via Ollama)...")
+    # Check for GPU
+    try:
+        import torch
+        has_gpu = torch.cuda.is_available()
+    except:
+        has_gpu = False
+    
+    if not has_gpu:
+        return {
+            "provider": "Qwen",
+            "model": "qwen2.5:32b",
+            "error": "GPU Required - Qwen skipped on CPU-only system",
+            "status": "skip"
+        }
+    
+    model = "qwen2.5:32b"
+    
+    print_info(f"Testing Qwen ({model} via Ollama)...")
+    print_info("GPU detected - using 32B model")
     
     results = {
-        "provider": "Gwen",
-        "model": "qwen2.5:7b",
-        "advertised": "32,768 tokens (model dependent)",
+        "provider": "Qwen",
+        "model": model,
+        "advertised": "32,768 tokens",
         "tested": [],
         "max_working": 0,
         "status": "tested"
     }
     
-    # Check if Ollama is running
+    ollama_process = None
+    started_ollama = False
+    
+    # Check if Ollama is running, start if needed
     try:
         response = requests.get("http://localhost:11434/api/tags", timeout=2)
         if response.status_code != 200:
-            return {"error": "Ollama not running", "status": "skip"}
-    except Exception:
-        return {"error": "Ollama not accessible at localhost:11434", "status": "skip"}
+            raise Exception("Ollama not responding")
+    except:
+        print_info("Starting Ollama service...")
+        ollama_process = subprocess.Popen(
+            ['ollama', 'serve'],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL
+        )
+        started_ollama = True
+        time.sleep(3)  # Give service time to start
+        print_success("Ollama started")
     
-    for size in test_sizes:
-        print(f"  Testing {size:,} tokens...", end=" ", flush=True)
-        payload, actual_tokens = generate_test_payload(size)
-        
-        try:
-            start = time.time()
-            response = requests.post(
-                "http://localhost:11434/api/generate",
-                json={
-                    "model": "qwen2.5:7b",
-                    "prompt": f"{payload}\n\nRespond with just: OK",
-                    "stream": False,
-                    "options": {
-                        "num_predict": 10
-                    }
-                },
-                timeout=60
-            )
-            elapsed = time.time() - start
+    try:
+        for size in test_sizes:
+            print(f"  Testing {size:,} tokens...", end=" ", flush=True)
+            payload, actual_tokens = generate_test_payload(size)
             
-            if response.status_code == 200:
-                print_success(f"{actual_tokens:,} tokens OK ({elapsed:.1f}s)")
+            try:
+                start = time.time()
+                response = requests.post(
+                    "http://localhost:11434/api/generate",
+                    json={
+                        "model": model,
+                        "prompt": f"{payload}\n\nRespond with just: OK",
+                        "stream": False,
+                        "options": {
+                            "num_predict": 10
+                        }
+                    },
+                    timeout=60
+                )
+                elapsed = time.time() - start
+                
+                if response.status_code == 200:
+                    print_success(f"{actual_tokens:,} tokens OK ({elapsed:.1f}s)")
+                    results["tested"].append({
+                        "target": size,
+                        "actual": actual_tokens,
+                        "success": True,
+                        "time": elapsed
+                    })
+                    results["max_working"] = actual_tokens
+                else:
+                    raise Exception(f"HTTP {response.status_code}")
+                
+            except Exception as e:
+                error_msg = str(e)
+                print_failure(f"Failed - {error_msg[:100]}")
                 results["tested"].append({
                     "target": size,
                     "actual": actual_tokens,
-                    "success": True,
-                    "time": elapsed
+                    "success": False,
+                    "error": error_msg[:200]
                 })
-                results["max_working"] = actual_tokens
-            else:
-                raise Exception(f"HTTP {response.status_code}")
-            
-        except Exception as e:
-            error_msg = str(e)
-            print_failure(f"Failed - {error_msg[:100]}")
-            results["tested"].append({
-                "target": size,
-                "actual": actual_tokens,
-                "success": False,
-                "error": error_msg[:200]
-            })
-            break
+                break
+    finally:
+        # Stop Ollama if we started it
+        if started_ollama and ollama_process:
+            print_info("Stopping Ollama service...")
+            ollama_process.terminate()
+            try:
+                ollama_process.wait(timeout=5)
+            except:
+                ollama_process.kill()
     
     return results
 
@@ -549,7 +524,7 @@ def main():
     )
     parser.add_argument(
         "--providers",
-        default="anthropic,openai,gemini,deepseek,gwen",
+        default="anthropic,openai,gemini,qwen",
         help="Comma-separated list of providers to test"
     )
     parser.add_argument(
@@ -581,10 +556,8 @@ def main():
             result = test_openai_context()
         elif provider == 'gemini':
             result = test_gemini_context()
-        elif provider == 'deepseek':
-            result = test_deepseek_context()
-        elif provider == 'gwen':
-            result = test_gwen_context()
+        elif provider == 'qwen':
+            result = test_qwen_context()
         else:
             print_warning(f"Unknown provider: {provider}")
             continue

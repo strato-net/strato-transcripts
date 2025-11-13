@@ -184,17 +184,23 @@ if command -v ollama &> /dev/null; then
         echo "✓ Ollama service already running"
     fi
     
-    echo "Pulling Ollama model for Gwen (qwen2.5:7b - optimized for 12GB GPU)..."
-    echo "This will download ~4.7GB - may take several minutes depending on your internet speed..."
-    if ollama pull qwen2.5:7b 2>&1 | grep -q "success"; then
-        echo -e "${GREEN}✓ Model qwen2.5:7b downloaded and ready for Gwen${NC}"
+    echo "Pulling Ollama model for qwen (GPU-only: qwen2.5:32b)..."
+    echo "Note: Qwen requires NVIDIA GPU with 12GB+ VRAM for transcript processing"
+    echo "This will download ~19GB - may take 10-20 minutes depending on your internet speed..."
+    echo ""
+    
+    if ollama pull qwen2.5:32b 2>&1 | grep -q "success"; then
+        echo -e "${GREEN}✓ Model qwen2.5:32b downloaded${NC}"
     else
-        # Try anyway, sometimes it succeeds but doesn't output "success"
-        echo -e "${YELLOW}⚠ Model pull completed (check with: ollama list)${NC}"
+        echo -e "${YELLOW}⚠ Model qwen2.5:32b pull completed (check with: ollama list)${NC}"
     fi
-    echo "Note: You can also install larger models if you have more VRAM:"
-    echo "  ollama pull qwen2.5:14b  # ~8.5GB model, needs 16GB+ VRAM"
-    echo "  ollama pull qwen2.5:32b  # ~20GB model, needs 24GB+ VRAM"
+    
+    echo ""
+    echo -e "${GREEN}✓ Qwen 32B model ready (GPU-only):${NC}"
+    echo "  • Requires: NVIDIA GPU with 12GB+ VRAM (e.g., RTX 5070, 4070 Ti, etc.)"
+    echo "  • Uses: ~8-9GB VRAM during processing"
+    echo "  • CPU-only systems: Qwen will be automatically skipped with warning"
+    echo "  • Performance: 30-60 seconds per transcript (150x faster than CPU)"
 fi
 echo ""
 
@@ -580,7 +586,6 @@ echo "4. For cloud-based AI providers (if not using local Ollama):"
 echo "   - OpenAI (ChatGPT-5): https://platform.openai.com/api-keys"
 echo "   - Anthropic (Claude): https://console.anthropic.com/"
 echo "   - Google (Gemini): https://makersuite.google.com/app/apikey"
-echo "   - DeepSeek: https://platform.deepseek.com/"
 echo ""
 echo -e "${GREEN}Ready to use!${NC}"
 echo ""
@@ -589,8 +594,8 @@ echo "  source setup_env.sh"
 echo "  source venv/bin/activate"
 echo "  ./scripts/process_single.sh audio.mp3 --transcribers whisperx --processors openai"
 echo ""
-echo "Available transcribers: whisperx, deepgram, assemblyai, sonix, speechmatics, novita"
-echo "Available processors: anthropic, openai, gemini, deepseek, ollama"
+echo "Available transcribers: whisperx, deepgram, assemblyai"
+echo "Available processors: sonnet, chatgpt, gemini, llama, qwen"
 echo ""
 echo "Batch Processing:"
 echo "  ./scripts/process_all.sh --transcribers deepgram --processors anthropic"

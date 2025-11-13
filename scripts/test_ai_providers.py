@@ -88,32 +88,60 @@ def test_anthropic():
         print(f"❌ Error: {e}")
         return False
 
-def test_gwen():
-    """Test Gwen (Qwen2.5-7B-Instruct via Ollama)"""
+def test_qwen():
+    """Test Qwen 32B (GPU-only via Ollama)"""
+    import subprocess
+    import time
+    
+    # Check for GPU
+    try:
+        import torch
+        has_gpu = torch.cuda.is_available()
+    except:
+        has_gpu = False
+    
     print("\n" + "="*60)
-    print("Testing GWEN (qwen2.5:7b via Ollama)")
+    print("Testing QWEN (qwen2.5:32b via Ollama)")
     print("="*60)
+    
+    if not has_gpu:
+        print("⚠️  QWEN SKIPPED: GPU Required")
+        print()
+        print("Qwen requires NVIDIA GPU with 12GB+ VRAM for transcript processing.")
+        print("Current system: CPU-only")
+        print()
+        return "skipped"
+    
+    model = "qwen2.5:32b"
+    print(f"GPU detected - using {model}")
+    
+    ollama_process = None
+    started_ollama = False
     
     try:
         import requests
         
-        # Check if Ollama is running
+        # Check if Ollama is running, start if needed
         try:
             response = requests.get("http://localhost:11434/api/tags", timeout=2)
             if response.status_code != 200:
-                print("❌ Ollama service not running")
-                print("   Start with: ollama serve")
-                return False
-        except requests.exceptions.ConnectionError:
-            print("❌ Ollama service not accessible at localhost:11434")
-            print("   Start with: ollama serve")
-            return False
+                raise Exception("Ollama not responding")
+        except:
+            print("Starting Ollama service...")
+            ollama_process = subprocess.Popen(
+                ['ollama', 'serve'],
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL
+            )
+            started_ollama = True
+            time.sleep(3)  # Give service time to start
+            print("✓ Ollama started")
         
-        # Test generation with qwen2.5:7b
+        # Test generation with selected model
         response = requests.post(
             "http://localhost:11434/api/generate",
             json={
-                "model": "qwen2.5:7b",
+                "model": model,
                 "prompt": "Say 'hello' in one word",
                 "stream": False,
                 "options": {"num_predict": 10}
@@ -125,45 +153,25 @@ def test_gwen():
             result = response.json()
             print(f"✅ Connected successfully")
             print(f"Response: {result['response'][:100]}")
-            return True
+            success = True
         else:
             print(f"❌ HTTP {response.status_code}: {response.text}")
-            return False
+            success = False
             
     except Exception as e:
         print(f"❌ Error: {e}")
-        return False
-
-def test_deepseek():
-    """Test DeepSeek connection"""
-    print("\n" + "="*60)
-    print("Testing DEEPSEEK (deepseek-chat)")
-    print("="*60)
+        success = False
+    finally:
+        # Stop Ollama if we started it
+        if started_ollama and ollama_process:
+            print("Stopping Ollama service...")
+            ollama_process.terminate()
+            try:
+                ollama_process.wait(timeout=5)
+            except:
+                ollama_process.kill()
     
-    api_key = os.environ.get('DEEPSEEK_API_KEY')
-    if not api_key or api_key == "" or api_key == "your_deepseek_api_key_here":
-        print("⚠️  API key not configured - skipping")
-        return "skipped"
-    
-    try:
-        import openai
-        client = openai.OpenAI(
-            api_key=api_key,
-            base_url="https://api.deepseek.com"
-        )
-        
-        response = client.chat.completions.create(
-            model="deepseek-chat",
-            messages=[{"role": "user", "content": "Say 'hello' in one word"}],
-            max_tokens=10
-        )
-        
-        print(f"✅ Connected successfully")
-        print(f"Response: {response.choices[0].message.content}")
-        return True
-    except Exception as e:
-        print(f"❌ Error: {e}")
-        return False
+    return success
 
 def test_assemblyai():
     """Test AssemblyAI transcription service"""
@@ -238,144 +246,6 @@ def test_whisperx():
         print(f"❌ Error: {e}")
         return False
 
-        else:
-            print(f"⚠️  No GPU detected (CPU mode)")
-            return True
-    except ImportError as e:
-        print(f"❌ Required package not installed: {e}")
-        return False
-    except Exception as e:
-        print(f"❌ Error: {e}")
-        return False
-
-def test_sonix():
-    """Test Sonix transcription service"""
-    print("\n" + "="*60)
-    print("Testing SONIX (transcription service)")
-    print("="*60)
-    
-    api_key = os.environ.get('SONIX_API_KEY')
-    if not api_key or api_key == "" or api_key == "your_sonix_api_key_here":
-        print("⚠️  API key not configured - skipping")
-        return "skipped"
-    
-    try:
-        import requests
-        
-        # Try multiple auth formats - Sonix docs are unclear
-        auth_formats = [
-            {'Authorization': f'Bearer {api_key}'},  # Standard Bearer token
-            {'Authorization': api_key},               # Raw key
-            {'Api-Key': api_key},                    # Custom header
-        ]
-        
-        endpoints = [
-            'https://api.sonix.ai/v1/media',
-            'https://api.sonix.ai/v1/folders',
-        ]
-        
-        for i, headers in enumerate(auth_formats):
-            for endpoint in endpoints:
-                try:
-                    response = requests.get(endpoint, headers=headers, timeout=10)
-                    
-                    if response.status_code == 200:
-                        print(f"✅ API key valid with auth format #{i+1}")
-                        print(f"   Endpoint: {endpoint}")
-                        return True
-                    elif response.status_code not in [401, 403]:
-                        # Non-auth error might still indicate valid key
-                        print(f"✅ API key appears valid (status: {response.status_code})")
-                        print(f"   Note: Endpoint returned non-auth error, key is likely valid")
-                        return True
-                except:
-                    continue
-        
-        # All attempts failed
-        print(f"❌ All authentication methods failed (401 Unauthorized)")
-        print(f"   Note: API key may be invalid or test/demo key")
-        return False
-        
-    except Exception as e:
-        print(f"❌ Error: {e}")
-        return False
-
-def test_speechmatics():
-    """Test Speechmatics transcription service"""
-    print("\n" + "="*60)
-    print("Testing SPEECHMATICS (transcription service)")
-    print("="*60)
-    
-    api_key = os.environ.get('SPEECHMATICS_API_KEY')
-    if not api_key or api_key == "" or api_key == "your_speechmatics_api_key_here":
-        print("⚠️  API key not configured - skipping")
-        return "skipped"
-    
-    try:
-        import requests
-        
-        # Test API connectivity
-        headers = {'Authorization': f'Bearer {api_key}'}
-        response = requests.get('https://asr.api.speechmatics.com/v2/', headers=headers, timeout=10)
-        
-        # Speechmatics returns 401 for invalid key, 200 or other for valid
-        if response.status_code != 401:
-            print(f"✅ API key configured (status: {response.status_code})")
-            return True
-        else:
-            print(f"❌ API key invalid (401 Unauthorized)")
-            return False
-    except Exception as e:
-        print(f"❌ Error: {e}")
-        return False
-
-def test_novita():
-    """Test Novita AI transcription service"""
-    print("\n" + "="*60)
-    print("Testing NOVITA AI (transcription service)")
-    print("="*60)
-    
-    api_key = os.environ.get('NOVITA_API_KEY')
-    if not api_key or api_key == "" or api_key == "your_novita_api_key_here":
-        print("⚠️  API key not configured - skipping")
-        return "skipped"
-    
-    try:
-        import requests
-        
-        # Try v2 API endpoint for models list
-        headers = {
-            'Authorization': f'Bearer {api_key}',
-            'Content-Type': 'application/json'
-        }
-        
-        # Try accessing models endpoint
-        response = requests.get('https://api.novita.ai/v2/models', headers=headers, timeout=10)
-        
-        if response.status_code == 200:
-            print(f"✅ API key valid and models accessible")
-            return True
-        elif response.status_code == 401:
-            print(f"❌ API key invalid (401 Unauthorized)")
-            return False
-        elif response.status_code == 403:
-            print(f"❌ API key unauthorized (403 Forbidden)")
-            return False
-        else:
-            # Try alternative endpoint
-            response2 = requests.get('https://api.novita.ai/v3/models', headers=headers, timeout=10)
-            if response2.status_code == 200:
-                print(f"✅ API key valid (v3 endpoint)")
-                return True
-            
-            print(f"⚠️  API returned status codes: v2={response.status_code}, v3={response2.status_code}")
-            print(f"   Note: API key may be valid but endpoints returned unexpected responses")
-            # Consider it a pass if not explicit auth error
-            return True if response.status_code not in [401, 403, 404] else False
-    except Exception as e:
-        print(f"❌ Error: {e}")
-        return False
-
 def main():
     print("="*60)
     print("AI Provider Connectivity Test")
@@ -395,9 +265,6 @@ def main():
     print("="*60)
     results['assemblyai'] = test_assemblyai()
     results['deepgram'] = test_deepgram()
-    results['sonix'] = test_sonix()
-    results['speechmatics'] = test_speechmatics()
-    results['novita'] = test_novita()
     
     # Test AI post-processing providers
     print("\n" + "="*60)
@@ -406,8 +273,7 @@ def main():
     results['anthropic'] = test_anthropic()
     results['openai'] = test_openai()
     results['gemini'] = test_gemini()
-    results['deepseek'] = test_deepseek()
-    results['gwen'] = test_gwen()
+    results['qwen'] = test_qwen()
     
     # Summary
     print("\n" + "="*60)

@@ -1,10 +1,8 @@
 #!/usr/bin/env python3
 """
-Multi-provider AI transcript post-processor for Ethereum/blockchain content
-Supports: Claude (Anthropic), ChatGPT-5 (OpenAI), Gemini (Google), DeepSeek, Gwen (Qwen2.5-7B-Instruct local)
-Uses domain context to correct technical terms and speaker names
-
-Now supports batch processing of multiple transcripts × processors internally
+AI transcript post-processor for Ethereum/blockchain content.
+Supports: sonnet, chatgpt, gemini, llama, qwen.
+Batch processes multiple transcripts × processors.
 """
 
 import os
@@ -36,16 +34,7 @@ def skip(msg):
 # ============================================================================
 
 def validate_api_key(env_var):
-    """
-    Check if API key environment variable is set.
-    
-    Args:
-        env_var: Name of environment variable to check
-    
-    Returns:
-        Tuple of (key, error_message). If key exists, error_message is None.
-        If key missing, key is None and error_message describes the issue.
-    """
+    """Check if API key environment variable is set. Returns (key, error_message)."""
     key = os.environ.get(env_var, '').strip()
     if not key:
         return None, f"{env_var} not set"
@@ -53,18 +42,10 @@ def validate_api_key(env_var):
 
 
 def extract_transcriber_from_filename(filepath):
-    """
-    Extract transcriber name from intermediate filename.
-    
-    Args:
-        filepath: Path to intermediate transcript file
-    
-    Returns:
-        Tuple of (basename, transcriber_name) or (basename, None) if not found
-    """
+    """Extract transcriber name from intermediate filename."""
     filename = Path(filepath).stem
     
-    for service in ['whisperx', 'assemblyai', 'deepgram', 'sonix', 'speechmatics', 'novita', 'openai']:
+    for service in ['whisperx', 'assemblyai', 'deepgram', 'openai']:
         if f'_{service}_raw' in filename:
             basename = filename.replace(f'_{service}_raw', '')
             return basename, service
@@ -74,21 +55,7 @@ def extract_transcriber_from_filename(filepath):
 
 
 def save_processed_files(output_dir, basename, transcriber, processor, content):
-    """
-    Save processed transcript in both txt and md formats with consistent naming.
-    TXT format: No timestamps (clean text only)
-    MD format: With timestamps for reference
-    
-    Args:
-        output_dir: Directory to save files  
-        basename: Base filename without extension
-        transcriber: Name of transcription service used
-        processor: Name of AI processor used
-        content: Processed transcript content
-    
-    Returns:
-        Path object for the .txt file
-    """
+    """Save processed transcript in txt (no timestamps) and md (with timestamps) formats."""
     import re
     
     output_path = Path(output_dir) / f"{basename}_{transcriber}_{processor}_processed.txt"
@@ -136,22 +103,44 @@ Your tasks:
 1. Fix technical term spellings and capitalization (e.g., "etherium" → "Ethereum", "nfts" → "NFTs")
 2. Correct proper names using the people list provided
 3. Fix blockchain concept terminology to match standard usage
-4. Identify and replace generic speaker labels (SPEAKER_00, SPEAKER_01, etc.) with actual names if you can determine them from context
+4. Identify and replace generic speaker labels (SPEAKER_01, SPEAKER_02, etc.).  Do not add actual names.  Start at 01.
 5. Improve punctuation and sentence structure for readability
 6. Add paragraph breaks at natural conversation transitions
-7. Preserve all timestamps in [XX.Xs] format exactly as they appear
+7. **CRITICAL: PRESERVE ALL TIMESTAMPS**
 8. Maintain the speaker label format (lines starting with speaker name followed by colon)
 
-Important: Only make changes where you are confident. If unsure about a speaker's identity or technical term, leave it as-is.
+**TIMESTAMP FORMAT REQUIREMENT (MANDATORY):**
+Every line of dialogue MUST retain its timestamp in [XX.Xs] format at the start of the line.
 
-Output the corrected transcript maintaining the exact same format structure."""
+CORRECT FORMAT EXAMPLE:
+```
+**SPEAKER_01:**
+[1.8s] Okay, welcome everyone.
+[3.4s] We have a very special topic today.
+```
+
+INCORRECT FORMAT (DO NOT DO THIS):
+```
+**SPEAKER_01:**
+Okay, welcome everyone.
+We have a very special topic today.
+```
+
+The timestamps [XX.Xs] are REQUIRED and must appear at the beginning of every text line. This is non-negotiable.
+
+Important: 
+- Only make changes where you are confident
+- If unsure about a technical term, leave it as-is
+- NEVER remove timestamps - they are structural requirements, not optional metadata
+
+Output the corrected transcript maintaining the exact same format structure with all timestamps intact."""
 
 def build_prompt(context, transcript):
-    """Build the complete prompt from template"""
+    """Build complete prompt from template."""
     return INSTRUCTION_TEMPLATE.format(context=context, transcript=transcript)
 
 def load_glossary():
-    """Load ethereum_glossary.json if available"""
+    """Load ethereum_glossary.json if available."""
     glossary_file = Path("ethereum_glossary.json")
     
     if glossary_file.exists():
@@ -166,7 +155,7 @@ def load_glossary():
     }
 
 def load_people_list():
-    """Load ethereum_people.txt, generating it if needed"""
+    """Load ethereum_people.txt, generating if needed."""
     people_file = Path("intermediates/ethereum_people.txt")
     
     # Generate if doesn't exist
@@ -189,7 +178,7 @@ def load_people_list():
     return []
 
 def load_terms_list():
-    """Load ethereum_technical_terms.txt, generating it if needed"""
+    """Load ethereum_technical_terms.txt, generating if needed."""
     terms_file = Path("intermediates/ethereum_technical_terms.txt")
     
     # Generate if doesn't exist
@@ -212,7 +201,7 @@ def load_terms_list():
     return []
 
 def build_context_summary():
-    """Build a concise context summary from available resources"""
+    """Build context summary from available resources."""
     import subprocess
     
     context_parts = []
@@ -264,7 +253,7 @@ def build_context_summary():
     return "\n\n".join(context_parts) if context_parts else "No additional context available."
 
 def process_with_anthropic(transcript, api_key, context):
-    """Process transcript using Anthropic Claude Sonnet 4.5 with streaming"""
+    """Process transcript using Claude Sonnet 4.5 with streaming."""
     try:
         import anthropic
     except ImportError:
@@ -273,15 +262,13 @@ def process_with_anthropic(transcript, api_key, context):
     client = anthropic.Anthropic(api_key=api_key)
     prompt = build_prompt(context, transcript)
     
-    print(f"      Transcript size: {len(transcript)} chars")
     print(f"      Processing: ", end='', flush=True)
     
     result = ""
     chunk_count = 0
     
-    # Using Claude Sonnet 4.5 (latest stable model as of 2025-11-10)
     with client.messages.stream(
-        model="claude-sonnet-4-5-20250929",
+        model="claude-sonnet-4-5",
         max_tokens=64000,
         messages=[{"role": "user", "content": prompt}]
     ) as stream:
@@ -295,8 +282,8 @@ def process_with_anthropic(transcript, api_key, context):
     return result
 
 def process_with_openai(transcript, api_key, context):
-    """Process transcript using OpenAI GPT-4o with streaming"""
-    model = "gpt-4o-2024-11-20"
+    """Process transcript using ChatGPT-4o-latest with streaming."""
+    model = "chatgpt-4o-latest"
     try:
         import openai
     except ImportError:
@@ -305,7 +292,6 @@ def process_with_openai(transcript, api_key, context):
     client = openai.OpenAI(api_key=api_key)
     prompt = build_prompt(context, transcript)
     
-    print(f"      Transcript size: {len(transcript)} chars")
     print(f"      Processing: ", end='', flush=True)
     
     result = ""
@@ -332,7 +318,7 @@ def process_with_openai(transcript, api_key, context):
     return result
 
 def process_with_gemini(transcript, api_key, context):
-    """Process transcript using Google Gemini 2.5 Pro with streaming"""
+    """Process transcript using Gemini 2.5 Pro with streaming."""
     model = "gemini-2.5-pro"
     try:
         import google.generativeai as genai
@@ -342,7 +328,6 @@ def process_with_gemini(transcript, api_key, context):
     genai.configure(api_key=api_key)
     prompt = build_prompt(context, transcript)
     
-    print(f"      Transcript size: {len(transcript)} chars")
     print(f"      Processing: ", end='', flush=True)
     
     model_instance = genai.GenerativeModel(model)
@@ -361,18 +346,18 @@ def process_with_gemini(transcript, api_key, context):
     print(" ✓")
     return result
 
-def process_with_deepseek(transcript, api_key, context):
-    """Process transcript using DeepSeek Chat with streaming"""
-    model = "deepseek-chat"
+def process_with_groq(transcript, api_key, context):
+    """Process transcript using Llama 3.3 70B (via Groq) with streaming."""
+    model = "llama-3.3-70b-versatile"
     try:
         import openai
     except ImportError:
         raise ImportError("openai package not installed")
     
-    client = openai.OpenAI(api_key=api_key, base_url="https://api.deepseek.com")
+    client = openai.OpenAI(api_key=api_key, base_url="https://api.groq.com/openai/v1")
     prompt = build_prompt(context, transcript)
     
-    print(f"      Transcript size: {len(transcript)} chars")
+    print(f"      Model: {model}")
     print(f"      Processing: ", end='', flush=True)
     
     result = ""
@@ -384,7 +369,8 @@ def process_with_deepseek(transcript, api_key, context):
             {"role": "system", "content": SYSTEM_PROMPT},
             {"role": "user", "content": prompt}
         ],
-        max_tokens=8192,
+        max_tokens=8000,
+        temperature=0.3,
         stream=True
     )
     
@@ -399,14 +385,14 @@ def process_with_deepseek(transcript, api_key, context):
     return result
 
 def estimate_tokens(text):
-    """Rough token estimation (words * 1.3)"""
+    """Estimate tokens (words × 1.3)."""
     return int(len(text.split()) * 1.3)
 
-def process_with_gwen(transcript, context, ollama_process=None):
-    """Process transcript using Gwen (Qwen2.5-7B-Instruct via Ollama) - reuses existing process if provided
+def process_with_qwen(transcript, context, ollama_process=None):
+    """Process transcript using Qwen 2.5 32B (via Ollama).
     
-    Note: Qwen2.5-7B has a 32K token context limit. Typical transcripts (60-90 min) need ~45K tokens.
-    For longer transcripts, consider using cloud providers (Gemini, OpenAI, DeepSeek, Anthropic).
+    NOTE: This function should only be called on GPU systems.
+    CPU-only systems are filtered out in main() with a warning.
     """
     import subprocess
     import time
@@ -417,7 +403,10 @@ def process_with_gwen(transcript, context, ollama_process=None):
     except ImportError:
         raise ImportError("requests package not installed")
     
-    model = "qwen2.5:7b"
+    # Use 32B model (GPU-only)
+    model = "qwen2.5:32b"
+    print(f"      Model: {model} (GPU-accelerated)")
+    
     started_ollama = False
     
     try:
@@ -466,7 +455,10 @@ def process_with_gwen(transcript, context, ollama_process=None):
         if estimated_tokens > 28000:
             print(f"      ⚠️  CAUTION: ~{estimated_tokens:,} tokens approaching Qwen's 32K limit")
         
-        print(f"      Processing with {model}: ", end='', flush=True)
+        print(f"      Processing: ", end='', flush=True)
+        
+        # Qwen 32B supports 32K context
+        max_tokens = 32000
         
         response = requests.post(
             "http://localhost:11434/api/generate",
@@ -476,7 +468,7 @@ def process_with_gwen(transcript, context, ollama_process=None):
                 "stream": True,
                 "options": {
                     "temperature": 0.3,
-                    "num_predict": 32000,  # Increased from 16000 for longer transcripts
+                    "num_predict": max_tokens,
                     "stop": []  # Override default stop sequences
                 }
             },
@@ -530,7 +522,7 @@ def process_with_gwen(transcript, context, ollama_process=None):
         return None, None
 
 def process_single_combination(transcript_path, provider, api_keys, context, ollama_process=None):
-    """Process a single transcript with a single provider"""
+    """Process single transcript with single provider."""
     start_time = time.time()
     
     # Load transcript
@@ -547,16 +539,16 @@ def process_single_combination(transcript_path, provider, api_keys, context, oll
     new_ollama_process = None
     
     try:
-        if provider == "anthropic":
-            corrected = process_with_anthropic(transcript, api_keys['anthropic'], context)
-        elif provider == "openai":
-            corrected = process_with_openai(transcript, api_keys['openai'], context)
+        if provider == "sonnet":
+            corrected = process_with_anthropic(transcript, api_keys['sonnet'], context)
+        elif provider == "chatgpt":
+            corrected = process_with_openai(transcript, api_keys['chatgpt'], context)
         elif provider == "gemini":
             corrected = process_with_gemini(transcript, api_keys['gemini'], context)
-        elif provider == "deepseek":
-            corrected = process_with_deepseek(transcript, api_keys['deepseek'], context)
-        elif provider == "gwen":
-            corrected, new_ollama_process = process_with_gwen(transcript, context, ollama_process)
+        elif provider == "llama":
+            corrected = process_with_groq(transcript, api_keys['llama'], context)
+        elif provider == "qwen":
+            corrected, new_ollama_process = process_with_qwen(transcript, context, ollama_process)
     except Exception as e:
         elapsed = time.time() - start_time
         print(f"      {failure(f'Processing failed ({elapsed:.1f}s): {e}')}")
@@ -574,6 +566,7 @@ def process_single_combination(transcript_path, provider, api_keys, context, oll
     
     if not corrected:
         elapsed = time.time() - start_time
+        print(f"      {failure(f'Processing failed ({elapsed:.1f}s): No output generated')}")
         
         # Clean up any partial files
         for partial_file in [output_txt, output_md]:
@@ -608,7 +601,7 @@ def main():
     
     parser.add_argument("transcripts", nargs='+', help="Transcript file path(s)")
     parser.add_argument("--processors", required=True,
-                       help="Comma-separated list of processors (anthropic,openai,gemini,deepseek,gwen)")
+                       help="Comma-separated list of processors (sonnet,chatgpt,gemini,llama,qwen)")
     
     args = parser.parse_args()
     
@@ -636,7 +629,7 @@ def main():
     
     # Parse processors
     processors = [p.strip() for p in args.processors.split(',')]
-    valid_processors = {'anthropic', 'openai', 'gemini', 'deepseek', 'gwen'}
+    valid_processors = {'sonnet', 'chatgpt', 'gemini', 'llama', 'qwen'}
     
     for proc in processors:
         if proc not in valid_processors:
@@ -644,21 +637,58 @@ def main():
             print(f"Valid options: {', '.join(sorted(valid_processors))}")
             sys.exit(1)
     
+    # Check if Qwen requested on CPU-only system
+    if 'qwen' in processors:
+        try:
+            import torch
+            has_gpu = torch.cuda.is_available()
+            
+            if not has_gpu:
+                # CPU-only system - skip Qwen with warning
+                print()
+                print(f"{Colors.YELLOW}⚠️  QWEN SKIPPED: GPU Required{Colors.RESET}")
+                print()
+                print("Qwen requires NVIDIA GPU with 12GB+ VRAM for transcript processing.")
+                print("Current system: CPU-only")
+                print()
+                print("• Qwen 7B (CPU) is insufficient for complex transcript editing tasks")
+                print("• Qwen 32B (GPU) would work excellently on RTX 5070 12GB or similar")
+                print()
+                print("Skipping Qwen processing - all other processors will continue normally.")
+                print()
+                
+                # Remove qwen from processors list
+                processors = [p for p in processors if p != 'qwen']
+                
+                if not processors:
+                    print("Error: No processors remaining after skipping Qwen")
+                    sys.exit(1)
+        except ImportError:
+            # If torch not available, can't use Qwen anyway
+            print()
+            print(f"{Colors.YELLOW}⚠️  QWEN SKIPPED: PyTorch not available{Colors.RESET}")
+            print()
+            processors = [p for p in processors if p != 'qwen']
+            
+            if not processors:
+                print("Error: No processors remaining after skipping Qwen")
+                sys.exit(1)
+    
     # Check API keys using utility
     api_keys = {}
     skip_processors = []
     
     # Map processor names to their environment variable names
     key_mapping = {
-        'anthropic': 'ANTHROPIC_API_KEY',
-        'openai': 'OPENAI_API_KEY',
-        'gemini': 'GOOGLE_API_KEY',
-        'deepseek': 'DEEPSEEK_API_KEY'
+        'sonnet': 'ANTHROPIC_API_KEY',     # Claude Sonnet 4.5 via Anthropic
+        'chatgpt': 'OPENAI_API_KEY',       # ChatGPT-4o-latest via OpenAI
+        'gemini': 'GOOGLE_API_KEY',        # Gemini 2.5 Pro via Google
+        'llama': 'GROQ_API_KEY'            # Llama 3.3 70B via Groq
     }
     
     for proc in processors:
-        if proc == 'gwen':
-            # Gwen (local via Ollama) doesn't need an API key
+        if proc == 'qwen':
+            # Qwen (local via Ollama) doesn't need an API key
             continue
         
         env_var = key_mapping.get(proc)
