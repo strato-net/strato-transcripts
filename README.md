@@ -14,10 +14,10 @@ nano setup_env.sh  # Add your API keys
 source venv/bin/activate && source setup_env.sh
 ./scripts/process_single.sh audio.mp3 \
   --transcribers whisperx \
-  --processors openai
+  --processors chatgpt
 
 # 3. Process all MP3s in ~/Downloads
-./scripts/process_all.sh --transcribers deepgram --processors anthropic
+./scripts/process_all.sh --transcribers deepgram --processors sonnet
 ```
 
 ## Architecture
@@ -34,7 +34,7 @@ Phase 1: Transcription
     ↓
 Phase 2: Post-Processing  
     process_single_post_process.py
-    - Runs all processors internally (anthropic, openai, gemini, etc.)
+    - Runs all processors internally (sonnet, chatgpt, gemini, llama, etc.)
     - Outputs: outputs/*_corrected.txt
 ```
 
@@ -53,22 +53,22 @@ All services include speaker diarization (identifying who said what).
 
 ## AI Post-Processors
 
-| Provider | Model | Type | Context | Cost (Input/Output) | Best For |
-|----------|-------|------|---------|---------------------|----------|
-| **Anthropic** | Claude Sonnet 4.5 | Cloud API | 200K | $3/$15 per MTok | Complex technical content, long transcripts |
-| **OpenAI** | chatgpt-4o-latest | Cloud API | 128K | $2.50/$10 per MTok | Latest flagship model, best text processing |
-| **Gemini** | Gemini 2.5 Pro | Cloud API | 128K | ~$1.25 per MTok | Very long transcripts, multilingual |
-| **Groq** | Llama 3.3 70B | Cloud API | 128K | $0.59/$0.79 per MTok | ⚡ BLAZING FAST (300+ tok/s), Meta's latest |
-| **Kimi** | K2 Thinking (Moonshot via Novita) | Cloud API | 262K | $0.60/$2.50 per MTok | Advanced reasoning, cost-effective |
-| **Qwen3Max** | Qwen 3 Max (Alibaba via Novita) | Cloud API | 128K | $2.11/$8.45 per MTok | Flagship Qwen model, strong reasoning |
-| **DeepSeek** | DeepSeek Chat | Cloud API | 64K | $0.27/$1.12 per MTok | Budget-friendly, good quality |
-| **Qwen** | Qwen2.5:7b (local via Ollama) | Local | 32K | FREE | Local, private, 12GB GPU ⚠️ |
+| Processor | Model | Cloud Service | Context | Cost (Input/Output) | Best For |
+|-----------|-------|---------------|---------|---------------------|----------|
+| **sonnet** | Claude Sonnet 4.5 | Anthropic | 200K | $3/$15 per MTok | Complex technical content, long transcripts |
+| **chatgpt** | ChatGPT-4o-latest | OpenAI | 128K | $2.50/$10 per MTok | Latest flagship model, best text processing |
+| **gemini** | Gemini 2.5 Pro | Google | 128K | ~$1.25 per MTok | Very long transcripts, multilingual |
+| **llama** | Llama 3.3 70B | Groq | 128K | $0.59/$0.79 per MTok | ⚡ BLAZING FAST (300+ tok/s), Meta's latest |
+| **kimi** | K2 Thinking | Novita | 262K | $0.60/$2.50 per MTok | Advanced reasoning, cost-effective |
+| **qwen3max** | Qwen 3 Max | Novita | 128K | $2.11/$8.45 per MTok | Flagship Qwen model, strong reasoning |
+| **deepseek** | DeepSeek Chat | DeepSeek | 64K | $0.27/$1.12 per MTok | Budget-friendly, good quality |
+| **qwen** | Qwen2.5:7b | Ollama (local) | 32K | FREE | Local, private, 12GB GPU ⚠️ |
 
 **Model Selection Notes:**
-- **For best quality:** Use Anthropic Claude Sonnet 4.5 or OpenAI chatgpt-4o-latest
-- **For blazing speed + low cost:** Groq Llama 3.3 70B (10-15x faster than OpenAI, $0.59/$0.79 per MTok)
-- **For cost-effectiveness:** Groq, Novita Kimi K2, or DeepSeek offer excellent value
-- **For maximum context:** Novita Kimi K2 (262K) or Anthropic Claude (200K)
+- **For best quality:** Use `sonnet` (Claude Sonnet 4.5) or `chatgpt` (ChatGPT-4o-latest)
+- **For blazing speed + low cost:** Use `llama` (Llama 3.3 70B, 10-15x faster, $0.59/$0.79 per MTok)
+- **For cost-effectiveness:** `llama`, `kimi`, or `deepseek` offer excellent value
+- **For maximum context:** `kimi` (262K) or `sonnet` (200K)
 - **For privacy:** Run Qwen locally via Ollama (requires 12GB+ GPU)
 
 **Premium Models via Novita:** Novita provides access to additional high-performance models including Qwen3 Max ($2.11/$8.45), DeepSeek V3.1 ($0.27/$1), and 60+ other models. [See full list](https://novita.ai/model-api/product/llm-api).
@@ -80,15 +80,15 @@ All services include speaker diarization (identifying who said what).
 ### Single File with One Transcriber/Processor
 
 ```bash
-# WhisperX (local) + Claude
+# WhisperX (local) + Claude Sonnet
 ./scripts/process_single.sh interview.mp3 \
   --transcribers whisperx \
-  --processors anthropic
+  --processors sonnet
 
-# Deepgram (cloud) + chatgpt-4o-latest
+# Deepgram (cloud) + ChatGPT
 ./scripts/process_single.sh interview.mp3 \
   --transcribers deepgram \
-  --processors openai
+  --processors chatgpt
 ```
 
 ### Multiple Transcribers and Processors
@@ -97,16 +97,16 @@ All services include speaker diarization (identifying who said what).
 # 2 transcribers × 3 processors = 6 combinations
 ./scripts/process_single.sh interview.mp3 \
   --transcribers whisperx,deepgram \
-  --processors anthropic,openai,kimi
+  --processors sonnet,chatgpt,kimi
 ```
 
 ### Batch Processing
 
 ```bash
 # Process all MP3s in ~/Downloads
-./scripts/process_all.sh --transcribers deepgram --processors openai
+./scripts/process_all.sh --transcribers deepgram --processors chatgpt
 
-# Use defaults (whisperx + openai)
+# Use defaults (whisperx + chatgpt)
 ./scripts/process_all.sh
 ```
 
@@ -173,9 +173,9 @@ intermediates/
 ### Final Outputs (Phase 2)
 ```
 outputs/
-  audio_whisperx_anthropic_processed.txt         # WhisperX + Claude
-  audio_deepgram_openai_processed.txt            # Deepgram + chatgpt-4o-latest
-  audio_whisperx_anthropic_processed.md          # Markdown versions
+  audio_whisperx_sonnet_processed.txt         # WhisperX + Claude Sonnet
+  audio_deepgram_chatgpt_processed.txt        # Deepgram + ChatGPT
+  audio_whisperx_sonnet_processed.md          # Markdown versions
 ```
 
 **Naming Convention:**
@@ -185,7 +185,7 @@ outputs/
 Where:
 - `{basename}` = Original audio filename without extension
 - `{transcriber}` = whisperx, deepgram, assemblyai, revai, sonix, or speechmatics
-- `{processor}` = anthropic, openai, gemini, deepseek, kimi, qwen3max, or qwen
+- `{processor}` = sonnet, chatgpt, gemini, llama, deepseek, kimi, qwen3max, or qwen
 
 ## GPU Support
 

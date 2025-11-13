@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Multi-provider AI transcript post-processor for Ethereum/blockchain content
-Supports: Claude (Anthropic), chatgpt-4o-latest (OpenAI), Gemini (Google), Llama 3.3 70B (Groq), DeepSeek, Kimi K2 (Moonshot via Novita), Qwen3Max (via Novita), Qwen (local via Ollama)
+Supports: Sonnet (Claude Sonnet 4.5), ChatGPT (chatgpt-4o-latest), Gemini (Google), Llama (Llama 3.3 70B via Groq), DeepSeek, Kimi K2 (Moonshot via Novita), Qwen3Max (via Novita), Qwen (local via Ollama)
 Uses domain context to correct technical terms and speaker names
 
 Now supports batch processing of multiple transcripts × processors internally
@@ -678,14 +678,14 @@ def process_single_combination(transcript_path, provider, api_keys, context, oll
     new_ollama_process = None
     
     try:
-        if provider == "anthropic":
-            corrected = process_with_anthropic(transcript, api_keys['anthropic'], context)
-        elif provider == "openai":
-            corrected = process_with_openai(transcript, api_keys['openai'], context)
+        if provider == "sonnet":
+            corrected = process_with_anthropic(transcript, api_keys['sonnet'], context)
+        elif provider == "chatgpt":
+            corrected = process_with_openai(transcript, api_keys['chatgpt'], context)
         elif provider == "gemini":
             corrected = process_with_gemini(transcript, api_keys['gemini'], context)
-        elif provider == "groq":
-            corrected = process_with_groq(transcript, api_keys['groq'], context)
+        elif provider == "llama":
+            corrected = process_with_groq(transcript, api_keys['llama'], context)
         elif provider == "deepseek":
             corrected = process_with_deepseek(transcript, api_keys['deepseek'], context)
         elif provider == "kimi":
@@ -745,7 +745,7 @@ def main():
     
     parser.add_argument("transcripts", nargs='+', help="Transcript file path(s)")
     parser.add_argument("--processors", required=True,
-                       help="Comma-separated list of processors (anthropic,openai,gemini,groq,deepseek,kimi,qwen3max,qwen)")
+                       help="Comma-separated list of processors (sonnet,chatgpt,gemini,llama,deepseek,kimi,qwen3max,qwen)")
     
     args = parser.parse_args()
     
@@ -773,7 +773,7 @@ def main():
     
     # Parse processors
     processors = [p.strip() for p in args.processors.split(',')]
-    valid_processors = {'anthropic', 'openai', 'gemini', 'groq', 'deepseek', 'kimi', 'qwen3max', 'qwen'}
+    valid_processors = {'sonnet', 'chatgpt', 'gemini', 'llama', 'deepseek', 'kimi', 'qwen3max', 'qwen'}
     
     for proc in processors:
         if proc not in valid_processors:
@@ -787,13 +787,13 @@ def main():
     
     # Map processor names to their environment variable names
     key_mapping = {
-        'anthropic': 'ANTHROPIC_API_KEY',
-        'openai': 'OPENAI_API_KEY',
-        'gemini': 'GOOGLE_API_KEY',
-        'groq': 'GROQ_API_KEY',         # Groq Llama 3.3 70B
-        'deepseek': 'DEEPSEEK_API_KEY',
-        'kimi': 'NOVITA_API_KEY',      # Kimi K2 via Novita platform
-        'qwen3max': 'NOVITA_API_KEY'   # Qwen 3 Max via Novita platform
+        'sonnet': 'ANTHROPIC_API_KEY',     # Claude Sonnet 4.5 via Anthropic
+        'chatgpt': 'OPENAI_API_KEY',       # ChatGPT-4o-latest via OpenAI
+        'gemini': 'GOOGLE_API_KEY',        # Gemini 2.5 Pro via Google
+        'llama': 'GROQ_API_KEY',           # Llama 3.3 70B via Groq
+        'deepseek': 'DEEPSEEK_API_KEY',    # DeepSeek Chat
+        'kimi': 'NOVITA_API_KEY',          # Kimi K2 via Novita
+        'qwen3max': 'NOVITA_API_KEY'       # Qwen 3 Max via Novita
     }
     
     for proc in processors:
