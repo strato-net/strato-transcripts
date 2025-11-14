@@ -79,24 +79,75 @@ Context - Ethereum Ecosystem Knowledge:
 Raw Transcript (from speech recognition):
 {transcript}
 
-Your tasks:
-1. Fix technical term spellings and capitalization (e.g., "etherium" → "Ethereum", "nfts" → "NFTs")
-2. Correct proper names using the people list provided
-3. Fix blockchain concept terminology to match standard usage
-4. Use generic labels SPEAKER_01, SPEAKER_02, etc. (do not add actual names)
-5. Improve punctuation and sentence structure for readability
-6. Add paragraph breaks at natural conversation transitions
-7. **CRITICAL: PRESERVE ALL TIMESTAMPS**
-8. Maintain speaker label format (speaker name followed by colon)
+PRIMARY OBJECTIVE: Create a clean, readable transcript that preserves ALL dialogue and content.
 
-**TIMESTAMP FORMAT REQUIREMENT (MANDATORY):**
-Every line of dialogue MUST retain its timestamp in [MM:SS] format at the start of the line.
+CRITICAL CONTENT PRESERVATION RULES
 
-Format specifications:
-- Use minutes:seconds format: [MM:SS]
-- Always use 2 digits for both minutes and seconds (e.g., 00:05, 02:12, 15:47)
-- No decimal fractions - round to nearest second
-- First minute should be 00 (e.g., [00:15] for 15 seconds)
+1. **PRESERVE COMPLETE CONTENT** - Do NOT summarize, condense, or skip any dialogue
+   - Every discussion point must be retained
+   - Every technical explanation must be preserved
+   - Every example and anecdote must remain
+   
+2. **OUTPUT LENGTH REQUIREMENT** - Your output should be approximately the SAME length as the input
+   - If input has ~15,000 words, output should have ~13,000-17,000 words (90-110%)
+   - Significantly shorter output means you've removed too much content
+   - This is non-negotiable - check your word count before finalizing
+
+3. **PRESERVE ALL TIMESTAMPS** - Every line of dialogue MUST retain its timestamp
+   - Format: [MM:SS] at the start of each line
+   - Use minutes:seconds format (e.g., 00:05, 02:12, 15:47, 63:30)
+   - Always use 2 digits for both minutes and seconds
+   - No decimal fractions - round to nearest second
+   - Never remove or skip timestamps
+
+WHAT TO FIX (Corrections Only)
+
+✓ Technical term spellings and capitalization
+  Examples: "etherium" → "Ethereum", "nfts" → "NFTs", "solidity" → "Solidity"
+  
+✓ Proper names using the people list provided
+  Examples: Correct misspellings of "Vitalik", "Gavin Wood", etc.
+  
+✓ Blockchain terminology to match standard usage
+  Examples: "ethereum" → "Ethereum", "bit coin" → "Bitcoin"
+  
+✓ Punctuation and sentence structure for readability
+  Examples: Add periods, commas, capitalize sentences
+  
+✓ Paragraph breaks at natural conversation transitions
+  Examples: New topic = new paragraph
+
+WHAT TO REMOVE (Cleanup Only - Be Selective)
+
+✓ Excessive filler words (when they impede readability)
+  Remove: "um", "uh", "you know", "like" (when used excessively)
+  Keep: Natural conversation flow - don't over-sanitize
+  
+✓ False starts and stammering
+  Example: "I was— I mean I was going to say..." → "I was going to say..."
+  
+✓ Obvious repetitions
+  Example: "the the contract" → "the contract"
+
+WHAT TO PRESERVE (Critical - Never Remove)
+
+✓ ALL substantive dialogue and discussion points
+✓ ALL technical explanations, code examples, and demonstrations
+✓ ALL speaker labels (SPEAKER_01, SPEAKER_02, etc. - do not add actual names)
+✓ ALL timestamps in [MM:SS] format
+✓ Natural conversation flow and authentic speaking patterns
+✓ Context and background information
+✓ Questions and answers
+✓ Reactions and commentary
+
+FORMAT REQUIREMENTS
+
+**SPEAKER_01:**
+[00:01] First line of dialogue here.
+[00:05] Second line of dialogue continues.
+
+**SPEAKER_02:**
+[00:12] Response from another speaker.
 
 CORRECT FORMAT EXAMPLES:
 ```
@@ -104,24 +155,31 @@ CORRECT FORMAT EXAMPLES:
 [00:01] Okay, welcome everyone.
 [00:03] We have a very special topic today.
 [02:12] Let me explain the technical details.
+[15:47] This is how smart contracts work.
 ```
 
-INCORRECT FORMATS (DO NOT USE):
+INCORRECT FORMATS TO AVOID:
 ```
-**SPEAKER_01:**
-[1.8s] Wrong - no decimal fractions allowed
+[1.8s] Wrong - no decimal fractions
 [132.2s] Wrong - must use MM:SS format
-Okay, welcome everyone. Wrong - missing timestamp entirely
+Okay, welcome everyone. Wrong - missing timestamp
+SPEAKER_01 (no bold formatting) Wrong - must be bold
 ```
 
-The timestamps [MM:SS] are REQUIRED and must appear at the beginning of every text line. This is non-negotiable.
+VALIDATION CHECKLIST (Before Submitting)
 
-Important: 
-- Only make changes where you are confident
-- If unsure about a technical term, leave it as-is
-- NEVER remove timestamps - they are structural requirements, not optional metadata
+1. ☐ Count words in input transcript
+2. ☐ Count words in your output
+3. ☐ Verify output is 90-110% of input length
+4. ☐ Verify ALL timestamps are present in [MM:SS] format
+5. ☐ Verify speaker labels are bold: **SPEAKER_XX:**
+6. ☐ Verify no major discussion points were removed
+7. ☐ Verify paragraph breaks exist at topic transitions
 
-Output the corrected transcript maintaining the exact same format structure with all timestamps intact."""
+If your output is significantly shorter than input, you have removed too much content.
+Go back and restore the missing dialogue.
+
+Output the corrected transcript maintaining exact format with all timestamps and content intact."""
 
 def build_prompt(context, transcript):
     """Build complete prompt from template."""
