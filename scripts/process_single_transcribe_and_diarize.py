@@ -276,7 +276,7 @@ def transcribe_whisperx(audio_path, output_dir, force_cpu=False):
     import gc
     
     # ========================================================================
-    # GPU CLEANUP - Prevent CUDA OOM from zombie processes/fragmented memory
+    # GPU CLEANUP - Gentle cleanup (stops Ollama, clears PyTorch cache)
     # ========================================================================
     print("  → Cleaning GPU memory...")
     cleanup_gpu_memory(force_cpu)
@@ -332,12 +332,12 @@ def transcribe_whisperx(audio_path, output_dir, force_cpu=False):
         if "out of memory" in str(e).lower() and device == "cuda":
             print(f"  ⚠ OOM with batch_size={batch_size}, retrying with batch_size=8...")
             
-            # Clear memory and retry
+            # Clear memory and retry - now using gentle cleanup
             if 'model' in locals():
                 del model
             if 'model_a' in locals():
                 del model_a
-            cleanup_gpu_memory(force_cpu)
+            cleanup_gpu_memory(force_cpu)  # Gentle cleanup (stops Ollama gracefully)
             time.sleep(2)
             
             # Retry with smaller batch size
@@ -414,7 +414,7 @@ def transcribe_whisperx(audio_path, output_dir, force_cpu=False):
         elapsed = time.time() - start
         print(f"  Completed in {elapsed:.1f}s ({elapsed/60:.1f} min)")
         
-        # Clean up GPU memory after transcription
+        # Clean up GPU memory after transcription (gentle cleanup)
         print("  → Cleaning up GPU memory...")
         cleanup_gpu_memory(force_cpu)
         

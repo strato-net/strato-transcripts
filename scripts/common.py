@@ -137,39 +137,35 @@ def load_terms_list():
 
 def cleanup_gpu_memory(force_cpu=False):
     """
-    Aggressive GPU memory cleanup to prevent CUDA OOM errors.
-    Kills zombie processes and clears PyTorch cache.
+    Gentle GPU memory cleanup to prevent CUDA OOM errors.
+    Clears PyTorch cache and stops Ollama gracefully if running.
     
     Args:
         force_cpu: If True, skip GPU-specific cleanup
     """
-    import subprocess
-    import time
     import gc
     
-    # 1. Kill dangling Ollama processes
+    # 1. Stop Ollama gracefully if it's running (don't use pkill)
     try:
         import requests
+        import subprocess
+        import time
+        
         try:
             response = requests.get("http://localhost:11434/api/tags", timeout=1)
             if response.status_code == 200:
-                subprocess.run(['pkill', '-f', 'ollama serve'], 
+                # Ollama is running - stop it gracefully
+                subprocess.run(['ollama', 'stop'], 
                              stdout=subprocess.DEVNULL, 
                              stderr=subprocess.DEVNULL,
                              timeout=5)
-                time.sleep(1)
+                time.sleep(0.5)
         except:
-            pass
+            pass  # Not running or can't connect
     except Exception:
         pass
     
-    # 2. Kill dangling Python/WhisperX processes that might hold GPU
-    subprocess.run(['pkill', '-f', 'python.*whisper'], 
-                   stdout=subprocess.DEVNULL, 
-                   stderr=subprocess.DEVNULL)
-    time.sleep(1)
-    
-    # 3. Clear PyTorch GPU cache and force garbage collection
+    # 2. Clear PyTorch GPU cache and force garbage collection
     if not force_cpu:
         try:
             import torch
@@ -179,6 +175,7 @@ def cleanup_gpu_memory(force_cpu=False):
         except:
             pass
     
+    # 3. Python garbage collection
     gc.collect()
 
 
