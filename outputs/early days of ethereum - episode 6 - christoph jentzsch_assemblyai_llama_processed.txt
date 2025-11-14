@@ -1,0 +1,471 @@
+[00:00]
+SPEAKER_00:
+Okay, recording is in progress.
+
+[00:01]
+SPEAKER_00:
+Hello everybody. Today, we are delighted to have Christoph with us.
+
+[00:03]
+SPEAKER_01:
+Hi everyone.
+
+[00:05]
+SPEAKER_02:
+Nice to meet you again. I'm doing good. I hope. You too. Thanks for the invitation.
+
+[00:10]
+SPEAKER_00:
+Fantastic. Christoph and I, our paths crossed for the first time way back in 2015 when I was trying to do Ethereum on my smartwatch. And this was around the time that Christoph was still at the Ethereum Foundation.
+
+[00:20]
+SPEAKER_01:
+Indeed.
+
+[00:22]
+SPEAKER_00:
+So, Christoph, what were you doing with your life before you found Ethereum and joined this crazy journey?
+
+[00:30]
+SPEAKER_02:
+So, my journey started in 2013. I was doing my PhD in theoretical physics, actually about self-organizing systems. So, like biology, six months in mathematical biology and other things. So, I was studying systems which have local rules and global behavior, and I came across Bitcoin, which has just a small set of local rules and a global behavior as a currency.
+
+[01:00]
+SPEAKER_02:
+And the reason I came across this was I was looking for cheap GPUs, like graphic cards, and the Bitcoin miners were selling their GPU mining rigs to get some FPGAs and later AS6. And so, that's how I got into Bitcoin mining. And so, I bought my first Bitcoin, got into this bubble, did read everything I could about it, and then I came across the white paper from Vitalik, early 2014, something like January, February, in some Bitcoin forum somewhere.
+
+[02:00]
+SPEAKER_02:
+And I was already totally in love with the idea of Bitcoin being a decent currency and all the characteristics and features of it. And this white paper of Vitalik, and if you read it again, it's almost a prophecy, except for NFTs. Everything is in there, from DAOs, from ENS, like names, domain name systems, and all of that. So, for me, it opened up this option of building applications with the same characteristics as Bitcoin, but just not a currency, but everything else.
+
+[03:00]
+SPEAKER_02:
+And so, then I started reading everything about it. And in 2014, actually still 2014, in summer, I read the crowd sale was in 2014. Right, right, yeah, the crowd sale. So, around the time the crowd sale happened, I read and did watch a video from Gavin Wood. He was somewhere in Scandinavia, some conference there, the Nordics, and he talked about Ethereum. I loved it.
+
+[04:00]
+SPEAKER_00:
+So, you never got to be a doctor?
+
+[04:05]
+SPEAKER_02:
+No, I'm not a doctor. I did not finish my PhD, although I only had six months left, which was kind of a pity. I worked like for three years on that. And I also had, at the time, I think four or five kids. I needed some money. I didn't get much money as a PhD student, so I did software development as a side hustle, basically.
+
+[05:00]
+SPEAKER_00:
+I mean, I guess it's never too late, right?
+
+[05:05]
+SPEAKER_02:
+I actually sometimes think about if I should return. It's just so much to learn again. I'm right now doing Tokenize.it. I'm basically working on tokenizing German companies. It works, works very well. So, currently, I'm not planning on getting back anytime soon.
+
+[06:00]
+SPEAKER_00:
+No, because I mean, famously, you had, you know, Dr. Gavin Wood and Dr. Christian Wrightweisner as well, and I think, I think there were a couple of other PhDs as well.
+
+[06:10]
+SPEAKER_02:
+There was definitely.
+
+[06:12]
+SPEAKER_01:
+I also dropped out of mine. I was actually in mathematical physics too. Interesting similar background.
+
+[06:15]
+SPEAKER_02:
+It's actually the same, like theoretical physics. It's the mathematical part of physics. I enjoyed it very much. I did thermodynamics and statistics, mostly. Software development was really fun.
+
+[07:00]
+SPEAKER_01:
+Well, by the way, Jim is trying to join. I don't know if there's anything that needs to happen for him to get in.
+
+[07:05]
+SPEAKER_00:
+Yeah, yeah, well, he'll pop up, and we can add him, or if he's... then never mind.
+
+[08:00]
+SPEAKER_00:
+So, Christoph, in terms of getting hired into Ethereum, I'm sorry if I just missed it. So, how did that happen? Did you meet Gavin at a meetup? Did you say?
+
+[09:00]
+SPEAKER_02:
+Yes, I actually, I listened only to his talk as an online thing, and I actually just wrote him an email, said, "Look, I see this last developer, would love to join Ethereum, love what you're doing." And he invited me to meet him in Kreuzberg, Berlin, so which again is about two hours' drive from here. So, I went up there, met him.
+
+[10:00]
+SPEAKER_02:
+I remember the first conversation; he was talking about all the stuff they were going to build, and said, "Well, what can you do?" And I just asked him, "What's like the most complicated stuff you have right now, like, give me a complicated task, I somehow can figure it out." So, he talked about the Ethereum Virtual Machine, which needed some testing.
+
+[11:00]
+SPEAKER_00:
+So, you never directly interacted with Jim on testing, Jim, Christoph?
+
+[11:05]
+SPEAKER_03:
+I could be wrong. I may have met you briefly in London when we had that conference, but it would have been like, you know, quick greetings at a party or something.
+
+[12:00]
+SPEAKER_02:
+I mean, 10 years ago, lots of people. Sure, we were the testing GitHub repo, and we had all the major clients using it, and I was interacting mostly, asking, responding questions. I mean, of course, the C team, I was super close to. I used the C client also to pre-fill the tests.
+
+[13:00]
+SPEAKER_00:
+Right, right. So, yeah, I mean, talking about features, so, many things happened. Right? You know, Gav had this period of incredible productivity between that December and that April of getting from nothing, you know, just having the white paper, all the way through to having a working client, you know, having the yellow paper, as you mentioned.
+
+[14:00]
+SPEAKER_02:
+It's more like a first interface to the blockchain in some way, like the first graphical interface to a blockchain client. And what could it do? Of course, you could mine, you could deploy a smart contract, you could visit, make it visible, somewhat, what's happening there. It was not really end-user-friendly in any way, but it was just a replacement of what people just do on the command line, usually.
+
+[15:00]
+SPEAKER_00:
+I guess it's sort of like a combination of like what you have with the block explorer now, apart from it, that's like a view-only. And this was both view and do.
+
+[15:05]
+SPEAKER_02:
+Yep.
+
+[15:10]
+SPEAKER_00:
+But yeah, those GUI clients, so...
+
+[15:12]
+SPEAKER_02:
+Much more influential than the Mist browser. I think there's a video by Alex Van de Sande, it's like a 10-minute video on YouTube. They had this prototype, not working yet, but just like, take it until you make it. The vision of the Mist browser, and this also really made us understand how Ethereum could work for the end-user.
+
+[16:00]
+SPEAKER_00:
+Just yesterday, actually, so there was an announcement from Uniswap about them sort of turning on fees and doing various things that more kind of to do with, you know, the company and the protocol time together.
+
+[16:10]
+SPEAKER_02:
+Totally. I've said this before; we need the Mist 2.0. I would love to see this. I heard people think about this before. I don't know if anybody really started the project, but it should be totally doable today. It's not rocket science, you know.
+
+[17:00]
+SPEAKER_01:
+Let me interject; we ourselves have made different attempts at this, where you just download the app from the chain itself. Pretty much, it worked fine. I guess it just wasn't as much of a differentiator. It made things a little slower to do it this way all the time.
+
+[18:00]
+SPEAKER_02:
+But yeah, I mean, the problem with this is you only need it if you really need it. Meaning, if Uniswap failed, the interface is not there. It's like a backup, but it's not what you want to use daily. And if you remember, maybe, at Defcon 1, when they presented MetaMask, my first thought was, "Oh, this is totally away from the vision." Like, how can you not run a full node?
+
+[19:00]
+SPEAKER_00:
+Yeah, I mean, it's a very expansive vision. And yeah, it was, you know, Gav, as you say, you know, Web3 was him, prior to that. I like the language I saw, was really about Bitcoin with smart contracts. You know, that was already sort of the genesis of Vitalik, going through that journey of colored coins and master coins and meta protocols, and that kind of positioning of Bitcoin as a calculator and Ethereum's a smartphone.
+
+[20:00]
+SPEAKER_02:
+And that really came from Gavin; you have to attribute this to him. He was having this big vision. This attracted also so many people. This attracted also that even the business people, they could now understand what it actually is. Other than this was just like tech, let's see. But this is like a broad vision of how business function, how like this new financial world would happen, happen.
+
+[21:00]
+SPEAKER_00:
+Yeah, I mean, talking about features, so, yeah, there was a ton of stuff on that, on that C team, Aleph, Aleph Z0, as well, and Alth1. So, Alth1 being the GUI miner, then. I know. How would you describe Aleph0?
+
+[21:10]
+SPEAKER_02:
+Kind of first interface to the blockchain in some way, like the first graphical interface to a blockchain client.
+
+[22:00]
+SPEAKER_00:
+I guess it's sort of like a combination of like what you have with the block explorer now, apart from it, that's like a view-only. And this was both view and do.
+
+[22:05]
+SPEAKER_02:
+Yep.
+
+[22:10]
+SPEAKER_00:
+But yeah, those GUI clients, so...
+
+[22:12]
+SPEAKER_02:
+Much more influential than the Mist browser. I think there's a video by Alex Van de Sande, it's like a 10-minute video on YouTube. They had this prototype, not working yet, but just like, take it until you make it. The vision of the Mist browser, and this also really made us understand how Ethereum could work for the end-user.
+
+[23:00]
+SPEAKER_00:
+Just yesterday, actually, so there was an announcement from Uniswap about them sort of turning on fees and doing various things that more kind of to do with, you know, the company and the protocol time together.
+
+[23:10]
+SPEAKER_02:
+Totally. I've said this before; we need the Mist 2.0. I would love to see this. I heard people think about this before. I don't know if anybody really started the project, but it should be totally doable today. It's not rocket science, you know.
+
+[24:00]
+SPEAKER_01:
+Let me interject; we ourselves have made different attempts at this, where you just download the app from the chain itself. Pretty much, it worked fine. I guess it just wasn't as much of a differentiator. It made things a little slower to do it this way all the time.
+
+[25:00]
+SPEAKER_02:
+But yeah, I mean, the problem with this is you only need it if you really need it. Meaning, if Uniswap failed, the interface is not there. It's like a backup, but it's not what you want to use daily. And if you remember, maybe, at Defcon 1, when they presented MetaMask, my first thought was, "Oh, this is totally away from the vision." Like, how can you not run a full node?
+
+[26:00]
+SPEAKER_00:
+Yeah, I mean, it's a very expansive vision. And yeah, it was, you know, Gav, as you say, you know, Web3 was him, prior to that. I like the language I saw, was really about Bitcoin with smart contracts. You know, that was already sort of the genesis of Vitalik, going through that journey of colored coins and master coins and meta protocols, and that kind of positioning of Bitcoin as a calculator and Ethereum's a smartphone.
+
+[27:00]
+SPEAKER_02:
+And that really came from Gavin; you have to attribute this to him. He was having this big vision. This attracted also so many people. This attracted also that even the business people, they could now understand what it actually is. Other than this was just like tech, let's see. But this is like a broad vision of how business function, how like this new financial world would happen, happen.
+
+[28:00]
+SPEAKER_00:
+So, perhaps let's talk about actually just before we get to Defcon 1. So, the launch, right? So, obviously, a lot of testing and coordination and this different series of proof of concepts. So, I mean, how did you know it was good enough? Like, what was that testing flow and collaboration?
+
+[29:00]
+SPEAKER_02:
+Like, there are many indicators. One being the Olympic testnet running smoothly for a while. Other one, where, as I said, Geth having an audit, which worked. And then that was saying, "Okay, now, if Christoph doesn't find any failing tests for like three weeks or four weeks or something, we are ready." And this was the case. And so, we said that now we can set the launch date.
+
+[30:00]
+SPEAKER_00:
+So, back on the timeline. So, it was July 2015 that Mainnet launched with a Frontier hard fork. And then, as you touched on, you had Ming. So, Ming's first official day was 1st August 2015, at which point the foundation had been running on for a year or so and was close to out of money.
+
+[31:00]
+SPEAKER_02:
+Right. And I remember talking to her at the time; she felt like, "I have to clean up the whole mess." Like, the paperwork and everything was totally messy. Working with lawyers, accountants, and so on, and getting cleanup, basically, of the foundation. I mean, for me, I did expect it to last something like that. So, it was, for me, it was clear they are not making any money.
+
+[32:00]
+SPEAKER_00:
+Did the Haskell client sync at Genesis?
+
+[32:05]
+SPEAKER_03:
+No, we... We were able to sync at Genesis time for like a year or so. We were syncing. But I remember, like, that week, Kieran and I were like more interested in trying to get a miner in place. So, that was what that week looked like for us.
+
+[33:00]
+SPEAKER_01:
+Yeah, I had... I was living in an apartment just south of Berkeley campus at this time. And Jim had taken me to Fry's to build a machine a few months prior. Like, a build machine. It had a good GPU in it.
+
+[34:00]
+SPEAKER_03:
+Yeah, Fry's is dead now, RIP.
+
+[34:05]
+SPEAKER_01:
+So, I was running a miner there, and we built a couple in Jim's garage. It got very hot in Jim's garage, which was, you know, those... those things were consuming a fair bit of power. Mine exploded after a few weeks. It was actually just the power.
+
+[35:00]
+SPEAKER_03:
+I thought the whole machine was bricked. And Jim said, "You know, I think everything but the power supply will be okay." And it was the case that everything but the power supply was okay. But then I stopped mining, and I think Jim would shut...
+
+[36:00]
+SPEAKER_01:
+Yeah, yeah, indeed. Sure, you weren't over at that time? We were always, you know, sort of, at least at that time, shorter-handed, people-wise, always catching up a little bit on the features, etc. But it... it ran perfectly well.
+
+[37:00]
+SPEAKER_02:
+There was always new features coming. I remember it was really one of the sweet memories during the pre-launch, sitting together with Gavin, Vitalik, Jeffrey, and me in one room at the C office, like the nice Kevin office. He had this 80s style thing, and we think, "Okay, what was wrong in our protocol?" Then they discussed with a whiteboard changes.
+
+[38:00]
+SPEAKER_00:
+Yeah, I mean, just to have some timeline for the viewers. So, Vitalik wrote the white paper in November 2013. Various other people sort of joined in on the efforts in December, including Gav and Jeff, who started the C and Go clients, respectively, at the very end of December, kind of like Christmas projects for them both.
+
+[39:00]
+SPEAKER_02:
+January 2014, you had sort of like the public announcement of Ethereum at the Bitcoin Miami conference. It was as early as April 2014 that Gav wrote the yellow paper, which is, you know, as you were saying, the sort of formal specification. You had the crowd sale between July and September 2014.
+
+[40:00]
+SPEAKER_00:
+So, then, yeah, you, you were coming in right after that, you know, so you had a wave of arrivals in September and October of that year. Essentially, because the crowd sale had happened, there was some money to actually hire people, and then talking about, you know, where you... where you met there initially, that group.
+
+[41:00]
+SPEAKER_02:
+Yes, I actually, I listened only to his talk as an online thing, and I actually just wrote him an email, said, "Look, I see this last developer, would love to join Ethereum, love what you're doing." And he invited me to meet him in Kreuzberg, Berlin, so which again is about two hours' drive from here. So, I went up there, met him.
+
+[42:00]
+SPEAKER_00:
+So, how did you know it was good enough? Like, what was that testing flow and collaboration?
+
+[42:05]
+SPEAKER_02:
+Like, there are many indicators. One being the Olympic testnet running smoothly for a while. Other one, where, as I said, Geth having an audit, which worked. And then that was saying, "Okay, now, if Christoph doesn't find any failing tests for like three weeks or four weeks or something, we are ready." And this was the case.
+
+[43:00]
+SPEAKER_00:
+So, back on the timeline. So, it was July 2015 that Mainnet launched with a Frontier hard fork. And then, as you touched on, you had Ming. So, Ming's first official day was 1st August 2015, at which point the foundation had been running on for a year or so and was close to out of money.
+
+[44:00]
+SPEAKER_02:
+Right. And I remember talking to her at the time; she felt like, "I have to clean up the whole mess." Like, the paperwork and everything was totally messy. Working with lawyers, accountants, and so on, and getting cleanup, basically, of the foundation. I mean, for me, I did expect it to last something like that. So, it was, for me, it was clear they are not making any money.
+
+[45:00]
+SPEAKER_00:
+So, perhaps let's talk about actually just before we get to Defcon 1. So, the launch, right? So, obviously, a lot of testing and coordination and this different series of proof of concepts. So, I mean, how did you know it was good enough? Like, what was that testing flow and collaboration?
+
+[46:00]
+SPEAKER_02:
+Like, there are many indicators. One being the Olympic testnet running smoothly for a while. Other one, where, as I said, Geth having an audit, which worked. And then that was saying, "Okay, now, if Christoph doesn't find any failing tests for like three weeks or four weeks or something, we are ready." And this was the case.
+
+[47:00]
+SPEAKER_00:
+So, the launch itself is also a bit typically, typically Gavin or also Vitalik, nobody wanted to push a button like nobody just like start a chain. So, what was done was there was a script written which has as an input parameter the hash of the Olympic testnet at a certain block height.
+
+[48:00]
+SPEAKER_02:
+So, everybody could, using this script, plus the software, plus the C or Go client, of course, having plus the hash, which was at that time in the future of the big testnet, start that chain. So, there was no, like, at launch day, we were just viewing it. There was nothing to be done. Was like everything was everything. All the information was out there.
+
+[49:00]
+SPEAKER_00:
+Yeah, I mean, just to have some timeline for the viewers. So, Vitalik wrote the white paper in November 2013. Various other people sort of joined in on the efforts in December, including Gav and Jeff, who started the C and Go clients, respectively, at the very end of December, kind of like Christmas projects for them both.
+
+[50:00]
+SPEAKER_02:
+January 2014, you had sort of like the public announcement of Ethereum at the Bitcoin Miami conference. It was as early as April 2014 that Gav wrote the yellow paper, which is, you know, as you were saying, the sort of formal specification. You had the crowd sale between July and September 2014.
+
+[51:00]
+SPEAKER_00:
+So, then, yeah, you, you were coming in right after that, you know, so you had a wave of arrivals in September and October of that year. Essentially, because the crowd sale had happened, there was some money to actually hire people, and then talking about, you know, where you... where you met there initially, that group.
+
+[52:00]
+SPEAKER_02:
+Yes, I actually, I listened only to his talk as an online thing, and I actually just wrote him an email, said, "Look, I see this last developer, would love to join Ethereum, love what you're doing." And he invited me to meet him in Kreuzberg, Berlin, so which again is about two hours' drive from here. So, I went up there, met him.
+
+[53:00]
+SPEAKER_00:
+So, how did you know it was good enough? Like, what was that testing flow and collaboration?
+
+[53:05]
+SPEAKER_02:
+Like, there are many indicators. One being the Olympic testnet running smoothly for a while. Other one, where, as I said, Geth having an audit, which worked. And then that was saying, "Okay, now, if Christoph doesn't find any failing tests for like three weeks or four weeks or something, we are ready." And this was the case.
+
+[54:00]
+SPEAKER_00:
+So, the launch itself is also a bit typically, typically Gavin or also Vitalik, nobody wanted to push a button like nobody just like start a chain. So, what was done was there was a script written which has as an input parameter the hash of the Olympic testnet at a certain block height.
+
+[55:00]
+SPEAKER_02:
+So, everybody could, using this script, plus the software, plus the C or Go client, of course, having plus the hash, which was at that time in the future of the big testnet, start that chain. So, there was no, like, at launch day, we were just viewing it. There was nothing to be done. Was like everything was everything. All the information was out there.
+
+[56:00]
+SPEAKER_00:
+Did the Haskell client sync at Genesis?
+
+[56:05]
+SPEAKER_03:
+No, we... We were able to sync at Genesis time for like a year or so. We were syncing. But I remember, like, that week, Kieran and I were like more interested in trying to get a miner in place. So, that was what that week looked like for us.
+
+[57:00]
+SPEAKER_01:
+Yeah, I had... I was living in an apartment just south of Berkeley campus at this time. And Jim had taken me to Fry's to build a machine a few months prior. Like, a build machine. It had a good GPU in it.
+
+[58:00]
+SPEAKER_03:
+Yeah, Fry's is dead now, RIP.
+
+[58:05]
+SPEAKER_01:
+So, I was running a miner there, and we built a couple in Jim's garage. It got very hot in Jim's garage, which was, you know, those... those things were consuming a fair bit of power. Mine exploded after a few weeks. It was actually just the power.
+
+[59:00]
+SPEAKER_03:
+I thought the whole machine was bricked. And Jim said, "You know, I think everything but the power supply will be okay." And it was the case that everything but the power supply was okay. But then I stopped mining, and I think Jim would shut...
+
+[60:00]
+SPEAKER_01:
+Yeah, yeah, indeed. Sure, you weren't over at that time? We were always, you know, sort of, at least at that time, shorter-handed, people-wise, always catching up a little bit on the features, etc. But it... it ran perfectly well.
+
+[61:00]
+SPEAKER_02:
+There was always new features coming. I remember it was really one of the sweet memories during the pre-launch, sitting together with Gavin, Vitalik, Jeffrey, and me in one room at the C office, like the nice Kevin office. He had this 80s style thing, and we think, "Okay, what was wrong in our protocol?" Then they discussed with a whiteboard changes.
+
+[62:00]
+SPEAKER_00:
+Yeah, I mean, just to have some timeline for the viewers. So, Vitalik wrote the white paper in November 2013. Various other people sort of joined in on the efforts in December, including Gav and Jeff, who started the C and Go clients, respectively, at the very end of December, kind of like Christmas projects for them both.
+
+[63:00]
+SPEAKER_02:
+January 2014, you had sort of like the public announcement of Ethereum at the Bitcoin Miami conference. It was as early as April 2014 that Gav wrote the yellow paper, which is, you know, as you were saying, the sort of formal specification. You had the crowd sale between July and September 2014.
+
+[64:00]
+SPEAKER_00:
+So, then, yeah, you, you were coming in right after that, you know, so you had a wave of arrivals in September and October of that year. Essentially, because the crowd sale had happened, there was some money to actually hire people, and then talking about, you know, where you... where you met there initially, that group.
+
+[65:00]
+SPEAKER_02:
+Yes, I actually, I listened only to his talk as an online thing, and I actually just wrote him an email, said, "Look, I see this last developer, would love to join Ethereum, love what you're doing." And he invited me to meet him in Kreuzberg, Berlin, so which again is about two hours' drive from here. So, I went up there, met him.
+
+[66:00]
+SPEAKER_00:
+So, how did you know it was good enough? Like, what was that testing flow and collaboration?
+
+[66:05]
+SPEAKER_02:
+Like, there are many indicators. One being the Olympic testnet running smoothly for a while. Other one, where, as I said, Geth having an audit, which worked. And then that was saying, "Okay, now, if Christoph doesn't find any failing tests for like three weeks or four weeks or something, we are ready." And this was the case.
+
+[67:00]
+SPEAKER_00:
+So, the launch itself is also a bit typically, typically Gavin or also Vitalik, nobody wanted to push a button like nobody just like start a chain. So, what was done was there was a script written which has as an input parameter the hash of the Olympic testnet at a certain block height.
+
+[68:00]
+SPEAKER_02:
+So, everybody could, using this script, plus the software, plus the C or Go client, of course, having plus the hash, which was at that time in the future of the big testnet, start that chain. So, there was no, like, at launch day, we were just viewing it. There was nothing to be done. Was like everything was everything. All the information was out there.
+
+[69:00]
+SPEAKER_00:
+Did the Haskell client sync at Genesis?
+
+[69:05]
+SPEAKER_03:
+No, we... We were able to sync at Genesis time for like a year or so. We were syncing. But I remember, like, that week, Kieran and I were like more interested in trying to get a miner in place. So, that was what that week looked like for us.
+
+[70:00]
+SPEAKER_01:
+Yeah, I had... I was living in an apartment just south of Berkeley campus at this time. And Jim had taken me to Fry's to build a machine a few months prior. Like, a build machine. It had a good GPU in it.
+
+[71:00]
+SPEAKER_03:
+Yeah, Fry's is dead now, RIP.
+
+[71:05]
+SPEAKER_01:
+So, I was running a miner there, and we built a couple in Jim's garage. It got very hot in Jim's garage, which was, you know, those... those things were consuming a fair bit of power. Mine exploded after a few weeks. It was actually just the power.
+
+[72:00]
+SPEAKER_03:
+I thought the whole machine was bricked. And Jim said, "You know, I think everything but the power supply will be okay." And it was the case that everything but the power supply was okay. But then I stopped mining, and I think Jim would shut...
+
+[73:00]
+SPEAKER_01:
+Yeah, yeah, indeed. Sure, you weren't over at that time? We were always, you know, sort of, at least at that time, shorter-handed, people-wise, always catching up a little bit on the features, etc. But it... it ran perfectly well.
+
+[74:00]
+SPEAKER_02:
+There was always new features coming. I remember it was really one of the sweet memories during the pre-launch, sitting together with Gavin, Vitalik, Jeffrey, and me in one room at the C office, like the nice Kevin office. He had this 80s style thing, and we think, "Okay, what was wrong in our protocol?" Then they discussed with a whiteboard changes.
+
+[75:00]
+SPEAKER_00:
+Yeah, I mean, just to have some timeline for the viewers. So, Vitalik wrote the white paper in November 2013. Various other people sort of joined in on the efforts in December, including Gav and Jeff, who started the C and Go clients, respectively, at the very end of December, kind of like Christmas projects for them both.
+
+[76:00]
+SPEAKER_02:
+January 2014, you had sort of like the public announcement of Ethereum at the Bitcoin Miami conference. It was as early as April 2014 that Gav wrote the yellow paper, which is, you know, as you were saying, the sort of formal specification. You had the crowd sale between July and September 2014.
+
+[77:00]
+SPEAKER_00:
+So, then, yeah, you, you were coming in right after that, you know, so you had a wave of arrivals in September and October of that year. Essentially, because the crowd sale had happened, there was some money to actually hire people, and then talking about, you know, where you... where you met there initially, that group.
+
+[78:00]
+SPEAKER_02:
+Yes, I actually, I listened only to his talk as an online thing, and I actually just wrote him an email, said, "Look, I see this last developer, would love to join Ethereum, love what you're doing." And he invited me to meet him in Kreuzberg, Berlin, so which again is about two hours' drive from here. So, I went up there, met him.
+
+[79:00]
+SPEAKER_00:
+So, how did you know it was good enough? Like, what was that testing flow and collaboration?
+
+[79:05]
+SPEAKER_02:
+Like, there are many indicators. One being the Olympic testnet running smoothly for a while. Other one, where, as I said, Geth having an audit, which worked. And then that was saying, "Okay, now, if Christoph doesn't find any failing tests for like three weeks or four weeks or something, we are ready." And this was the case.
+
+[80:00]
+SPEAKER_00:
+So, the launch itself is also a bit typically, typically Gavin or also Vitalik, nobody wanted to push a button like nobody just like start a chain. So, what was done was there was a script written which has as an input parameter the hash of the Olympic testnet at a certain block height.
+
+[81:00]
+SPEAKER_02:
+So, everybody could, using this script, plus the software, plus the C or Go client, of course, having plus the hash, which was at that time in the future of the big testnet, start that chain. So, there was no, like, at launch day, we were just viewing it. There was nothing to be done. Was like everything was everything. All the information was out there.
+
+[82:00]
+SPEAKER_00:
+Did the Haskell client sync at Genesis?
+
+[82:05]
+SPEAKER_03:
+No, we... We were able to sync at Genesis time for like a year or so. We were syncing. But I remember, like, that week, Kieran and I were like more interested in trying to get a miner in place. So, that was what that week looked like for us.
+
+[83:00]
+SPEAKER_01:
+Yeah, I had... I was living in an apartment just south of Berkeley campus at this time. And Jim had taken me to Fry's to build a
