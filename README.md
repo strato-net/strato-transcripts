@@ -36,7 +36,7 @@ All services include speaker diarization (identifying who said what).
 | Processor | Model | Cloud Service | Context | Cost (Input/Output) | Best For |
 |-----------|-------|---------------|---------|---------------------|----------|
 | **sonnet** | Claude Sonnet 4.5 | Anthropic | 200K | $3/$15 per MTok | Complex technical content, long transcripts |
-| **chatgpt** | ChatGPT-4o-latest | OpenAI | 128K | $2.50/$10 per MTok | Latest flagship model, best text processing |
+| **chatgpt** | GPT-4.1 | OpenAI | 128K | $2.50/$10 per MTok | Extended context, 32K output tokens |
 | **gemini** | Gemini 2.5 Pro | Google | 128K | ~$1.25 per MTok | Very long transcripts, multilingual |
 | **llama** | Llama 3.3 70B | Groq | 128K | $0.59/$0.79 per MTok | ⚡ BLAZING FAST (300+ tok/s), Meta's latest |
 | **qwen** | Qwen2.5:32b | Ollama (local) | 32K | FREE | 🎮 GPU-only (12GB+ VRAM), skipped on CPU |

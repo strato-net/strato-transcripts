@@ -19,7 +19,7 @@ export HF_TOKEN=""
 # ==============================================================================
 # Only add the providers you plan to use. Ollama requires no API key (local).
 
-# OpenAI (ChatGPT-4o-latest, GPT-4o, etc.)
+# OpenAI (GPT-4.1, GPT-4o, etc.)
 # Get key from: https://platform.openai.com/api-keys
 export OPENAI_API_KEY=""
 
