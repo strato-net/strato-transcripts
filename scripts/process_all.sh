@@ -1,9 +1,9 @@
 #!/bin/bash
 # ==============================================================================
-# Batch Process All MP3 Files in ~/Downloads with Multi-Provider AI Pipeline
+# Batch Process All MP3 Files in Project Root with Multi-Provider AI Pipeline
 # ==============================================================================
-# - Loops through all MP3 files in ~/Downloads
-# - Calls process_single_mp3.sh for each file
+# - Loops through all MP3 files in project root directory
+# - Calls process_single.sh for each file
 # - Outputs to ./outputs directory
 # ==============================================================================
 
@@ -83,11 +83,11 @@ source venv/bin/activate
 source setup_env.sh
 
 # Find all MP3 files
-MP3_FILES=("$DOWNLOADS_DIR"/*.mp3)
+MP3_FILES=("project root directory"/*.mp3)
 TOTAL=${#MP3_FILES[@]}
 
 if [ $TOTAL -eq 0 ] || [ ! -e "${MP3_FILES[0]}" ]; then
-    echo -e "${RED}No MP3 files found in $DOWNLOADS_DIR${NC}"
+    echo -e "${RED}No MP3 files found in project root directory${NC}"
     exit 1
 fi
 
