@@ -1,0 +1,734 @@
+**SPEAKER_00:**
+[00:00] Okay. Recording is in progress.
+[00:01] So hello, everybody. Today, delighted to have Christophe with us.
+[00:05] We did attempt to record this Christophe and I two weeks ago, but I forgot to press the record button.
+[00:10] So we spoke for an hour or so, and then it was not recorded.
+[00:14] So this is round two.
+
+**SPEAKER_01:**
+[00:17] So hello, Christophe. How are you? Hi, Bob. Nice to meet you again. I'm doing good. I hope you too. Thanks for the invitation.
+
+**SPEAKER_00:**
+[00:25] Fantastic. Yeah. So Christophe and I, you know, our paths crossed for the first time way back in 2015, when I was trying to do C++ Ethereum on my smartwatch.
+[00:35] This was around the time that Christophe was still at the Ethereum Foundation.
+[00:40] And then I think I crossed paths with him a number of times since and too. Indeed.
+[00:45] So, Christophe, what were you doing with your life before you found Ethereum and joined this crazy journey?
+
+**SPEAKER_01:**
+[00:50] So, in 2013, I was doing my PhD in theoretical physics, actually about self-organizing systems.
+[00:57] Like biology, six months in mathematical biology and other things.
+[01:02] So I was studying systems which have local rules and global behavior.
+[01:07] And I came across Bitcoin, which has just a small set of local rules and a global behavior as a currency.
+[01:13] And but the reason I came across this was I was looking for cheap GPUs, like graphic cards.
+[01:18] And the Bitcoin miners were selling their GPU mining rigs to get some FPGAs and later ASICs.
+[01:24] And so that's how I got into what's Bitcoin mining.
+[01:28] And so I bought my first Bitcoin, got into this bubble, did read everything I could about it, and then I came across the white paper from Vitalik in early 2014, some start January, February in some Bitcoin forum somewhere.
+[01:42] And I was already totally in love with the idea of Bitcoin being a decent currency and all the characteristics and features of it.
+[01:49] And this white paper of Vitalik, I mean, if you read it again, it's almost a prophecy.
+[01:54] Except except of NFTs, everything's in there from DAOs, from ENS, like names as domain names as terms and all of that.
+[02:02] So for me, it opened up this option of building applications with the same characteristics as Bitcoin, but just not a currency, but everything else.
+[02:10] And so then I started reading everything about it.
+[02:13] And in 2014, in summer, I went to watch a video from Gavin Wood.
+[02:18] He was somewhere in Scandinavia, some conference there, the Nordics.
+[02:23] And he talked about Ethereum. I loved it.
+[02:26] And he said he wanted to open up an office in Berlin, looking for C++ developers.
+[02:31] I was a C++ developer. So I said, well, I wanna do this.
+[02:35] So I took my parental leave time plus some vacation time from and passed my PhD for, like, three or six months, and said, I will return after I'm done.
+[02:44] I thought this just a short project because they raised money, maybe six, maybe twelve months, eighteen months or so, then it's over.
+[02:52] When I started, I thought about maybe three to six months, and then I go back to my PhD.
+[02:58] So I worked there with Ethereum. This is it's Kevin Wood.
+[03:02] It was a great time. And then just decided to stay.
+[03:06] It was so exciting.
+
+**SPEAKER_00:**
+[03:09] So, so you never got to be a doctor.
+
+**SPEAKER_01:**
+[03:11] No. I'm not a doctor. I did not finish my PhD, although I only had six months left, which was kind of a pity.
+[03:18] I worked, like, for three years on that.
+[03:21] And but I also had, at the time, I think, four or five kids.
+[03:25] And needed some money. I didn't get much money as a PhD student, so I did some software development as a side hustle, basically.
+[03:32] And so when I got this project, I said, well, let's do this for two or three months as a parent leave time, and then I can return.
+[03:39] And then I decided to really interrupt my PhD. Is that I will maybe return one year later because I thought the foundation eventually run out of money because they're not making any profits.
+[03:49] They just raised donations, then they will spend them, then it's over, then I can continue my PhD.
+[03:55] That was originally a plan. Just came different.
+
+**SPEAKER_00:**
+[04:00] I mean, I guess it's never too late. Right?
+
+**SPEAKER_01:**
+[04:02] I actually sometimes think about it if I should return. It's just so much to learn again.
+[04:07] I'm right now doing Tokenize.it. I'm basically working on tokenizing German companies.
+[04:12] It works very well. So, currently, I'm not planning on getting back anytime soon.
+
+**SPEAKER_00:**
+[04:17] No. Because, I mean, famously, you had, you know, Doctor Kevin Wood and Doctor Christian as well.
+[04:23] And I think, yeah, there were a couple of other PhDs as well. There was. Definitely.
+
+**SPEAKER_02:**
+[04:28] I also dropped out of mine. I was actually in mathematical physics too. Interesting. Similar background.
+
+**SPEAKER_01:**
+[04:34] Background. It's actually the same. To like, theoretical physics, it's the mathematical part of physics.
+[04:40] I I tried very much. I did thermodynamics and statistics, mostly software development.
+[04:46] It was really fun.
+
+**SPEAKER_02:**
+[04:48] Well, by the way, Jim is trying to join. I don't know if there's anything that needs happening.
+[04:52] He can get some browser issue.
+
+**SPEAKER_00:**
+[04:54] Yeah. Yeah. Well, he'll pop up and we can add him or if he's if he's I'll see. Then then never mind.
+[05:00] So, so Christophe, in terms of, you know, getting hired into Ethereum dev, and I'm sorry if I just missed it.
+[05:07] So how did that happen? Did you did you meet Gavin for a meetup, did you say? Yes.
+[05:12] I actually, no. I listened only to his talk. It's supposed to be online thing.
+
+**SPEAKER_01:**
+[05:16] I actually just wrote him an email. Said, look. I would love to join with you. I love what you're doing.
+[05:22] And he invited me to meet me in Kreuzberg, Berlin. So which, again, is about two hours drive from here.
+[05:28] So I went up there, met him. I remember the first conversation, he was talking about all the stuff they were gonna build and said, well, what can you do?
+[05:36] And I just asked him, what's, like, the most complicated stuff you have right now? Like, give me a complicated task.
+[05:42] I somehow can figure it out. So he talked about the Ethereum Virtual Machine, which did some testing.
+[05:48] So I just picked working on testing the Ethereum Virtual Machine or, like, writing tests for it.
+[05:54] Back at the time, I actually had no real idea what he was talking about. Meaning, of course, I did understand on the white paper level.
+[06:01] I did understand what Ethereum was about. But Gavin had this skill of writing the Yellow Paper, which is still incredible work.
+[06:08] Like, it's a such a great specification different from Bitcoin, really having a specification so multiple clients could be built.
+[06:15] In India, he defined the Ethereum Virtual Machine. And I I think I read the paper six, seven times.
+[06:22] I felt like it was one out of, I don't know, 10 or 20 people in the world at the time who really understood the Yellow Paper.
+[06:29] I did corrections to it. I have some pull requests actually in the Yellow Paper GitHub repo, added missing definitions and stuff like that.
+[06:37] And then what I mostly did was writing tests according to the specification, which then were with the help of the C++ client because this was his team.
+[06:45] So I was working also on the C++ code base. And so, gas, py, Ethereum, also the JavaScript version, and and what else did you have?
+[06:53] Like, Haskell client and others. They're basically using my test to see if they implemented the machine, also the state transitions, and block creation correctly.
+
+**SPEAKER_00:**
+[07:02] Yeah. Yeah. So, I mean, just to have some timeline for the viewers.
+[07:06] So Vitalik wrote the white paper in November 2013.
+[07:10] Various other people sort of joined in on the efforts in December, including Geth and Jeff who started the C++ and Go clients respectively.
+[07:18] At the very end, oh my goodness. At the very end of December, kind of Christmas projects from both.
+[07:24] January 2014, you had sort of like the public announcements of Ethereum at the Bitcoin Miami conference.
+[07:30] It was as early as April 2014 that Gavin wrote the Yellow Paper, which is, you know, as you were saying, the sort of formal specification.
+[07:38] You had the crowdsale between July and September 2014.
+[07:43] So, yeah, you were coming in right after that, you know, so you had a wave of arrivals in September and October of that year, essentially because the crowdsale had happened.
+[07:53] There was some money to actually hire people.
+[07:56] And then talking about, you know, where you met there, initially, that group, so were and these are a company coordinating the development of Ethereum stuff.
+[08:04] So it's a subsidiary of the Ethereum Foundation. Right.
+[08:07] They were working initially in a coworking space, but then got off it.
+[08:11] And it was between August and November of that year that the office was getting, like, done up and tidied.
+[08:17] And then in November, you had DevCon Zero, you know, the first conference, you know, an internal one where a lot of the people that was their first sort of face-to-face meetings.
+[08:26] So how was DevCon Zero?
+
+**SPEAKER_01:**
+[08:29] How was that? What was that like? It was like a company retreat.
+[08:33] So it was not a public conference. We did have even though there were some outsiders who felt like part of the community, maybe also pushed some code.
+[08:40] I remember the I was in his name again, wrote the book also about Ethereum, that Lexus of IBM, Oh, Henning Henning, I think Henning.
+[08:48] Yeah. I think he was also there, just as an example of some people who are, like, big about Ethereum, interested in joining.
+[08:54] Of course, chose a well. Right? Roman Roman was there. With the Java clients.
+[09:00] But it was mostly developers, but, also, I think Stephane was already there.
+[09:04] So we had already the London team. So it was like an internal Ethereum meeting.
+[09:09] We meet kind of a meetup, almost, I think, three days or so. I don't know exactly. Five, five days even.
+[09:16] Yeah. It was a full week. I was there for the full week, as far as I can remember.
+[09:21] I did a presentation about testing, how the test suite is very important.
+[09:26] Yes. We had Remix projects, Solidity project, I think, mostly started at the time. Gethermind used this for explaining his vision of Ethereum as a platform for decentralized applications, so building Swarm.
+[09:37] I don't know if Swarm and Risk was already launched there, but at least, like, the generic idea, the Mist browser.
+[09:44] So all those ideas are really sketched out there, like, the technical roadmap, what we are going to build.
+[09:50] Because we started just, of course, with the basic clients, like implementing the protocol, but he took it, like, kind of, what are we going to do in the next twelve months?
+[09:58] Build the Mist browser, like, Remix, of those tools to have a platform for decent SaaS applications.
+[10:05] I remember one slide, which I think I posted on Twitter a while ago, where you have those three circles, one circle as, yeah, one node.
+[10:12] And you would see, like, they are connecting on the blockchain using Swarm for the data, Whisper for the messages, and you like, this whole picture was painted there.
+[10:21] And there are people attending, I think, around 50 people, plus minus 10, don't know the exact number, where mostly developers talking about code, coding there, shows if I remember him being there, say, well, all of you, you will create your own companies, becoming millionaires.
+[10:35] I remember Joseph talking about that. And I think mostly he was, he was right.
+[10:40] So most of those people in the room, in one way or another, cofounders, founders, or were early part of companies building on top of Ethereum in the years to come.
+
+**SPEAKER_00:**
+[10:49] Yeah. Yeah. Let me see if I can do a little screen share.
+[10:52] No. Never mind. I can't work out how. Not to worry.
+[10:56] But, yeah, there's this present button.
+
+**SPEAKER_02:**
+[10:59] So not worry. Yeah. I don't see that. Is that on the right-hand side somewhere or at the bottom?
+[11:04] You maybe have a different for me, I appear on the top right and below. And to the right of me below, there's a present button with, like, a plus.
+
+**SPEAKER_00:**
+[11:10] Like, you post maybe. Never mind. Never mind. I was just gonna show the iconic photo of people at that Con Zero.
+[11:16] Right? You know, that's this big group shot with nearly everyone who was out there, you know.
+[11:21] So that's a classic Ethereum photo. So I was looking, there's, like, 11 of the videos that's still around from DevCon Zero.
+[11:28] I think there were around 20 sessions. I'm still trying to dig out the others. Some of them, including yours, I have not managed to find yet.
+
+**SPEAKER_01:**
+[11:35] Yeah. It was only about the test suite, how it builds it, how people would use it. It was rather technical.
+[11:41] There was not much of a vision in there. So, well, left terrorist presented on Emacs,
+
+**SPEAKER_00:**
+[11:46] So, you know, you're not you're not the most boring talk.
+
+**SPEAKER_01:**
+[11:49] Yeah. Again, it was just some nerds starting it, also, for most of them, it was the first time we actually met.
+[11:55] And, of course, the C++ team, they didn't know each other because they're working in the coworking space, left terrace and others.
+[12:02] They're there. But then, let's say, I think it was the first time I actually met Vitalik because he came there.
+[12:08] Then, of course, Jeffrey and his team, Stefan and his team, Joseph. So it was for me, it was the first time to meet all of them and having talks.
+[12:16] And since we, we had time, five days, a small group of people, we actually do have time to eat together, to talk.
+[12:23] So it was not, not so crowded, maybe, as Stefan is today. Very intimate. It was good.
+
+**SPEAKER_00:**
+[12:29] Yeah. I mean, four hours.
+
+**SPEAKER_02:**
+[12:31] One thing I can't quite remember. So there was a time there was an Ethereum Slack that was kind of open to the public.
+[12:37] You know, there were a lot of people. The sort of Ethereum affiliation status was fairly vague at that point.
+[12:43] And we were, you know, I, I remember we were using Skype a lot in those days. I just, the team, like, the telec, liked the Skype.
+[12:51] And then, at some point, I sort of lost the thread of, like, where the core, like, I can't remember where the core development discussions were happening.
+[12:59] And I'll, I'll maybe I'll ask Jim to comment. Also, just like those tests, we kept, like, getting them.
+[13:05] And I think I'm, I'm thinking of some a little bit earlier on, and we'd build them. And Jim was mostly working on them, and would update on the, like, passing percentage, which would always be between, like, 93, 98%, and then something would change.
+[13:17] You know? But, yeah, like, where did the discussion, because, yeah, between, like, sale and DevCon Zero, I think it kind of got a little bit, it, like, moved around where the dev discussion was.
+
+**SPEAKER_01:**
+[13:27] Skype. We also had Skype channels for almost everything, like the C++ team and so on.
+[13:32] Then, I, in a short time, they used the, it was a notetaker, which had a name also with E, something, where you could, like, Etherpad?
+[13:39] Etherpad, something like this. Right? There were some notes created there, but the communication was really, I would say, 99% Skype for me.
+[13:46] Later on, we used a tool based on GitHub. What was the name of it? GitHub.
+[13:51] GitHub came later. This was, like, the new replacement for Skype, but I didn't use it too much.
+[13:56] It was actually during the time when I was actually leaving. But it was used also by the C++ team.
+[14:01] There, you had a channel per GitHub repo. This was during the time that GitHub was completely reorganized because, at the beginning, it was, like, one big repo with everything.
+[14:09] They made the submodules. It was so messy. And then, during those, during this process, we got GitHub.
+[14:15] But, yeah, for me, it was mostly Skype.
+
+**SPEAKER_00:**
+[14:17] Yeah. And, and then, annoyingly, that kind of means a lot of these early discussions, they're kind of, like, a bit lost, because nobody is, is using Skype.
+[14:24] And Skype is getting, like, deleted. This is happening in February. Year. Oh, I thought it happened already.
+[14:30] It, it's just, you can still request to download, and I did, and then I haven't heard anything back, and I wanna do that to see if I can get some of those.
+[14:37] So, everybody, apply to download your Skype data.
+[14:40] I, I remember, with Getherm, there was a discussion about, on this, that I was involved with, at the EF later, which was saying the problem with Skype is it wasn't discoverable.
+[14:49] You know, you had to add, you had to request to be added, but you had to know what was there to be able to do that request.
+[14:55] So, it was a bit of a chicken and egg situation. Whereas Getherm, it was like a one-to-one with the repositories.
+[15:01] So, if you're using a repo, there you go. There's a one-to-one channel with that, and it was discoverable and archived.
+[15:07] But, then, Slack, I think, was even earlier. So, oh, and there was the forum as well. Right?
+[15:13] There was an Ethereum forum too.
+
+**SPEAKER_01:**
+[15:15] There was a forum. And then Slack, I think, I got introduced to Slack by when he created a community for the DAO.
+[15:21] When he looked for a new communication tool, he went with Slack. And, at that time, it was not like today, like, a business tool for the company.
+[15:28] It was really communities. Like, we had 5,000 people in our Slack, which is not how it's used today.
+
+**SPEAKER_00:**
+[15:34] Yep. Yep. So, welcome, Jim.
+
+**SPEAKER_03:**
+[15:36] Your technical problem. Sorry. I had some technical problems for a while there.
+[15:41] But I don't know. I'm just listening to you guys. What, what, what happened that brought the whole world to Zoom suddenly?
+
+**SPEAKER_02:**
+[15:48] It was in waves. Look. For on my side,
+
+**SPEAKER_03:**
+[15:51] I don't know. I just I just woke up one day, and everything was Zoom. Yeah. From then on. Like a native.
+
+**SPEAKER_02:**
+[15:57] Species, like a statistical phase transition. You know, I think it was, it was two phases.
+[16:02] I would always get invited to corporate, like, you know, let's say 2017 to 2019, when I was, you know, doing a primarily BD,
+[16:09] I found that I would get invited to any of 10 video conferencing tools.
+[16:13] And, like, you know, what is the Cisco one was the Webex. That was horrible.
+[16:17] I would get that a lot. Google meetings didn't feel sufficiently corporate or something, even though it was okay.
+[16:23] And Zoom had the best quality for a while, and I found that everyone picked Zoom at the same time, like, 2018,
+
+**SPEAKER_00:**
+[16:29] Let's say. I think it was just quality to me. Like, this, I mean, Microsoft really fumbled. Right?
+[16:34] Skype had got such a lead for, for so long, but Zoom just seemed more reliable, whatever weird little proprietary magic they had going on. Yeah.
+[16:41] And then, I mean, I guess, yeah.
+
+**SPEAKER_03:**
+[16:43] I guess I was under the impression that, like, Zoom is for businesses.
+
+**SPEAKER_02:**
+[16:46] I think that's, well, that is true. But it was just that, still, I mean, this has gotten way better in the last ten years, but still, nothing really works for reliable video over the Internet.
+[16:55] It's, it's just much better than what existed. But there was a free version always, and it would just, like, time you out.
+[17:01] So, like, they had a fairly viral acquisition loop where, like, and I was just gonna say, in the pandemic,
+[17:06] once when people were locked down, it became a consumer tool where people would have, like, yard large yoga classes or, you know, sermons or whatever with, like, 500 people on a Zoom, and then everyone got called.
+[17:15] Yeah.
+
+**SPEAKER_03:**
+[17:16] Remember it well. All of a sudden, like, my parents were, like, calling me up, and they're like, we found this awesome new tool. You probably never heard of it. It's called Zoom.
+
+**SPEAKER_02:**
+[17:23] Yeah.
+
+**SPEAKER_00:**
+[17:24] Well, yeah, there were, like, 10. Let's move on from sharing about video platforms.
+[17:29] So, so, I look back. So, so Jim's first commits on the Haskell client were mid-September 2014.
+[17:36] So, you know, a couple of months ahead of ahead of DevCon Zero, but you'd have the Yellow Paper for, for, for, for five months at that time.
+[17:43] And I, I did find on our Slack, you know, a bit of a thread where, where things, I think, from you, Christophe, were, were, were being discussed by Jim.
+[17:51] I don't know. Did you guys interact directly at all on testing, Jim, Christophe?
+
+**SPEAKER_01:**
+[17:56] Not directly. That's not as far as I can remember. I maybe there were some messages.
+[18:00] I mean, I've, it has been a while ago.
+
+**SPEAKER_03:**
+[18:02] I could be wrong. I may have met you briefly in London when we had that possibly. Conference.
+[18:07] But it would have been, like, like, hi, you know, quick, quick greetings at a party or something.
+
+**SPEAKER_01:**
+[18:12] Yeah. I mean, ten years ago, lots of people, sure. We did. We were the testing GitHub repo, and we had all the major clients using it.
+[18:19] And I was interacting, mostly asking, responding questions. I mean, of course, the C++ time, I was super close to.
+[18:25] I used the C++ time also to prefill the test. So this was per default, right, except we found there was a test failing, but it should, but actually, C++ was wrong.
+[18:33] So sometimes this happened. There was the test was not really failing, just C++ was wrong.
+[18:38] But in the maturity of cases, C++ was right. So we were just having those conversations.
+[18:43] We found tons of issues. We did not just, in the beginning, I wrote those tests.
+[18:48] We used to actually bytecode, the very first test. Then I went to a low-level list, like language. This was LLL.
+[18:54] This was the precursor to Solidity by Gavin. And then, in the end, actually, I had automated, like, fast testing, where I wrote software that would create thousands of tests that we had some AWS,
+[19:03] like, over a 100 cores of machines, constantly creating tests. We had always some failing on some versions of gas or other clients.
+[19:11] So this was mostly what I did during one and a half years.
+
+**SPEAKER_00:**
+[19:15] Right. Right. So, I mean, I guess, for the viewers, something that Ethereum chose to do differently from Bitcoin was to have this specification separate from the client software.
+[19:23] Right? So, you know, when Bitcoin started, it was the code that happened first, and the white paper afterwards,
+[19:28] but, but the white paper wasn't a protocol specification.
+[19:32] So, you know, was doing that Yellow Paper spec in parallel with the C++ client, which is sort of the first one,
+[19:38] while you have the talent working on the Python client, Jeff working on the Go client internally,
+[19:43] but then you've got all these other clients as well. Right? So, Java one by Roman, I think, started in about April or May.
+[19:50] You know, ourselves, and Karen, here, with the Haskell client, starting in September.
+
+**SPEAKER_01:**
+[19:56] You have JavaScript as well. So it's like a library. I don't know if it's really like a syncing client, but they have all the tools, so you can, in your web app, kind of integrate part of it to verify certain states.
+
+**SPEAKER_00:**
+[20:04] I mean, I think, maybe, they had a syncing client at some point, apart from it, obviously, like, couldn't actually keep up, but theoretical.
+[20:10] Yep. And, yeah, like, a little later, there was a Ruby client as well. And, yeah, at one point, there were eight different clients.
+
+**SPEAKER_01:**
+[20:17] Right. If you want to, I can tell the story of why we all are using Geth today. Yeah. We do.
+[20:22] Not absolutely not a given. Like, at the time, we, mean, of course, everyone had different opinions, but the C++ client was really the fastest, the most solid one, passing all the tests and so on.
+[20:31] But Gavin always wanted to add new features, like, to a refactoring, and he was a perfectionist, which is not bad for this kind of software.
+[20:38] And then the time came for the security audit, because everybody wants to launch Ethereum now. And he said, before we launch it, those clients need to have a proper security audit by an external company.
+[20:46] And one of the companies doing this was in Seattle. So I actually went there with the team for the audit.
+[20:52] And because Gavin wanted to build some more features, he said, well, let's just, yes, can go first. Let's first audit the Go client.
+[20:58] When they are done, I'm done with the features I want to build, and then we're going into the audit for the C++ client.
+[21:04] So Geth was audited. Picked the heads of issues. They fixed the issues, and now it's time.
+[21:09] And so there was technically no reason why not, well, actually, we could launch Ethereum now. We have a fully audited client, test that is running for a while, no major issues, no failing tests for a long time.
+[21:19] So why would we wait for the C++ client to be audited? Maybe they all really had the pressure of money was running out.
+[21:25] We need to launch now. So, and then the decision was made. Let's launch the Geth.
+[21:30] They could still use C++. It's just not audited. Let's say, in two months or so, the audit is done, and then they can use C++ even more if they want.
+[21:37] So, but then the big mistake was, in my view, when they made this announcement of, you can start now, they recommended using Geth because this was the audited one.
+[21:44] So almost everybody won Geth. Was like, we started with the almost 100% Geth, and then some just some minor other clients use it.
+[21:51] Only very few did use them. And so, after the audit was done, nobody switched.
+[21:56] For, like, sure. But Geth is running. I'm synced. Like, what's the issue? Why should I switch?
+[22:01] And so we had this 19, 10, or 18, 20 distribution. It just stayed like this.
+[22:06] So, if Gethermind would have been either, say, let's just do the audit now, and we just, if both audit at the same time, step, stop, maybe we would have 50, 50.
+[22:14] Or, if even the other way around, if they would have first audited the C++ and Ethereum would have been launched without a Geth audit,
+[22:20] like, you would have to see a total switch. And then, of course, money was going low in the foundation.
+[22:26] They had to reduce the team. And because Geth was the most used one, there were some issues with Gavin.
+[22:32] Another story, maybe I have a talk with him. And so, in the end, Ming decided to basically kick out the complete C++ team.
+[22:39] This was then in shortly before DevCon one, so something like November, September-ish.
+[22:45] So, but, yeah, I think the reason for that was also C++ type wasn't really that used. Also, there are other reasons as well.
+[22:52] But you can see how a tiny thing can have such big consequences down the road, like him doing Polkadot today, and all of that.
+[23:00] And he was great. I mean, I really, really, I still think, I think, maybe we'd have proof of stake in sharding way earlier if Geth would have stayed.
+[23:08] So, without him, they moved slower, of course, the price went up. They've got better security, relevant things, so changes happened, not quickly anymore, but take more time, and so on.
+[23:19] But I think this was a big loss for Ethereum that Gethermind left, basically, in 2015.
+
+**SPEAKER_02:**
+[23:25] Yeah. That's crazy. Amazing. The client-side was the cause. I think it was part of it.
+[23:30] But it, you know, having the process maybe started with the red wedding, which we discussed in some other early days of Ethereum episodes.
+[23:36] Like, he, I remember very clearly in the room. It was a lot, it was, like, you know, two weeks into my Ethereum tenure at that time,
+[23:43] that he was talking about brain drain if it was only going to be a nonprofit foundation and not going to have a commercial arm.
+[23:50] And, there are more issues to that. Definitely. Like, this was not the deciding part, but it was, like, those things were adding up.
+[23:57] I know, I remember that Gavin had this idea of turning the foundation into a DAO, and then having a for-profit entity next to it, which would build things and make money.
+[24:05] So, there were many different commercial ideas at the time. So, he then basically started on his own.
+[24:11] I remember he wanted to have me as part of it, but I decided to do Slockit at the time. So, that's why I did not become a co-founder of Ethereum.
+[24:18] Another story. We, we can go into this if you want. You know, you know what happened after that.
+[24:24] But, this, there are many reasons we are part of it. I think also him and Ming didn't really get along too much.
+[24:30] There was not really a trust relationship going on. Of course, money running out, different visions of how Ethereum should evolve technically and economically, if you want,
+[24:38] all played a role. But I think it was just one part that the C++ client wasn't that much, wasn't reused that much.
+[24:45] And the reason for that was Geth being audited, we launching without an audit for the C++ client.
+
+**SPEAKER_00:**
+[24:51] Yeah. I mean, talking about features, so, yeah, there was a ton of stuff on that on that C++ team.
+[24:56] Aleph, Aleph zero, as well, and Aleph one. So, Aleth one being the Gwei miner.
+[25:02] And then, I don't know, how would you describe Aleth zero?
+
+**SPEAKER_01:**
+[25:05] Kind of first interface to the blockchain in some way. Like, the first graphical interface to a blockchain client.
+[25:11] What could it do? Of course, it could mine. You could deploy a smart contract. You could visit and make it visible, somewhat, what's happening there.
+[25:18] It was not really end-user-friendly in any way, but it was just a replacement of what people just do on the command line.
+[25:24] Usually, command line, run your client, has some input, has some output, and it was the first kind of traffic use interface, graphical user interface, replacing command line.
+
+**SPEAKER_00:**
+[25:32] But I guess I guess it's sort of like a combination of, like, what you have with the block explorer now, apart from that's, like, a view-only, and this was both of you, and a, and a, and a do.
+
+**SPEAKER_01:**
+[25:41] Yep.
+
+**SPEAKER_00:**
+[25:42] But, yeah, those Gooey clients.
+
+**SPEAKER_01:**
+[25:44] So, much more influential than the Mist browser. The Mist browser, I think, there's a video by Alex.
+[25:50] It's, like, a 10-minute video on YouTube. They had this prototype. They're not working yet, but just, like, take it until you make it, the vision of the Mist browser.
+[25:58] And this also really made us understand how Ethereum could work for the end-user. Having different identities connected to wallets, again, would load those steps.
+[26:06] There's a IPFS hash or, if all the Swarm one day, the app was loading, and you could do some finance stuff there.
+[26:13] This gave us an idea of what Ethereum could be. It was, so, you have to think, Vitalik gave us a rather technical vision, and prod, intellectual thing,
+[26:21] but Geth gave us his prod. In that vision, Alexander gave us this very concrete thing, what an end-user could do with that in the next six to twelve months, maybe.
+[26:30] That's very important.
+
+**SPEAKER_00:**
+[26:31] Just yesterday, actually, so there was an announcement from ENS about them sort of turning on fees and doing various things that are more kind of to do with, you know, the company, the protocol, time together.
+[26:41] And I saw a reaction to that, saying, well, I'm never gonna, you know, I'm never gonna use this again. You know, you can't, like, you know, extract ongoing revenue out of a protocol.
+[26:50] And, and this person then said, it's time for Mist two. Totally. I've said this before. We need the full vision, so that you've got hosted, and the apps, and you don't need a server, and you don't need a company, and you can just make this pure,
+[27:02] you know, immutable smart contract, wrapped in a UI, that's, that's all decentralized.
+
+**SPEAKER_01:**
+[27:08] Think we can have a Mist two? I would love to see this. I heard people thinking about this before.
+[27:13] I don't know if anybody really started the project, but it should be totally doable today. It's not rocket science.
+[27:19] You know,
+
+**SPEAKER_02:**
+[27:20] Let me interject. We ourselves have made sort of different attempts at this, where, like, you just download the app from the chain itself, pretty much.
+[27:27] And it worked fine, and I guess it just wasn't as much a differentiator. Like, it made things a little slower to do it this way all the time.
+[27:34] I also think, like, one of the people that took the web three, the world computer vision, sort of seriously, was, like, the Internet computer people.
+[27:41] And I don't know anyone that uses Internet computer. But, like, the every once in a while, I see tweets about it, and I'm like, that sounds great.
+[27:48] Yeah. Sort of the app from the chain. You know, it's got some cool, like, smart contracting language in it.
+[27:54] And I guess there's just no demand if it, like, slows the app down even slightly. And I think MetaMask, and then many other wallets,
+[28:02] were sort of enough. Still not the whole thing, but, yeah, I guess it's like, you gotta get people to use it if you want it to be.
+
+**SPEAKER_01:**
+[28:08] Maximally cypherpunk, too. And fully agree. And that's, yeah, the problem with this is you only need it if you really need it.
+[28:15] Meaning, if Uniswap failed, interface is not there. It's like a backup. But it's not what you want to use daily.
+[28:22] And if I say, if you remember, maybe, q, you, where they have one, when they presented MetaMask,
+[28:28] my first thought was, oh, this is totally away from the vision. Like, how can you not run a full node?
+[28:34] How can you, how dare you, like, to just serve over RPCs, and, almost, not, not a scam, but it, it was, like, not what we intend to build.
+[28:42] Today, it's like, this is a decentralized version of it. This is, like, non-custodial MetaMask, or the good guys, compared to all the others.
+[28:50] Like, see how, like, the few shifted over the years. Like, then it was absolutely required to run a full node with the Mist browser.
+[28:57] This is how it's done. And now we have MetaMask, plus, and Fora, and today, this is really the version which is viewed as the original non-custodial Ethereum vision.
+[29:07] You see how things are shifting, basically. But, yes, you only need those things if things are falling apart.
+[29:14] Like, just as an example, so many people use the Noses Safe. Let's say the Noses Safe UI is gone.
+[29:20] Technically, it shouldn't be a problem to run another one, but it really needs to be something on IPFS. It needs to be something which can self-host.
+[29:28] I can still access my wallet without going to the command line. So, for those reasons, you need it.
+[29:34] And the Mist processor was sort of as the fallback for every dapp. Like, of course, you can have your application run on a normal .com domain on AWS.
+[29:42] Fine. But if you could serve the same app in a decentralized fashion as a backup, this would be great, because you could still use it if the company that's Uniswap, the company fails,
+[29:52] if someone builds a nice Uniswap UI, served by IPFS, directly interacting with the smart contracts.
+
+**SPEAKER_02:**
+[30:00] Yeah. Yeah. That's fair. Also, I, I mean, Uniswap, I think, is controversial. I know Jim wanted to say something, controversial,
+[30:07] because they had the company-level fee skim. And then, so, I think they've turned the on-chain fee on.
+[30:13] I don't know that they've turned the company fee off. I haven't read that for detail.
+
+**SPEAKER_00:**
+[30:17] I believe so, because one of the replies was saying, okay, so how are your, like, shareholders gonna like that?
+
+**SPEAKER_02:**
+[30:22] Yeah. Okay. Fair enough.
+
+**SPEAKER_00:**
+[30:24] Well, hopefully, they hold a bunch of the UNI, and it will, you know, mark to market. They're doing a bunch of burn, so that, you know, it should be sort of benefit of all stakeholders.
+[30:33] So, yeah, just sort of this interesting kind of contrast, right, between completely immutable, you know, force of nature, smart contracts, versus,
+[30:41] you know, more permission, more tied to a company, more source of, like, wanting to have fees for maintenance, kind of, kind of question.
+[30:49] I mean, it got, you know, it's like treasuries, I guess, either on. But this opens up the questions,
+
+**SPEAKER_01:**
+[30:55] how should the Ethereum app be built economically? And this is also a question being answered during that time.
+[31:01] This was being the DAO, was one approach of it, should be fully on-chain. All the revenue should be on-chain.
+[31:08] There should be no for-profit entity directly attached to it. And Slockit, the company I built after that, would be a service provider for them, getting paid by them for work being done for the DAO, for one version.
+[31:19] I was always skeptical, and still am, about companies where you have effectively two cap tables, meaning you have a token cap table, if you want.
+[31:27] Of course, it's a utility token, governance token, and so on. But effectively, it's kind of ownership in the protocol, and then you have a for-profit company with shareholders.
+[31:36] And this is always, I think, very dangerous. You don't know where to go into. What's the best value? On the shares of the company or on the token?
+[31:44] This was the main reason all those companies had those nonprofit foundations in Switzerland. Rightfully so, because they said, you only want to have one cap table.
+[31:52] Like the Ethereum Foundation, there was no shareholders of Ethereum. There was a nonprofit foundation and a token.
+[31:59] The token, if you want to have a share in the economic success of the protocol, you would buy Ether. And so, later on, there were many other token projects where they had a nonprofit foundation,
+[32:09] so no shareholders, no second cap table, and then you would have only the token, and all the value would be there.
+[32:16] And now, with Uniswap, you have this problem of having, again, shareholders and tokens. And I think that's dangerous, and not a good idea, actually.
+
+**SPEAKER_00:**
+[32:24] Yep. Yep. So, perhaps, let's talk about the launch. Right? So, obviously, a lot of testing and coordination in this different series of concepts.
+[32:32] So, I mean, what, how did you know it was good enough? Like, what was that testing flow and collaboration like?
+
+**SPEAKER_01:**
+[32:39] So, there are many indicators. One being the Olympic test that running smoothly for a while. Other one, we had a static client having an audit, which worked.
+[32:47] And then they were saying, okay, now if Christoph doesn't find any failing test for, like, three weeks or four weeks or something, we are ready.
+[32:54] This was the case. And so we said that now we can set a launch date. In, and the launch itself, it's also a bit typically, typically, Gavin, or, nobody,
+[33:02] wanted to push a button. Like, nobody just, like, start a chain. So, what was done was, there was a script written,
+[33:08] which has, as an input parameter, the hash of the Olympic test net at a certain block height. So, everybody could, using the script, plus the software, plus C++ or Go client, of course,
+[33:17] having, plus the hash, which was, at that time, in the future, of the Olympic test net, start that chain.
+[33:24] So, there was no, at the, like, at launch day, we were just viewing it. There was nothing to be done.
+[33:30] It was, like, everything was all the information was out there. People were just simultaneously starting the blockchain.
+[33:36] And then, over the peer-to-peer network, this was actually the more, more harder stuff. They found themselves on Reddit, and others, to share IP addresses, like, connect to my peer, connect to my peer.
+[33:45] And so, then they started to come together, and, of course, the longest chain was the Reddit one. So, as soon as you found a peer, which had their own chain, you would think, and say, "Yes, this is a longer one", you would stop, and start mining on top of his chain.
+[33:57] So, basically, the canonical chain emerged from that, within, I don't know, thirty minutes, or one hour, and then we had the chain running.
+[34:05] And this was, like, a beauty to behold. Like, let's just see how this works out as intended, completely decentralized.
+[34:12] Nobody did that, do anything. We just, I was in the C++ building office in Kreuzberg, 37A. Nice office, and we just watched it.
+[34:20] And we are somewhere mining there with the laptop. Wasn't really, and we are all excited that it stopped. I actually think, think, two or two or three weeks after, or maybe four, we had the first little hard fork.
+[34:30] Meaning, there was some smart contract doing something that Geth and C++ had a different result. Because, for me, almost the middle of the light, at 10 PM, or 11 PM.
+[34:39] So, I remember seeing this, looking for one hour, or so, finding what's the issue, then I found it, put a test about it. See if this bus was right, guess what's wrong.
+[34:48] So, I gave it to Jeff. They fixed us. I think we said one hour. In fact, after five hours, everything was done.
+[34:55] And they basically called up the miners. Please update your client. So, and then it was fine.
+[35:01] So, this was the early days, but it was a successful launch, nevertheless.
+
+**SPEAKER_03:**
+[35:05] Did the Haskell clients sync at Genesis?
+
+**SPEAKER_01:**
+[35:08] Jim?
+
+**SPEAKER_03:**
+[35:09] No. We, we were able to sync at Genesis time for, like, a year or so. We were syncing.
+[35:15] But I remember, like, that week, Karen and I were, like, more interested in trying to get a miner in place.
+[35:21] So, that was, what that week looks like for us.
+
+**SPEAKER_02:**
+[35:23] Yeah. I had, I was living in an apartment just south of Berkeley campus at this time, and we've been taking me to Fry's to build a machine,
+[35:30] a few months prior, like, a build machine. It had a good GPU in it. Yeah. Fry's is dead now. Uh-huh. RIP.
+[35:37] I was running a miner there, and we built a couple in Jim's garage. I got very hot in Jim's garage, which was, you know, those, those things were consuming a fair bit of power.
+[35:46] Mine exploded, after a few weeks. It was actually just the power. So, I was, I thought the whole machine was bricked, Jim said, you know, I think, everything but the power supply will be okay.
+[35:56] And it was the case, that everything but the power supply was okay, but then I stopped mining.
+
+**SPEAKER_03:**
+[36:02] And I think Jim would shut, we didn't even bother to buy cases at that time. Right? Yeah. I was just, you may have had a case.
+[36:08] I, I had mine just sitting, wires out.
+
+**SPEAKER_02:**
+[36:10] Yeah. Yeah. Indeed.
+
+**SPEAKER_00:**
+[36:12] Sure. You have over 12 minutes.
+
+**SPEAKER_02:**
+[36:14] At that time, we were always, you know, sort of, at least at that time, shorter-handed people-wise, so it's catching up a little bit on the features, etcetera,
+[36:22] but it, it ran perfectly well.
+
+**SPEAKER_01:**
+[36:24] There was always new features coming. I remember, it was, like, we, one of the sweet memories during the prelaunch,
+[36:30] sitting together with Gavin, Jeffrey, and me in one room at the C++ office, like the nice Gavin office.
+[36:36] He had this 80s style thing. And we think, okay, what was wrong in our protocol? Then they discussed with the whiteboard changes.
+[36:43] Then they first say, okay, Chris. If you write a test for this protocol change, then we are in the meet at the same time, you're coding it.
+[36:50] The okay. You're done creating a test. Let's see if they all pass it. If they all pass it, it's like, done. Your feature did directly, you release.
+[36:58] And so, this is not done with all the other clients. So, they basically had to catch up.
+[37:03] There was, like, information update of Yellow Paper. Here's a new test. Here's, like, a little Etherpad description of what the new Yellow protocol looks like, and then please update your clients.
+
+**SPEAKER_03:**
+[37:11] This not got me to a certain point. Sorry. The Yellow Paper always got me to a certain point, but it was always behind the other, the other clients.
+[37:18] So, I would always find out that, like, I, I was behind because I went in the morning, and connected to the test net, and I was no longer connecting, or I was getting some state route mismatch or something.
+[37:27] And then I'd have to, like, go and dig through, usually, the C++ client. I think there was, like, maybe one or two times where, I don't know why, I think there was one or two things that went to Geth first.
+[37:37] I can't remember. But I had to sit there, and reverse-engineer. I had to, like, run, either C++ or Geth, and then, like, put lots of logging information in, to see what in the world was happening, and then print out all the stuff, and then find, like, the appropriate,
+[37:49] you know, crypto libraries to, to, to mimic that. What was the background on, on that, and how it went in so quickly? And, like, I, there was nothing in the Yellow Paper about that at all.
+[37:59] And when that came in, it was just a shock to me.
+
+**SPEAKER_01:**
+[38:02] Just do you know, with which time this came? Because, since I was focusing on the Ethereum Virtual Machine at the time, it was more like, okay,
+[38:09] I know Gavin, I think it was Gavin, doing some optimization. He was always thinking about the long term. So, if something would be 10% more efficient, we have to do this.
+[38:17] Right? I think,
+
+**SPEAKER_02:**
+[38:18] So, I remember, like, there was a dev p2p live p2p website that was released about that time.
+[38:24] It still might have been after the giant change went in. So, I, I also, we were working together regularly, you know, in the Bay Area, at this time.
+[38:31] And I think, so Jim did, like, 96% of the changeover, but we had, at the time, like, separate processes.
+[38:38] One was more like a client, and more like a server. We merged them later. And, yeah, it was like, so, there was a big document,
+[38:45] one describing, like, how the DHT, for peer discovery, would go in. But then you needed, like, a way to identify the peers, maybe.
+[38:52] And this system kind of gave them an identity, with, like, a, you know, in an SSL style. Like, basically, there was, like, a node cert, in effect,
+[39:00] and then you had to, like, there were session keys, and, you know, this, this, that, and the other. It was, it took a long time to, to implement that thing.
+[39:08] But, yeah, I think, maybe, Bob, you would know that, the, I think this was someone else wrote this big thing. This might have been Alex.
+[39:15] Yeah. It was Alex.
+
+**SPEAKER_00:**
+[39:16] Yeah. Did that. So, saying about, sort of, documentation, or whatever, there was a Wiki. Right? There was an Ethereum Wiki, and a number of things were, were documented only on the Wiki.
+[39:25] And I think these, these kind of wire protocol pieces were, were part of that. But, yeah, Alex Leverington was the first hire into that Berlin office,
+[39:33] and he, I mean, he works on a few different C++ things, but the main thing he's known for is, is DevP2P, which was that common underlying p2p protocol.
+[39:42] Though you already had libp2p, which is the transport for IPFS, that already existed at the time.
+[39:48] So, it was a bit of, not invented here, going on. But, yeah, he, he was there for DevCon Zero, as well, and he spoke on, remember, Alex?
+
+**SPEAKER_01:**
+[39:56] I was not too much into the peer-to-peer side of the code base. I was more into the EVM, and Solidity, smart contract side.
+
+**SPEAKER_00:**
+[40:02] They tell you what, there's a bit of funny crossover with the later part of, of, of yours, was Alex Leverington worked with John Garrett on a project called Airlock.
+
+**SPEAKER_01:**
+[40:10] So, remember that. I start later. Like, after we did our presentation, and had the Slack, and stuff going, they showed us videos of, they were earlier than us.
+[40:18] So, yes, they were actually tough, time-wise. Didn't know about it at all. And so, we did it more or less in parallel, then, and we just launched a bit quicker, like, to just go to the public with the project.
+[40:29] It has a bit from their side, it was more like a little tight project. Didn't look like a big company, or intended to be. Yeah. I remember this project a lot.
+
+**SPEAKER_00:**
+[40:37] Yeah. So, I, so, I think that was, that was at the hackathon, at the Bitcoin Expo, in April 2014,
+[40:44] that, that, that they, that they did that. And Stefan, actually, did an interview with them. You can see that on YouTube.
+[40:51] You know, this is, like, talking about earlier Ethereum projects. You know? And this is, like, over a year before the mainnet.
+[40:58] It's, like, so far back, some of these. But, yeah, like, some of that spec stuff was, it was not in the Yellow Paper, and it was just sort of floating around, in a long time, before there was real consolidation of that full client's bank.
+[41:09] But, you managed to do it anyway, Jim. Managed to build the client.
+
+**SPEAKER_03:**
+[41:12] It was a busy week. But I, I just, it was just notable to me, because it's fun. For, at least, from what I was seeing, it went from zero to one, like, overnight.
+[41:20] I had never heard of it, the night before, and then the next morning, it was, like, in the clients, and working, and I couldn't connect anything.
+
+**SPEAKER_02:**
+[41:26] Which is normally the pattern, but, yeah, they, they exist. This one was, like, the biggest one-time change that I can recall, either.
+[41:33] Yeah. Yeah. And,
+
+**SPEAKER_01:**
+[41:34] This was prelaunch days. Things had to move fast. There was a lot of pressure going around. It was messy.
+[41:40] There was not much coordination between the clients, except for maybe some Skype groups. And, at the end, yes, we thought that Kevin, and Jeff, just made decisions, and executed as quick as they could.
+[41:50] So, this all changed after launch. Then, things became a bit slow down, and people consolidated, and every change was a big thing, rightfully so.
+
+**SPEAKER_00:**
+[41:58] Yeah. So, back on the timeline, so it was July 2015, that mainnet launched, with the Frontier Hardfork.
+[42:05] And then, as you touched on, you had Ming. So, Ming's first official day was the August 1, 2015,
+[42:12] at which point, the foundation had been running on for a year or so, and was close to out of money, you know, touching on your thinking, it would only last for a certain amount of time, you know, a year on that raise,
+[42:22] which I think was around $16 or perhaps $18 million, was nearly all gone.
+[42:28] So, you had these quite hard decisions about, you know, what part of this grand vision was gonna be funded initially.
+
+**SPEAKER_01:**
+[42:35] Right. And I never talked to her at the time. She felt like, I have to clean up the whole mess, like, the paperwork, and everything was totally messy, working with lawyers, accountants, and so on, and getting cleanup, basically, of the foundation.
+[42:46] I mean, for me, I did expect it to last something like that. So, it was for me, it was clear. They are not making any money. I didn't know, like, how big the reserve was.
+[42:55] The detail, I think it was, like, I don't know, 5%, something in this range. Like, how much of the foundation hold.
+[43:02] At the time, there wasn't that much value. It's a price, like, 50 cents, €1, or something. So, it was clear, this would not last forever.
+[43:10] So, I was thinking about going back to my PhD, or, then I came across this idea about Slockit, and becoming, like, building a company.
+[43:18] Slockit was the idea of, maybe, similar to Airlock. Smart contracts are essentially permission systems.
+[43:25] 90% of a smart contract is, who's allowed to do what. In case of ERC-20, it's just, who's allowed to send the token, or setting an allowance.
+[43:34] And, in terms of the DAO, it's, who can vote for what, and make decisions, and then money gets transferred.
+[43:41] So, what if we could put this permission system into IoT, and then, like, who's allowed to switch on, off, use, change, admin rights, whatever.
+[43:50] You put this into a small contract. And I thought, that, ether will never become a currency. Bitcoin was a digital currency.
+[43:58] And, actually, if you think, it, talk to Ethereum people, at the time, we, we were not thinking about competing with Bitcoin.
+[44:05] Bitcoin was a digital currency. We were building a platform for decentralized applications. Ether was just used to run it.
+[44:12] I once heard the statement, somewhere on Twitter, where I once said, Bitcoin is a currency, which needs a blockchain to function, and Ethereum is a blockchain that needs a currency to function.
+[44:23] This is, I think, very true. And, so, back, I thought, okay. Ethereum will not be used as a currency, but it might be used as a currency for IoT devices.
+[44:33] So, instead of the Internet of Things, building the economy of things, connected to IoT devices.
+[44:40] Since most of the people, in the room, are still nerds, and devs, they, they love that kind of stuff.
+[44:46] And, there was also the kettle, wasn't it? The, yes. There was also a kettle. Maybe, just, turned a smart plug, like a power plug.
+[44:53] We could also turn on, off, same protocol, same thing. So, we should, we just want to show, it's not just the door lock company, because, actually, we are not producing those.
+[44:62] We're just connecting existing door locks to it. We also showed this idea of the universal sharing network.
+[45:08] Everything, which you can turn on, off, or lock up, and unlock, could be now connected to this network, and everybody could, like, put almost everything in there, like a washing machine.
+[45:18] You pay for using the washing machine, or a bicycle lock, even a padlock, connected to it. So, you could have it, like, your locker room, and have a padlock in front of it, and sell whatever's in there, by having someone pay to open the padlock.
+[45:31] This was the generic idea. We, we got some VC money later, after the, like, in 2017. We build it. Nobody used it.
+[45:40] It was, like, not just too early. It was, like, everything for everyone, all at once, and, of course, nothing for no one.
+[45:47] It felt like the app was not great, so we failed, B2C-wise, at Slockit. We then turned into more consulting projects, to build Incube, which was an IoT client, made some money with that, and about 50 people, actually, deployed,
+[46:00] employed, at the time, in 2019, when we sold the company to Blockchains, Jeffrey Burns. Another story.
+
+**SPEAKER_00:**
+[46:07] So, I remember speaking, speaking to Stefan, at the time. So, Stefan was involved with that demo. Right?
+[46:13] It was Stefan, who came up on stage, to make his little cup of tea, with the, with the kettle, there. But I remember speaking to him, that, he'd been concerned about, what the reception, for him, would be like, you know, having had this,
+[46:24] you know, passing of ways, with, with the foundation, just two months before. But he was saying, it was all very, it was all very friendly, and people, you know, very excited about the project.
+
+**SPEAKER_01:**
+[46:34] Right.
+
+**SPEAKER_00:**
+[46:35] And, saying, actually, about my IoT, and, and, and pieces. So, in January 2015, you had a demo, that happened, at the Consumer Electronic Show, CES, in Vegas,
+[46:45] which was a collaboration, between IBM, and Samsung. So, the aforementioned, Henning Dietrich, part, part of that.
+[46:52] And, and, that, again, was months before mainnet, but you had a proto-web-three stack, there, which was, I think, PoC-5, of Ethereum.
+[47:01] You didn't have Whisper, you had another thing, called Telehash, and you didn't have, you had BitTorrent. So, there was this proto-web-three stack, there,
+[47:10] and they have demos, like, a washing machine, buying its own detergent, and scheduling its own repair.
+[47:17] So, yeah, that, that, that was happening, a little earlier. And, yeah, so, I mean, Slockit itself, did a number of these different products. Right?
+[47:25] There was something, with electrical charging, and something to do with toll roads. Is that right? Right.
+[47:31] We had a prototype, running, with RWE, or energy, in Germany. They're doing, like, all the, at a time, most of the, charging stations.
+[47:39] So, this was, in channel, in general, like, we got a lot of attention, of course, also, after the DAO hack, and all of that. And, so, it's kind of why we became a consulting company, because, so many, asked us, could we do a prototype, with you?
+[47:52] Because, there were not many Ethereum builders, at the time. So, we have been building, on Ethereum, now, since, oh, one year, or two years, which you could not find, anybody, doing this.
+[48:02] So, we are building, lots of nice prototypes, and some, almost production, stuff, and always, related to IoT devices, connected to the blockchain.
+[48:11] This was a core business, and, on top of this, we built, those prototypes. We, we did a lot of growth, for the ENS Web Foundation.
+[48:19] I don't know, if you're familiar with them. This was, in Switzerland. They are, kind of, a fork of Ethereum, focusing, on all the energy, use cases.
+[48:27] We built, most of their stuff, in 2018, '19, until they hired, their own developers. Gethermind, was also, part of this, a while.
+[48:36] So, yes, this was, still, I mean, if you remember, this time, you say, that, there was, so much enterprise interest,
+[48:43] enterprise, at the time, we're just learning, looking into this, wants to build prototypes, not yet production, stuff.
+[48:50] So, and, there was a huge demand, for EIP, for blockchain experts, doing consulting, for going to conferences, explain them, what a blockchain is.
+[48:59] And, this was, kept, based, mostly, us. And, they paid, sometimes, like, €4,000, for a talk.
+[49:06] Like, as a company, you said, well, we need the money. Let's go there. So, we, of course, you, also, have to think, about us, as persons.
+[49:13] Diamonds, and me, we didn't get, any money, for almost a year. Like, we worked, for, we were not rich people.
+[49:20] We just come from ordinary families. And, we said, well, we can work, for, like, three to four months, without a salary.
+[49:27] Let's, build the DAO, and then, the DAO becomes big. The DAO is paying, sloppy, to build it. Of course, after the hack, it was clear, there will never, ever, be a payment.
+[49:37] So, we can, we made zero money, out of the DAO. So, we needed, to stop, doing, some work, and, this was, in the beginning.
+[49:45] Let's do consulting, for those large companies. This is, how Slockit became, began to survive. Many people said, you cannot bury Slockit, after what happened, like, your name is burned, forever.
+[49:56] And, we decided, to stay, as a team, I mean, as a founder team. We own our mistakes. Maybe, we are open, and transparent, about it, as much as we could.
+[50:05] It was, of course, an honest mistake. We can talk, for it. It could be, another session, just for the DAO.
+[50:11] I mean, the DAO is, a lot of topics. I just put, here, very shortly. Just talk, about it, from a company perspective.
+[50:18] And, then, Stefan, well, he was saying, well, he was trying, to get VC money. And, we, were doing, those consulting gigs.
+[50:25] Once we had VC money, what happened, as a company, was, we, we got €2 million, and dollars,
+[50:32] and, then, we built, the product, hired people, for that, got more, and more consulting gigs. So, we always said, well, let's do them, and just hire more people.
+[50:41] And, yeah, we had, like, 50 people, five, or 10, doing the product, and 40 people, doing consulting.
+[50:48] And, then, we got bought, by Jeff Burns, from Blockchains, Inc. Remember, maybe, at DevCon three, I think, where it is, a big port, in Prague.
+[50:57] Right? Yeah. Want to build a city. I think, I love, the vision. You, obviously, had money. You want to build it, on top of Ethereum Mainnet.
+[51:06] I was thinking, about, how, maybe, I can channel, those billions, into the right direction. Building, is all, as intended, on Ethereum Mainnet, which was working fine, for the beginning.
+[51:17] And, then, I found out, once, you're an entrepreneur, you never, can be an employee, again,
+[51:23] and, so, I had to leave. So, but, it's, maybe, actually, it's too far, in the future. I mean, that's one thing, I think, I have to say, here, because you talked, about DevCon one, and you skipped, a little bit, DevCon two.
+[51:35] You said, in DevCon one, Stefan Troil was very concerned, how people perceive him, and they were very gentle, forgiving, and nice to him.
+[51:43] So, he was well received, and, then, he built, the DAO community. I was super worried, to go, to DevCon two, because it was after the DAO hack.
+[51:52] I was, like, seriously thinking, someone, they might beat me up, there. Like, I want to call, another, some people, like, I kind of, almost destroyed Ethereum, with the Spark, and so much attention, to it, and all, all the money lost, for some people, or, like, the time, of growth, is gone.
+[52:05] Like, it depends, on how you view it. So, but, when I went, to DevCon two,
+[52:10] people were, so nice, for giving, basically, hacking me. But I was giving, the talk, there, and, the only thing, I didn't like, was, the foundation, telling me, I was not allowed, to speak, about the DAO,
+[52:21] which was, like, what? Like, I am speaking, here, to the theme community. Well, how can I not speak, about the DAO?
+[52:28] And, so, I talked, about a pretty boring talk, about security, and, I think, every second talk, was about security, at DevCon two.
+[52:36] It was, just, about, how, we get, those small context, secure. I kept, a rather boring talk.
+[52:42] But, in the end, I just said, well, thank you, for your understanding, and, it was, a rough, hard time, and, so on.
+[52:50] And, they were, like, somewhat, they've been standing ovations. I remember, becoming emotional, because, this was, I did not expect, this.
+[52:58] I really expected, like, guy, you messed up Ethereum. Like, you almost lost it all. So, I think, this just speaks, to the Ethereum community.
+[53:06] How did we hit Stefan? How did we hit me? Even though mistakes were made, honest mistakes, at least, from what I can tell.
+[53:13] It's, so, this is, such a great community, of really nice people, who really want, to change, the world, capable, and, also, now, financially capable, of really doing things.
+
+**SPEAKER_00:**
+[53:22] I was watching, that video, quite recently, actually. And,
+
+**SPEAKER_01:**
+[53:25] And, it was quite, cut off, a little bit, at the end. The, it was quite, end, is a, yeah. You know, it was quite, a long ovation, there.
+
+**SPEAKER_00:**
+[53:32] And, and, yeah, you could certainly see, that emotion, in you. And, that's, when we first met, actually. It was, in Shanghai, for DevCon two, I remember.
+[53:40] It was, on the sidelines, there, in that main, conference hall. And, and, yeah, it, it, it was lovely, to see, that. That's, for sure.
+[53:48] Okay.
+
+**SPEAKER_02:**
+[53:49] Yep. I think, good notes, just Bobby, were the one, who tried, to impose, a hour, to half, half hour, to hour rule, or a solid one, twenty, right here.
+
+**SPEAKER_00:**
+[53:56] Sounds good. Maybe, you would. Me, the other time. Maybe, we've, meet, you know, we've reached, a, you know, a good kind, of endpoint, I guess.
+[54:04] So, what, what happened, after Blockchains, LLC, for you, then?
+
+**SPEAKER_01:**
+[54:08] So, because, of time, I keep it short. So, yes, we got bought, by Jeffrey Burns, Blockchains, LLC, at the time.
+[54:14] Again, the reason, for this, would be, he wants to build, a new city, in the desert. He wants to do, all IoT, all in Ethereum, from scratch, as a developer, dream, building, from scratch, on the greenfield, on top of Ethereum, with our tech.
+[54:27] And, I felt comfortable, at the beginning. In the end, I felt, like, we need, to release, stuff, and, there were some voices, at the company, which didn't want, to release, until, like, a very, very big product, was done.
+[54:39] For many reasons, that didn't happen. I don't want, to get, into, like, that too much.
+[54:44] So, after two years, I left, Blockchains. Back then, it was called Inc. They made a change, in their name.
+[54:51] And, I did, for six months, I did, really, nothing. I forced myself, to do nothing, which was great, after, so, so much stressful years.
+[54:59] And, then, I started, a venture studio, called CoPOS Ventures, where we tried, out many different ideas.
+[55:06] We had eM3, which was a decentralized messaging protocol, Gas Hog. We can save transaction cost, on Ethereum.
+[55:13] What else did we have? So, we have domain name stuff, but we didn't release it, at the end.
+[55:19] But, the biggest one, was Tokenize.it. And, this was being, we built, something, for, German, for now, German startups.
+[55:27] In the end, we want, to do it, all over Europe. We're just tokenizing, their shares, and do fundraising.
+[55:34] So, in summary, it's like, a web-three-based Angel List, for Europe. It's the one sentence description, for Americans, also, to understand.
+[55:43] You know, Angel List, that's a great tool, for business angel investing. We want, to do the same, for Europe, for all countries, there, and build it, on chains.
+[55:52] So, tokenizing, all those shares, and enable, private, as well as public fundraising. So, some called, legal ICOs, if you want,
+[56:01] but also, for private fundraising. Our customers, currently, if more than, maybe, a good, way to end, end this,
+[56:08] there's now, more than 400 investments, for more than 320, business angels, at more than 50 companies.
+[56:16] Those are traditional German GmbHs, raising, from super current, conservative, business angels, doing it, completely, on chain.
+[56:24] They are paying, in stablecoins, getting, their tokenized shares, in their non-custodial wallet. They're all getting, a notice, safe wallet, from us, using Preview, for login.
+[56:34] So, we build it, as intended, and we get, normal people, to use it. For me, this is, kind of, a dream come true, because I'm out, of, like, I love the web-three bubble.
+[56:44] I love this community. I love, to work, inside there. But, for me, Tokenize.it, is a way, to make this technology, available, where it belongs, like, to startups, and investors, outside of our three bubble.
+[56:55] And, I'm super, super happy, that I could keep up, those values, that they have, complete platform, is non-custodial.
+[57:02] They have their safe, on Ethereum, holding their tokens, paying stablecoins. So, I'm very happy, to see this.
+[57:09] We, over the next years, we want, to basically, roll out, this, all over Europe, and become, yes, the web-three-based Angel List, for Europe. That's the goal.
+
+**SPEAKER_00:**
+[57:19] Fantastic. So, hope to see you, at DevCon eight.
+
+**SPEAKER_01:**
+[57:22] Me too. I'm looking forward to it. And, I'm, as of now, I don't intend, any change. Stick to Ethereum. I love the community.
+[57:30] I continue building, and try, to get, a lot of people, using it.
+
+**SPEAKER_00:**
+[57:34] Have you been to, have you been to every DevCon?
+
+**SPEAKER_01:**
+[57:36] Yes. Yes. I said yes. I've been to every DevCon. The last one, was actually, the first one, that I didn't give a talk,
+[57:43] and I also went, to every ECC, except of one, that was COVID. There was some reason, I couldn't come.
+[57:50] But, yes, I'm actually, I intend, to continue, to come, through every DevCon. It's like, you meet, the people, like,
+[57:57] of course, and many others. It's just, a sweet spirit, there, nice community. Love seeing, how it all grows.
+[58:04] Listen to those exciting talks. I mean, it's, for Tokenize.it, it's not as relevant. It's not like our customers, or it's tech, of course.
+[58:12] We're just doing, an ERC-20 token, on Ethereum. It's super easy. So, deep tech. Sometimes, I miss, doing deep tech, but, well, I just enjoy, being there,
+[58:22] seeing, what it all, what all happened. And, remembering, those magic days, and just, like, only once, in a lifetime, or two times, in a lifetime, you have, this moment, where everything comes together, at the right time, the right place, the right people.
+[58:35] This certainly, where those, like, one and a half years, I worked, for Ethereum, are definitely, like, the prime, of my career,
+[58:43] in terms of, who I worked with, what we accomplished, the impact we had, on the world, and the sweet, cyber, cyberpunk, spirit, there, and what we did, there.
+[58:53] It was, really great. I always, sometimes, get emotional, thinking, about this, and meeting, those people, again, at DevCon.
+
+**SPEAKER_00:**
+[59:01] Fantastic. Well, thank, thank you, for all your contributions, to, to that success. Likewise. All the best.
+
+**SPEAKER_01:**
+[59:07] Okay. Just one more. Where, where can we find you?
+
+**SPEAKER_00:**
+[59:10] You can find me, usually, on Twitter, for the Ethereum people, CH, of course, I have a complicated name, not many vocals, in there, but you find it.
+[59:18] Or, of course, on LinkedIn. Actually, for my company, I'm more active, on LinkedIn, which I was never before.
+[59:25] That's what's, where we get, our clients, as, as Tokenize.it. Yeah. But, usually, you can find me, on Twitter, follow me there, on LinkedIn.
+[59:34] Excellent. Okay. Thanks, so much. Have a great day. Thank you. Too. It was great, talking to you. Bye-bye. Bye.

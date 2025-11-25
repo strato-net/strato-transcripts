@@ -1,0 +1,315 @@
+**SPEAKER_00:**
+Okay. Recording is in progress, it says. So hello, everybody. Today, delighted to have Christoph with us. We did attempt to record this Christoph and I two weeks ago, but I forgot to press the record button. So we spoke for an hour or so, and then it was not recorded. So this is round two.
+
+**SPEAKER_01:**
+So hello, Christoph. How are you? Hi, Bob. Nice to meet you again. I'm doing good. I hope you too. Thanks for the invitation.
+
+**SPEAKER_00:**
+Fantastic. Yeah. So Christoph and I, you know, our paths crossed for the first time way back in 2015 when I was trying to do C++ Ethereum on my smartwatch. This was around the time that Christoph was still at the Ethereum Foundation. And then I think our paths crossed a number of times since, and indeed. So Christoph, what were you doing with your life before you found Ethereum and joined this crazy journey?
+
+**SPEAKER_01:**
+So in, we actually, the journey started in 2013. I was doing my PhD in theoretical physics, actually about self-organizing systems. So like biology, six months in mathematical biology and other things. So I was studying systems which have local rules and global behavior. And I came across Bitcoin, which has just a small set of local rules and a global behavior as a currency.
+
+But the reason I came across this was I was looking for cheap GPUs, like graphics cards. And the Bitcoin miners were selling their GPU mining rigs to get some FPGAs and later ASICs. And so that's how I got into what's Bitcoin mining. And so I bought my first Bitcoin, got into this bubble, did read everything I could about it. And then I came across the white paper from Vitalik early 2014, some start January, February in some Bitcoin forum somewhere.
+
+And I was already totally in love with the idea of Bitcoin being a decentralized currency and all the characteristics and features of it. And this white paper of Vitalik, I mean, if you read it again, it's almost a prophecy. Except for NFTs, everything's in there from DAOs, from ENS, like names as domain names and all of that. So for me, it opened up this option of building applications with the same characteristics as Bitcoin, but just not a currency, but everything else.
+
+And so then I started reading everything about it. And in 2000, no, actually still 2014 in summer, I went, is the crowdsale in 2014? Right? Right. Yeah. The crowdsale, so around the time the crowdsale happened, I did watch a video from Gavin Wood. He was somewhere in the Scandinavics, some conference there, the Nordics. And he talked about Ethereum. I loved it. And he said he wanted to open up an office in Berlin looking for C++ developers. I was a C++ developer.
+
+So in theoretical physics, it's 90% software development. So I said, well, I want to do this. So I took my parental leave time plus some vacation time and paused my PhD for like three to six months and said I will return after I'm done. I thought this was just a short project because they raised money, maybe six, maybe twelve months, eighteen months or so, then it's over. When I started, I thought about maybe three to six months, and then I go back to my PhD. So I worked there with Ethereum. It was Gavin Wood. It was a great time. And then just decided to stay. It was so exciting.
+
+**SPEAKER_00:**
+So you never got to be a doctor?
+
+**SPEAKER_01:**
+No. I'm not a doctor. I did not finish my PhD, although I only had six months left, which was kind of a pity. I worked like for three years on that. But I also had, at the time, I think four or five kids. And needed some money. I didn't get much money as a PhD student, so I did some software development as a side hustle, basically.
+
+And so when I got this project, I said, well, let's do this for two or three months as parental leave time, and then I can return. And then I decided to really interrupt my PhD. I said I will maybe return one year later because I thought the Foundation would eventually run out of money because they're not making any profits. They just raised donations, then they will spend them, then it's over. Then I can continue my PhD. That was originally the plan. Just came different.
+
+**SPEAKER_00:**
+I mean, I guess it's never too late. Right?
+
+**SPEAKER_01:**
+I actually sometimes think about it if I should return. It's just so much to learn again. I'm right now doing Tokenize.it. I'm basically working on tokenizing German companies. It works very well. So currently, I'm not planning on getting back anytime soon.
+
+**SPEAKER_00:**
+No. Because I mean, famously, you had, you know, Dr. Gavin Wood and Dr. Christian as well. And I think there were a couple of other PhDs as well.
+
+**SPEAKER_02:**
+I also dropped out of mine. I was actually in mathematical physics too. Interesting.
+
+**SPEAKER_01:**
+Similar background. It's actually the same. It's like theoretical physics, it's the mathematical part of physics. I tried very much. I did thermodynamics and statistics, mostly software development. It was really fun.
+
+**SPEAKER_02:**
+Well, by the way, Jim is trying to join. I don't know if there's anything that needs happening. He's got some browser issue.
+
+**SPEAKER_00:**
+Yeah. Yeah. Well, he'll pop up and we can add him or if he's, I'll see. Then never mind. So Christoph, in terms of, you know, getting hired into F Dev, and I'm sorry if I just missed it. So how did that happen? Did you meet Gavin at a meetup, did you say?
+
+**SPEAKER_01:**
+Yes. I actually, no. I listened only to his talk. It was supposed to be an online thing. I actually just wrote him an email. Said, look, I would love to join with you. I love what you're doing. And he invited me to meet him in Kreuzberg Berlin. So which again is about two hours drive from here. So I went up there, met him.
+
+I remember the first conversation, he was talking about all the stuff they were going to build and said, well, what can you do? And I just asked him, what's like the most complicated stuff you have right now? Like, give me a complicated task. I somehow can figure it out. So he talked about the Ethereum Virtual Machine, which did some testing.
+
+So I just picked working on testing the Ethereum Virtual Machine or like writing tests for it. Back at the time, I actually had no real idea what he was talking about. Meaning, of course, I did understand on the white paper level. I did understand what Ethereum was about. But Gavin had this skill of writing the yellow paper, which is still incredible work. Like, it's such a great specification, different from Bitcoin, really having a specification so multiple clients could be built.
+
+In there, he defined the Ethereum Virtual Machine. And I think I read the paper six, seven times. I felt like I was one out of, I don't know, ten or twenty people in the world at the time who really understood the yellow paper. I did corrections to it. I have some pull requests actually in the yellow paper GitHub repo, added missing definitions and stuff like that.
+
+And then what I mostly did was writing tests according to the specification, which then were with the help of the C++ client because this was his team. So I was working also on the C++ code base. And so Geth, py-Ethereum, also the JavaScript version, and what else did you have? Like, Haskell client and others. They were basically using my tests to see if they implemented the machine, also the state transitions and block creation correctly.
+
+**SPEAKER_00:**
+Yeah. Yeah. So I mean, just to have some timeline for the viewers. So Vitalik wrote the white paper in November 2013. Various other people sort of joined in on the efforts in December, including Gavin and Jeff who started the C++ and Go clients respectively. At the very end of December, kind of Christmas projects from both.
+
+January 2014, you had sort of like the public announcements of Ethereum at the Bitcoin Miami conference. It was as early as April 2014 that Gavin wrote the yellow paper, which is, you know, as you were saying, the sort of formal specification. You had the crowdsale between July and September 2014.
+
+So then yeah, you were coming in right after that, you know, so you had a wave of arrivals in September and October of that year, essentially because the crowdsale had happened. There was some money to actually hire people. And then talking about, you know, where you met there initially, that group, so were Eth Dev, a company coordinating the development of Ethereum stuff. So it's a subsidiary of the Ethereum Foundation. Right. They were working initially in a coworking space, but then got an office.
+
+And it was between August and November of that year that the office was getting like, you know, done up and tidied. And then in November, you had DevCon Zero, you know, the first conference, you know, an internal one where a lot of the people, that was their first sort of face-to-face meetings. So how was DevCon Zero? How was that? What was that like?
+
+**SPEAKER_01:**
+It was like a company retreat. So it was not a public conference. We did have, even though there were some outsiders who felt like part of the community, maybe also pushed some code. I remember, I was in his name again, wrote the book also about Ethereum, Henning, I think Henning. Yeah. I think he was also there, just as an example of some people who are like big about Ethereum, interested in joining. Of course, Joseph was there as well. Right? Roman was there with the Java client.
+
+But it was mostly developers, but also I think Stephan was already there. So we had already the London team. So it was like an internal Ethereum meeting. We meet kind of a meetup, almost I think three days or so. I don't know exactly. Five days even. So a week. Yeah. It was a full week. I was there for the full week as far as I can remember.
+
+I did a presentation about testing, how the test suite is very important. Yes. We had Remix projects, Solidity project, I think mostly started at the time. Gavin used this for explaining his vision of Ethereum as a platform for decentralized applications, so building Swarm. I don't know if Swarm and Whisper was already launched there, but at least like the generic idea, the Mist browser.
+
+So all those ideas were really sketched out there, like the technical roadmap, what we are going to build. Because we started just, of course, with the basic clients, like implementing the protocol, but he took it like, kind of what are we going to do in the next twelve months? Build the Mist browser, like Remix, those tools to have a platform for decentralized applications.
+
+I remember one slide, which I think I posted on Twitter a while ago, where you have those three circles, one circle as, yeah, one node. And you would see like they are connecting on the blockchain using Swarm for the data, Whisper for the messages, and you like, this whole picture was painted there.
+
+And there were people attending, I think around fifty people, plus minus ten, don't know exact number, where mostly developers talking about code, coding there. Joseph, if I remember him being there, said well, all of you, you will create your own companies becoming millionaires. I remember Joseph talking about that. And I think mostly he was right. So most of those people in the room, in one way or another, cofounders, founders, or were early part of companies building on top of Ethereum in the years to come.
+
+**SPEAKER_00:**
+Yeah. Yeah. Let me see if I can do a little screen share. No. Never mind. I can't work out how. Not to worry.
+
+**SPEAKER_02:**
+But yeah, there's this present button. So not to worry. Yeah.
+
+**SPEAKER_00:**
+I don't see that. Is that on the right hand side somewhere or at the bottom?
+
+**SPEAKER_02:**
+For me, I appear on the top right and below. And to the right of me below, there's a present button with like a plus.
+
+**SPEAKER_00:**
+Like, you post maybe. Never mind. Never mind. I was just going to show the iconic photo of people at DevCon Zero. Right? You know, that's this big group shot with nearly everyone who was out there, you know. So that's a classic Ethereum photo. So I was looking, there's like eleven of the videos that's still around from DevCon Zero. I think there were around twenty sessions. I'm still trying to dig out the others. Some of them, including yours, I have not managed to find yet.
+
+**SPEAKER_01:**
+Yeah. It was only about the test suite, how I built it, how people would use it. It was rather technical. There was not much of a vision in there.
+
+**SPEAKER_00:**
+Well, Leftėris presented on Emacs, so you know, you're not the most boring talk.
+
+**SPEAKER_01:**
+Yeah. Again, it was just some nerds starting. It also, for most of them, it was the first time we actually met. And of course, the C++ team, they knew each other because they were working in the coworking space, Leftėris and others. They were there. But then, I think it was the first time I actually met Vitalik because he came there. Then of course Jeffrey and his team, Stephan and his team, Joseph.
+
+So it was for me, it was the first time to meet all of them and having talks. And since we had time, five days, a small group of people, we actually had time to eat together, to talk. So it was not so crowded maybe as DevCon is today. Very intimate. It was good.
+
+**SPEAKER_00:**
+Yeah. I mean, four hours.
+
+**SPEAKER_02:**
+One thing I can't quite remember. So there was a time, there was an Ethereum Slack that was kind of open to the public. You know, there were a lot of people. The sort of Ethereum affiliation status was fairly vague at that point. And we were, you know, I remember we were using Skype a lot in those days. Just the team. And like Vitalik liked the Skype.
+
+And then at some point, I sort of lost the thread of like where the core development discussions were happening. And I'll maybe I'll ask Jim to comment. Also, just like those tests, we kept like getting them. And I think I'm thinking of some a little bit earlier on, and we'd build them. And Jim was mostly working on them and would update on the like passing percentage, which would always be between like 93 to 98%, and then something would change.
+
+You know? But yeah, like where did the discussion, because yeah, between like the sale and DevCon Zero, I think it kind of got a little bit, it like moved around where the dev discussion was.
+
+**SPEAKER_01:**
+It was mostly Skype. We also had Skype channels for almost everything, like the C++ team and so on. Then in a short time, they used the, it was a note taker, which had a name also with E something, where you could like...
+
+**SPEAKER_00:**
+Etherpad?
+
+**SPEAKER_01:**
+Etherpad, something like this. Right? There were some notes created there, but the communication was really, I would say, 99% Skype for me. Later on, we used a tool based on GitHub. What was the name of it? Gitter.
+
+**SPEAKER_00:**
+It was called Gitter.
+
+**SPEAKER_01:**
+Gitter came later. This was like the new replacement for Skype, but I didn't use it too much. It was actually during the time when I was actually leaving. But it was done, used also by the C++ team. There you had a channel per GitHub repo. This was during the time that GitHub was completely reorganized because at the beginning, it was like one big repo with everything. They made the submodules. It was so messy.
+
+And then during this process, we got Gitter. But yeah, for me, it was mostly Skype.
+
+**SPEAKER_00:**
+Yeah. And then annoyingly, that kind of means a lot of these early discussions, they're kind of like a bit lost because nobody is using Skype. And Skype is getting like deleted. This is happening in February this year.
+
+**SPEAKER_02:**
+Oh, I thought it happened already.
+
+**SPEAKER_00:**
+It's just, you can still request to download, and I did, and then I haven't heard anything back. Want to do that to see if I can get some of those. So everybody apply to download your Skype data.
+
+I remember with Gitter, there was a discussion about this that I was involved with at the EF later, which was saying the problem with Skype is it wasn't discoverable. You know, you had to add, you had to request to be added, but you had to know what was there to be able to do that request. So it was a bit of a chicken and egg situation.
+
+Whereas Gitter, it was like a one-to-one with the repositories. So if you're using a repo, there you go. There's a one-to-one channel with that, and it was discoverable and archived. But then Slack, I think, was even earlier. So, oh, and there was the forum as well. Right? There was an Ethereum forum too.
+
+**SPEAKER_01:**
+There was a forum. And then Slack, I think I got introduced to Slack by Stephan when he created a community for the DAO. When he looked for a new communication tool, he went with Slack. And at that time, it was not like today, like a business tool for companies. It was really communities. Like, we had 5,000 people in our Slack, which is not how it's used today.
+
+**SPEAKER_00:**
+Yep. Yep. So welcome, Jim.
+
+**SPEAKER_03:**
+Sorry. I had some technical problems for a while there. But I don't know. I'm just listening to you guys. What happened that brought the whole world to Zoom suddenly?
+
+**SPEAKER_02:**
+It was in waves. Look, for on my side...
+
+**SPEAKER_01:**
+Yeah. Let me just reconnect. Just turn off and on again.
+
+**SPEAKER_02:**
+We were working as part of ConsenSys, and one of the kind of marketing business development people at the time, Andrew Keys, primarily had put together a partnership with Microsoft. I don't know if they ended up cosponsoring DevCon One per se. They had headline. Yeah. They so they put money in for that.
+
+Because they also like paid for a bunch of PR and all those sort of things too. And so we had maybe a month or two lead time to work with them. And so the idea was that, you know, they've got cloud infrastructure. It's a good place to run blockchain nodes. They also have corporate clients that were actually very interested in the technology.
+
+And so we worked pretty closely with them in the run-up to make our software available on the Azure cloud, as did Roman of the Java client, which to some extent was everyone's preference because people know Java, you know, in the enterprise world. But I think they, we sort of stuck with it quite a bit longer than Roman did.
+
+And you know, so Blockchain as a Service was the big announcement. That was December 2015. Was it November? November. Was it November? It must have been November. Really? November. There was once the announcement happened, there's a little tick in the Microsoft stock price, which we were like, woah. Like, there's a little bump there.
+
+And a lot of excitement for sure. I got a million phone calls after that. That was like, you know, good feeling of being the hotness that only happens so many times in someone's life. You know? But tremendous interest on the back of the Blockchain as a Service announcement. We did a live demo. It was so fun.
+
+The Internet, you know, it's in vogue to make fun of the UK these days on X, etcetera. The Internet in the conference facility was not so good. So I was very worried about the transactions actually going through, but they did during the live demo. I think there's footage of it somewhere.
+
+**SPEAKER_01:**
+Can you hear us again there, Christoph?
+
+**SPEAKER_00:**
+Yes. I can hear you. I hope you can hear me too.
+
+**SPEAKER_01:**
+Okay.
+
+**SPEAKER_00:**
+So the demo that you did at DevCon One, again, another iconic event because yeah, you have that physical smart lock just sitting there on your shelf, and you know, it rotates it. Right? You know? Right. You did your transaction.
+
+**SPEAKER_01:**
+It was, we just had a Raspberry Pi connected via, I think it was Zigbee or Z-Wave back then to the door lock. And on the Raspberry Pi, we had actually an Ethereum client running. We had a smart contract on chain where you could send some money to it, or ether actually, and when it received some ether, it would open up. This was basically the demo.
+
+But it was cool to see something physical. You're talking about using Ethereum for, as I said before, the economy of things, connected to IoT devices. Since most of the people in the room were still nerds and devs, they loved that kind of stuff. And there was also the kettle, wasn't it? The...
+
+**SPEAKER_00:**
+Yes.
+
+**SPEAKER_01:**
+There was also a kettle. Maybe it was just a smart plug, like a power plug. We could also turn on, off, same protocol, same thing. So we showed, we just wanted to show it's not just the door lock company because actually we're not producing those. We're just connecting existing door locks to it.
+
+We also showed this idea of the Universal Sharing Network. Everything which you can turn on, off, or lock and unlock could be now connected to this network, and everybody could like put almost everything in there, like a washing machine. You pay for using the washing machine, or a bicycle lock, even padlocks connected to it.
+
+So you could have like your locker room and have a padlock in front of it and sell whatever's in there by having someone pay to open the padlock. This was the generic idea. We got some VC money later after the, like in 2017. We built it. Nobody used it. It was like not just too early. It was not, it was like everything for everyone all at once and of course, nothing for no one.
+
+It felt like the app was not great, so we failed B to C wise at Slock.it. We then turned into more consulting projects to build Incubed, which was an IoT client, made some money with that, and about fifty people actually employed at the time in 2019 when we sold the company to Blockchains, Jeffrey Berns. Another story.
+
+**SPEAKER_00:**
+So I remember speaking to Stephan at the time. So Stephan was involved with that demo. Right? It was Stephan who came up on stage to make his little cup of tea with the kettle there. But I remember speaking to him that he'd been concerned about what the reception for him would be like, you know, having had this passing of ways with the Foundation just two months before. But he was saying it was all very, it was all very friendly and people, you know, very excited about the project.
+
+**SPEAKER_01:**
+Right.
+
+**SPEAKER_00:**
+And saying actually about IoT and pieces. So in January 2015, you had a demo that happened at the Consumer Electronics Show, CES in Vegas, which was a collaboration between IBM and Samsung. So the aforementioned Henning Diedrich, part of that. And that again was months before mainnet, but you had a proto-Web3 stack there, which was I think PoC 5 of Ethereum. You didn't have Whisper. You had another thing called Telehash, and you didn't have, you had BitTorrent.
+
+So there was this proto-Web3 stack there, and they had demos like a washing machine buying its own detergent and scheduling its own repair. So yeah. So, I mean, so Slock.it itself did a number of these different products. Right? There was something with electrical charging and something to do with toll roads. Is that right?
+
+**SPEAKER_01:**
+Right. We had a prototype running with RWE, an energy company in Germany. They're doing like a lot of, at the time, most of the charging stations. So this was in general, like we got a lot of attention, of course, also after the DAO hack and all of that. And so it's kind of why we became a consulting company because so many asked us, could we do a prototype with you? Because there were not many Ethereum builders at the time.
+
+So we had been building on Ethereum now since, oh, one year or two years, which you could not find anybody doing this. So we were building lots of nice prototypes and some almost production stuff, and always related to IoT devices connected to the blockchain. This was our core business, and on top of this, we built those prototypes.
+
+We did a lot of work for the Energy Web Foundation. I don't know if you're familiar with them. This was in Switzerland. They are kind of a fork of Ethereum focusing on all the energy use cases. We built most of their stuff in 2018, '19, until they hired their own developers. Gavin was also part of this for a while.
+
+So yes, this was still, I mean, if you remember this time, you saw that there was so much enterprise interest. Enterprises at the time were just learning, looking into this, wanted to build prototypes, not yet production stuff. So and there was a huge demand for blockchain experts, doing consulting, for going to conferences, explaining to them what a blockchain is.
+
+But at every tech conference, you need some blockchain talk. And this was kept, based mostly us. And they paid sometimes like €4,000 for a talk. Like as a company, you said, well, we need the money. Let's go there. So, but of course, you also have to think about us as persons. Simon and me, we didn't get any money for almost a year.
+
+Like we worked for, we were not rich people. We just came from ordinary families. And we said, well, we can work for like three to four months without a salary. Let's build the DAO, and then the DAO becomes big. The DAO is paying Slock.it to build it. Of course, after the hack, it was clear there would never ever be a payment. So we made zero money out of the DAO.
+
+So we needed to stop doing, start doing some work, and this was in the beginning. Let's do consulting for those large companies. This is how Slock.it began to survive. Many people said you cannot bury Slock.it after what happened, like your name is burned forever. And we decided to stay as a team, I mean, as a founder team. We own our mistakes. Maybe we were open and transparent about it as much as we could.
+
+It was of course an honest mistake. We can talk about it. It could be another session just for the DAO. I mean, the DAO is a lot of topics. I'll just put here very shortly, just talk about it from a company perspective. And then Stephan, well, he was trying to get VC money. And Simon and I, we were doing those consulting gigs.
+
+And once we had VC money, what happened as a company was we got €2 million, and of dollars, and then we built the product, hired people for that, got more and more consulting gigs. So we always said, well, let's do them and just hire more people. And yeah, we had like fifty people, five to ten doing the product and forty people doing consulting.
+
+And then we got bought by Jeffrey Berns from Blockchains, Inc. Remember maybe at DevCon Three, I think, Prague. Right? Yeah. Wanted to build a city. I think I loved the vision. He obviously had money. He wanted to build it on top of Ethereum mainnet. I was thinking about how maybe I can channel those billions into the right direction.
+
+Building it all as intended on Ethereum mainnet, which was working fine in the beginning. And then I found out once you're an entrepreneur, you never can be an employee again, and so I had to leave. So, but it's maybe, actually, it's too far in the future. I mean, that's one thing I think I have to say here because you talked about DevCon One and you skipped a little bit DevCon Two.
+
+You said in DevCon One, Stephan Tual was very concerned how people perceive him, and they were very gentle, forgiving, and nice to him. So he was well received, and then he built the DAO community. I was super worried to go to DevCon Two because it was after the DAO hack. I was like seriously thinking someone might beat me up there.
+
+Like, I want to call, like some people, like I kind of almost destroyed Ethereum with this bug and so much attention to it and all the money lost for some people, or like the time of growth is gone. Like it depends on how you view it. So but when I went to DevCon Two, people were so nice, forgiving, basically, hugging me.
+
+But I was giving a talk there, and the only thing I didn't like was the Foundation telling me I was not allowed to speak about the DAO, which was like, what? Like I am speaking here to the Ethereum community. Well, how can I not speak about the DAO? And so I talked about a pretty boring talk about security, and I think every second talk was about security at DevCon Two. It was just about how we get those smart contracts secure.
+
+I kept a rather boring talk. But in the end, I just said, well, thank you for your understanding, and it was a rough hard time and so on. And they were like, somewhat they had standing ovations. I remember becoming emotional because this was, I did not expect this. I really expected like, guy, you messed up Ethereum. Like you almost lost it all.
+
+So I think this just speaks to the Ethereum community. How did we treat Stephan? How did we treat me? Even though mistakes were made, honest mistakes, at least from what I can tell. It's such a great community of really nice people who really want to change the world, capable, and also now financially capable of really doing things.
+
+**SPEAKER_00:**
+I was watching that video quite recently, actually. And...
+
+**SPEAKER_01:**
+It got cut off a little bit at the end. The...
+
+**SPEAKER_00:**
+It was quite, you know, it was quite a long ovation there. And yeah, you could certainly see that emotion in you. And that's when we first met actually. It was in Shanghai for DevCon Two, I remember. It was on the sidelines there in that main conference hall. And yeah, it was lovely to see that. That's for sure. Okay.
+
+**SPEAKER_02:**
+Yep. I think, good notes. Just Bobby, were you the one who tried to impose an hour to half hour to hour rule or a solid one twenty right here?
+
+**SPEAKER_00:**
+Sounds good. Maybe we've, you know, we've reached a, you know, a good kind of endpoint, I guess. So what happened after Blockchains LLC for you then?
+
+**SPEAKER_01:**
+So because of time, I'll keep it short. So yes, we got bought by Jeffrey Berns, Blockchains LLC at the time. Again, the reason for this was he wanted to build a new city in the desert. He wanted to do all IoT, all in Ethereum from scratch. As a developer dream, building from scratch on the greenfield on top of Ethereum with our tech.
+
+And I felt comfortable at the beginning. In the end, I felt like we need to release stuff, and there were some voices at the company which didn't want to release until like a very, very big product was done. For many reasons, that didn't happen. I don't want to get into that too much. So after two years, I left Blockchains. Back then, it was called Inc. They made a change in their name.
+
+And I did for six months, I did really nothing. I forced myself to do nothing, which was great after so many stressful years. And then I started a venture studio called Crypto POS Ventures where we tried out many different ideas. We had EM3, which was a decentralized messaging protocol, GasHawk, we can save transaction costs on Ethereum. What else did we have?
+
+So we had domain name stuff, but we didn't release it in the end. But the biggest one was Tokenize.it. And this was, we built something for, for now, German startups. In the end, we want to do it all over Europe. We're just tokenizing their shares and doing fundraising.
+
+So in summary, it's like a Web3-based AngelList for Europe. It's the one sentence description for Americans also to understand. You know AngelList, that's a great tool for business angel investing. We want to do the same for Europe, for all countries there, and build it on chain. So tokenizing all those shares and enable private as well as public fundraising.
+
+Some called legal ICOs if you want, but also for private fundraising. Our customers currently, and maybe a good way to end this, there's now more than 400 investments from more than 320 business angels at more than 50 companies. Those are traditional German GmbHs raising from super conservative business angels doing it completely on chain.
+
+They are paying in stablecoins, getting their tokenized shares in their non-custodial wallet. They're all getting a Gnosis Safe wallet from us using Privy for login. So we built it as intended, and we get normal people to use it. For me, this is kind of a dream come true because I love the Web3 bubble. I love this community. I love to work inside there.
+
+But for me, Tokenize is a way to make this technology available where it belongs, like to startups and investors outside of the Web3 bubble. And I'm super, super happy that I could keep up those values that the complete platform is non-custodial. They have their Safe on Ethereum, holding their tokens, paying stablecoins.
+
+So I'm very happy to see this. Over the next years, we want to basically roll out this all over Europe and become, yes, the Web3-based AngelList for Europe. That's the goal.
+
+**SPEAKER_00:**
+Fantastic. So hope to see you at DevCon Eight.
+
+**SPEAKER_01:**
+Me too. I'm looking forward to it. And I'm as of now, I don't intend any change. Stick to Ethereum. I love the community. I continue building and try to get a lot of people using it.
+
+**SPEAKER_00:**
+Have you been to every DevCon?
+
+**SPEAKER_01:**
+Yes. Yes. I've been to every DevCon. The last one was actually the first one that I didn't give a talk, and I also went to every ECC except for one that was COVID. There was some reason I couldn't come. But yes, I'm actually, I intend to continue to come to every DevCon. It's like you meet the people like, of course, and many others. It's just a sweet spirit there, nice community.
+
+Love seeing how it all grows. Listen to those exciting talks. I mean, it's for Tokenize, it's not as relevant. It's not like our customers or, it's tech, of course. We're just doing an ERC-20 token on Ethereum. It's super easy. So no deep tech. Sometimes I miss doing deep tech, but well, I just enjoy being there, seeing what all happened.
+
+And remembering those magic days, and just like only once in a lifetime or two times in a lifetime, you have this moment where everything comes together at the right time, the right place, the right people. This certainly, those like one and a half years I worked for Ethereum are definitely like the prime of my career in terms of who I worked with, what we accomplished, the impact we had on the world, and the sweet cyberpunk spirit there and what we did there.
+
+It was really great. I always sometimes get emotional thinking about this and meeting those people again at DevCon.
+
+**SPEAKER_00:**
+Fantastic. Well, thank you for all your contributions to that success. Likewise. All the best. Okay. Oh, just one more. Where can we find you?
+
+**SPEAKER_01:**
+You can find me usually on Twitter for the Ethereum people, c-h-r-j-e-n-t-z-s-c-h. Of course, I have a complicated name, not many vowels in there, but you'll find it. Or of course, on LinkedIn. Actually, for my company, I'm more active on LinkedIn, which I was never before. That's where we get our clients as Tokenize.it. Yeah. But usually, you can find me on Twitter, follow me there, or LinkedIn.
+
+**SPEAKER_00:**
+Excellent. Okay. Thanks so much. Have a great day.
+
+**SPEAKER_01:**
+Thank you too. It was great talking to you. Bye bye.
+
+**SPEAKER_00:**
+Bye.
