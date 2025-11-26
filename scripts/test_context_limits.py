@@ -10,7 +10,7 @@ Tests actual context window limits for AI providers to determine:
 POST-PROCESSING PROVIDERS TESTED:
 - Sonnet (Claude Sonnet 4.5 via Anthropic)
 - ChatGPT (GPT-4o via OpenAI)
-- Gemini (Gemini 2.5 Pro via Google)
+- Gemini (Gemini 3.0 Pro via Google)
 - Llama (Llama 3.3 70B via Groq)
 - Qwen (Qwen 2.5 7B via Ollama local)
 
@@ -25,7 +25,6 @@ Note: Transcribers have no context limits as they process audio, not text.
 Usage:
     python3 scripts/test_context_limits.py
     python3 scripts/test_context_limits.py --providers sonnet,chatgpt,gemini,llama,qwen
-    python3 scripts/test_context_limits.py --quick  # Fast test with smaller increments
 """
 
 import os
@@ -255,7 +254,7 @@ def test_openai_context(test_sizes=[10000, 50000, 100000, 120000, 128000]):
 
 
 def test_gemini_context(test_sizes=[10000, 50000, 100000, 120000, 128000]):
-    """Test Gemini 2.5 Pro context limits"""
+    """Test Gemini 3.0 Pro context limits"""
     try:
         import google.generativeai as genai
     except ImportError:
@@ -265,19 +264,19 @@ def test_gemini_context(test_sizes=[10000, 50000, 100000, 120000, 128000]):
     if not api_key:
         return {"error": "GOOGLE_API_KEY not set", "status": "skip"}
     
-    print_info("Testing Google Gemini 2.5 Pro...")
+    print_info("Testing Google Gemini 3.0 Pro...")
     genai.configure(api_key=api_key)
     
     results = {
         "provider": "Google",
-        "model": "gemini-2.5-pro",
+        "model": "gemini-3.0-pro",
         "advertised": "128,000 tokens (some claim 1M)",
         "tested": [],
         "max_working": 0,
         "status": "tested"
     }
     
-    model = genai.GenerativeModel('gemini-2.5-pro')
+    model = genai.GenerativeModel('models/gemini-3-pro-preview')
     
     for size in test_sizes:
         print(f"  Testing {size:,} tokens...", end=" ", flush=True)
@@ -527,11 +526,6 @@ def main():
         "--providers",
         default="sonnet,chatgpt,gemini,llama,qwen",
         help="Comma-separated list of providers to test (sonnet,chatgpt,gemini,llama,qwen)"
-    )
-    parser.add_argument(
-        "--quick",
-        action="store_true",
-        help="Quick test with smaller increments"
     )
     parser.add_argument(
         "--output",

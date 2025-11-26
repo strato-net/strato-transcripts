@@ -1,782 +1,886 @@
 **SPEAKER_00:**
 [00:00] We are on.
-[00:01] And welcome, everyone, to our recap of DevConnect Argentina.
+[00:01] And welcome everyone to our recap of DevConnect Argentina.
 [00:04] I'm Victor Wong, founder and CPO at Strato CPO.
-[00:07] Maybe I may be looking very robotic.
-[00:08] So if I am, then yeah.
+[00:09] Maybe I may be looking very robotic.
+[00:11] So if I am, then yeah.
 
 **SPEAKER_01:**
-[00:10] C-3PO.
+[00:13] C-3PO.
 
 **SPEAKER_00:**
-[00:12] So let's go around the horn and introduce ourselves before we kick it off.
-[00:15] Kieran, you want to go?
+[00:14] So let's go around the horn and introduce ourselves before we kick it off.
+[00:18] Kieran, you want to go?
 
 **SPEAKER_02:**
-[00:17] Sure. I'm Kieran.
-[00:18] I'm our CEO, I guess.
-[00:20] Okay. So Strato, we have been... I guess we're hard-announcing it now.
-[00:23] We are the labs company, if you will, that has always been called BlockApps, and I'm actually the CEO of BlockApps as we're transitioning to a mainnet open-source kind of foundation-given project.
-[00:32] First, we called that Strato Mercato because Mercato was sort of a separate product, and we've kind of purposefully sunset everything else.
-[00:38] So going back to the OG Strato at this time.
-[00:41] So I guess I'm the Strato CEO. Yeah, we're jumping in with two feet.
+[00:19] Sure.
+[00:20] I'm Kieran.
+[00:21] I'm our CEO, I guess you know.
+[00:23] Okay.
+[00:24] So Strato, we have been...
+[00:26] I guess we're hard announcing it now.
+[00:28] We are the labs company, if you will, has always been called BlockApps and I'm actually the CEO of BlockApps as we're transitioning to a mainnet open source kind of foundation-given project.
+[00:41] First we called that Strato Mercata because kind of Mercado was sort of a separate product and we've kind of purposefully sunset everything else.
+[00:50] So going back to the OG Strato at this time.
+[00:53] So I guess I'm the Strato CEO, like yeah, we're jumping in with two feet.
 
 **SPEAKER_03:**
-[00:44] Victory.
+[01:00] Victory.
 
 **SPEAKER_00:**
-[00:45] Yeah, exactly.
-[00:46] Well, I just, I was kind of soft-pedaling it, but I didn't know if you wanted to make the announcement there.
-[00:49] That's cool.
+[01:01] Yeah, exactly.
+[01:02] Well, I just, I was kind of soft-pedaling it, but I didn't know if you want to make the announcement there.
+[01:06] That's cool.
 
 **SPEAKER_02:**
-[00:50] Well, but you said of Strato, so it was too late.
+[01:07] Well, but you said of Strato, so it was too late.
 
 **SPEAKER_00:**
-[00:53] I think I've already changed it in my mind.
-[00:54] So maybe it's not.
-[00:56] And thanks for that, Bob.
+[01:10] I think I've already changed it in my mind.
+[01:12] So maybe it's not like...
+[01:13] And, and thanks for that, Bob.
 
 **SPEAKER_01:**
-[00:57] Yeah, that's it.
-[00:58] OG OG.
-[00:59] So Strato was unveiled at DEVCON1.
-[01:02] I don't know what exact date that was.
-[01:04] It might be almost exactly 10 years, like right now.
+[01:15] Yeah, that's it.
+[01:16] OG.
+[01:17] So Strato was, you know, unveiled at Devcon 1.
+[01:21] I... I don't know what exact date that was.
+[01:24] You know, it might be almost exactly 10 years.
+[01:26] Like right now.
 
 **SPEAKER_00:**
-[01:07] I think it's very close to 10 years.
+[01:28] I think it's very close to 10 years.
 
 **SPEAKER_02:**
-[01:09] I think it was early December, maybe a week off.
+[01:30] I think it was early December, maybe a week off.
 
 **SPEAKER_00:**
-[01:11] No, no, I think it was in October or November because it wasn't that cold and it was in London, and I remember it was not miserable yet, which is normal.
+[01:32] No, no, I think it was in October or November because it wasn't that cold and it was in London and I remember it was not miserable yet, which is normal 31 minutes at that time.
 
 **SPEAKER_01:**
-[01:21] So I will keep looking off to the side, but.
+[01:43] So I, I will keep looking off to the side, but...
 
 **SPEAKER_00:**
-[01:23] Okay.
-[01:23] You're a resident historian, Bob.
+[01:46] Okay.
+[01:47] You're a resident historian, Bob.
 
 **SPEAKER_02:**
-[01:25] I see a YouTube video.
-[01:26] December 11, 2015.
+[01:49] I see a YouTube video.
+[01:50] December 11, 2015.
+[01:53] Now those...
 
 **SPEAKER_03:**
-[01:29] Yeah.
+[01:54] Yeah.
 
 **SPEAKER_01:**
-[01:29] No, later though.
-[01:30] They got released.
+[01:55] No later though.
+[01:56] They got released.
 
 **SPEAKER_02:**
-[01:31] Posted later.
+[01:57] Posted later.
 
 **SPEAKER_00:**
-[01:32] Yeah, yeah, yeah, yeah.
-[01:33] So.
-[01:34] Well, Bob, do you want to do a quick who are you?
+[01:58] Yeah, yeah, yeah, yeah.
+[02:00] So...
+[02:01] Well, Bob, you...
+[02:02] Do you want to do a quick...
+[02:03] Who are you?
 
 **SPEAKER_01:**
-[01:37] So hi, I'm head of ecosystem.
-[01:40] So yeah, joined the team this year.
-[01:42] But, you know, longtime longtime friend.
+[02:04] So hi, I'm...
+[02:06] I'm Head of Ecosystem.
+[02:07] So yeah, joined the team this year.
+[02:11] But you know, longtime friend.
 
 **SPEAKER_00:**
-[01:45] Yes.
-[01:45] Longtime listener, first-time caller.
-[01:47] Right.
-[01:48] And Jim, who are you?
+[02:13] Yes.
+[02:14] Longtime listener, first-time caller.
+[02:16] Right.
+[02:17] And Jim, who are you?
 
 **SPEAKER_03:**
-[01:50] I am James from SDR.
-[01:52] I am CTO of BlockApps and one of the three founders.
+[02:18] I am James from Strato.
+[02:21] I am CTO of BlockApps and one of the three founders.
 
 **SPEAKER_00:**
-[01:55] Yes, and of Strato too.
-[01:57] As Kieran has announced. So let's dive right into it.
+[02:25] Yes, and of Strato too.
+[02:27] As Kieran has announced so let's dive right into it.
 
 **SPEAKER_03:**
-[02:00] We.
+[02:30] We...
 
 **SPEAKER_00:**
-[02:00] What were your...
-[02:01] I don't know what, maybe I did a stealth announce.
-[02:03] I pushed you over the edge on that one.
-[02:05] Right.
-[02:06] So let's dive into it.
-[02:07] What were your impressions of DevConnect and Buenos Aires?
-[02:10] Who wants to start here?
+[02:31] What were your...
+[02:32] I don't know what maybe I did.
+[02:33] I stealth announced.
+[02:34] I pushed over the edge of that one.
+[02:36] Right.
+[02:37] So let's dive into it.
+[02:38] What were your impressions of DevConnect and Buenos Aires?
+[02:42] Who wants to start here?
 
 **SPEAKER_02:**
-[02:12] I guess I can.
-[02:13] Quickly.
-[02:14] Hopefully quickly.
-[02:15] I know we all have a tendency to ramble.
+[02:44] I guess I can.
+[02:45] Quickly.
+[02:46] Hopefully quickly.
+[02:47] I know we all have a tendency to ramble.
 
 **SPEAKER_00:**
-[02:17] Yeah.
+[02:49] Yeah.
 
 **SPEAKER_02:**
-[02:18] So one of my big surprises, let's say, the city itself.
-[02:22] I was surprised to find that I was in Europe.
-[02:24] I was expecting to be in South America.
-[02:26] And I guess everyone knows this, they call it like the Paris of South America or something.
-[02:30] But quite a beautiful place.
-[02:32] The mix of the food varied from really excellent to, especially on the steak front.
-[02:37] That is all true for if anyone is on the fence about the Argentinian steak, go and try it, to medium sometimes. The service was very slow.
-[02:46] The city does not look that big.
-[02:48] All of the hotels near the venue were booked out.
-[02:51] So I ended up staying about 20 minutes away by car.
-[02:54] And if there's no traffic, it was like 9 to 12 minutes away.
-[02:57] But it was consistently about 25 minutes away because it's all kind of like mid-rises, like four to six or eight stories.
-[03:04] And it's like that for a pretty large geographic area, which I found quite interesting.
-[03:09] Yeah, it had a little bit of an old-world feel.
-[03:11] It's kind of narrow, but yeah, super cool.
-[03:13] People are very nice.
-[03:15] Maybe except for the slow service, it wasn't like snooty slow service, it was just slow service, you know, so hard to get things.
-[03:20] You had to budget more time than you expected for things, which we found out the hard way, but would go back.
-[03:25] Very cool place.
+[02:50] So one of my big surprises, let's say the city itself.
+[02:54] I was surprised to find that I was in Europe.
+[02:57] I was expecting to be in South America.
+[02:59] And I guess everyone knows this, they call it like the Paris of South America or something.
+[03:03] But quite beautiful place.
+[03:05] The, you know, mix of like the food varied from really excellent to especially on the steak front.
+[03:13] That is all true for if, if anyone is on the fence about the Argentinian steak, go, go and try it to you know, like medium sometimes, you know, service very slow.
+[03:26] The city does not look that big.
+[03:28] Like somehow, you know, like the...
+[03:30] All of the hotels near the venue were booked out.
+[03:33] So I ended up staying about 20 minutes away by car.
+[03:36] And if there's no traffic, it was like nine to 12 minutes away.
+[03:40] But it was consistently about 25 minutes away because it's all like, it's all kind of like mid-rises, like four to six or eight stories.
+[03:50] And it's like that for like a pretty large geographic area which I found quite interesting.
+[03:54] Yeah, it had like a little bit of an old world feel.
+[03:57] It's kind of narrow, but yeah, super cool.
+[03:59] People are very nice.
+[04:01] Maybe except for the slow service, wasn't like snooty slow service, it was just slow service, you know, so hard to get things.
+[04:09] You had to budget more time than you expected for things which we found out the hard way, but would go back.
+[04:15] Very cool place.
 
 **SPEAKER_00:**
-[03:26] And what about DevConnect itself?
-[03:29] How did you feel about the conference?
-[03:31] And you might want to mention what was the reaction to prices tanking during the event itself?
+[04:17] And, and what about Dev?
+[04:19] DevConnect itself.
+[04:20] How did you feel about the conference?
+[04:22] And you know, you might want to mention like...
+[04:24] Yeah, what was the reaction to prices tanking during the event itself?
 
 **SPEAKER_01:**
-[03:36] Well, the other thing that we should mention first is what DevConnect even is.
+[04:28] Well, tell you the other thing that we should mention first is what DevConnect even is.
 
 **SPEAKER_00:**
-[03:40] Oh yeah.
-[03:41] So as a resident historian of all things Ethereum, what is DevConnect?
+[04:32] Oh yeah.
+[04:33] So as a resident historian of all things Ethereum, what is DevConnect?
 
 **SPEAKER_01:**
-[03:45] Yeah, so it's a major conference held by the Ethereum Foundation.
-[03:48] There's actually two different conference series that run now.
-[03:51] So DevCon, which was originally developer conference, obviously has become not a developer conference anymore.
-[03:57] I don't know when it was last a developer conference.
-[04:00] Maybe two... probably DEVCON2-ish.
+[04:38] Yeah, so it's a major conference held by the Ethereum Foundation.
+[04:41] There's actually two different conference series that run now.
+[04:44] So Devcon, which was originally developer conference, obviously has become not a developer conference anymore.
+[04:52] I don't know when it was last a developer conference.
+[04:54] Maybe two.
+[04:56] Probably Devcon 2-ish.
 
 **SPEAKER_02:**
-[04:02] It kept getting bigger.
-[04:03] Big but not huge.
+[04:57] Maybe it kept getting bigger.
+[04:59] Big but not huge.
 
 **SPEAKER_01:**
-[04:05] I'm thinking in terms of the content though.
+[05:01] I'm thinking in terms of the content though, you know.
 
 **SPEAKER_02:**
-[04:06] No, I know, but they kind of correlated, right?
-[04:08] Like the more people that wanted to come, the lower percentage of devs somehow.
+[05:03] No, I know, but they kind of correlated, right?
+[05:05] Like the more people that wanted to come, the lower percentage devs somehow.
 
 **SPEAKER_00:**
-[04:12] Well, I can't remember, at 2 they had DevCon and then next to it they had like, I think it was called like World Blockchain.
+[05:09] Well, I can't remember at 2 they had Devcon and then like next to it they had like, I think it was called like World Blockchain.
 
 **SPEAKER_01:**
-[04:18] Yeah, I mean that one was a combined event.
-[04:21] Yeah.
-[04:22] I guess probably DEVCON3, probably in 2017 was the switchover where you had like a thousand people.
-[04:27] So it switched from a "meet your peers, talk about all the different development projects going on" to more of a, "Hey, here are the big talks."
-[04:35] But yeah, we're on to seven now.
-[04:37] So, DEVCON7 was in Bangkok last October, I think.
-[04:41] But yeah, they started doing DevConnects as well, which is really intended, I guess, to not be a conference, to be a collection of different events connecting developers and community.
-[04:52] So I was expecting it to be a fair bit smaller, but it absolutely wasn't.
-[04:56] But it did have a different flavor to DevCon in that it was lots of little things, lots of mini-events under that same banner, obviously side events as well. But even if you just got a ticket for the main thing with a theme of World Fair, you know, of really bringing people from around the world to show what they're working on.
-[05:16] But I didn't expect it to be as big.
-[05:18] Like, I think it probably was as big as DevCon, really, in the numbers.
+[05:16] Yeah, I mean that one, that one was a combined event.
+[05:18] Yeah.
+[05:19] Yeah, I guess probably Devcon 3, probably in 2017 was the switch over where you had like a thousand people.
+[05:25] So it switched from a, you know, meet, meet your peers, talk about all the different development projects going on to more of a, you know, hey, here are the big talks and you know, but yeah, we're on to...
+[05:39] We have seven now.
+[05:40] So, you know, Devcon 7 was in, was in Bangkok last October, I think.
+[05:45] But yeah, they started doing DevConnects as well, which is really intended, I guess, to not be a conference, to be a collection of different events connecting, you know, developers and community.
+[05:58] So I was expecting it to be a fair bit smaller, but it absolutely wasn't.
+[06:03] But it did have a, you know, it did have a different flavor to Devcon in that you, it was lots of little things, you know, lots of mini events, many under that same banner, obviously side events as well, but that even if you just got like a ticket for the main thing with a theme of World Fair, you know, of, of really, you know, bringing people from around the world to, to, to show what they're, they're working on.
+[06:30] But I, I didn't expect it to be as big.
+[06:33] Like, I think it probably was as big as, as, as Devcon really in the numbers.
 
 **SPEAKER_00:**
-[05:22] I mean, what I... yeah, I mean effectively I think they become the same.
-[05:25] Like it's just, basically whatever they were trying to kind of keep it small.
-[05:29] But I think, in terms of signal-to-noise ratio, these DevCons are probably still the highest compared to more businessy conferences.
-[05:36] You know what I mean?
-[05:37] Like in terms of actually getting some technical stuff.
-[05:40] Jim, what were your impressions of DevConnect and Buenos Aires?
-[05:43] You can... I've heard you said you're worried about being too negative, but go for it.
+[06:38] I mean, what I, I really...
+[06:39] Yeah, I, I mean effectively I think they become the same.
+[06:42] Like it's just, you know, basically whatever they were trying to kind of keep it small and...
+[06:47] But I think, you know, in terms of signal to noise ratio, these Devcons are probably still the highest compared to more businessy conferences.
+[06:55] You know what I mean?
+[06:56] Like in terms of actual getting some technical stuff.
+[06:59] Jim, what were your impressions of DevConnect and Buenos Aires?
+[07:04] You can, I've heard you said you're worried about being too negative, but there is no...
+[07:08] Yeah, yeah, go for it.
 
 **SPEAKER_02:**
-[05:48] Please, he wants to know.
+[07:10] Please wants to know.
 
 **SPEAKER_03:**
-[05:50] Yes, I mean, there was a lot of good stuff down there.
-[05:52] First of all, I, in part to avoid having a huge flight down there, I broke it up into multiple destinations down South America on the way there.
-[05:59] So I saw a lot of really cool stuff in Central and South America the week before.
-[06:03] And Argentina is beautiful.
-[06:05] The conference itself had some very cool things there.
-[06:08] But I think I really sort of preferred the format of what happened in Bangkok the year before.
-[06:13] There were certain things about the format here that made it difficult.
-[06:16] The first thing is that there was less going on at the main venue, and we had to spend a lot of time sort of like signing up for all these offsite things.
-[06:23] And these offsite things were big and would go on for hours.
-[06:26] So it would sort of pull you away from the main event for the whole day.
-[06:29] Maybe you could kind of come back at the end of the day.
-[06:31] But then I tried that a little bit at first.
-[06:33] I signed up for an offsite thing and then I kind of came back, and once I got to the main event, you're sort of just wandering around and it was hard.
-[06:40] Did you guys find a good schedule for what was happening right there?
-[06:44] Because mostly I was just walking around, and there was one area, I guess it was the yellow pavilion where the big room was, and you could get a couple of small talks there.
-[06:51] But mostly it was just sort of outdoor study areas and not as much going on in the main area.
-[06:56] I don't know.
-[06:57] What did you guys think about that break-apart?
+[07:11] Yes, I, I mean there was a lot of good stuff down there.
+[07:15] First of all, I, I actually in part to avoid having a huge flight down there, I broke up multiple destinations down South America on the way there.
+[07:23] So saw a lot of really cool stuff in center in Central and South America the week before.
+[07:29] And Argentina is beautiful.
+[07:31] Conference itself had some very cool things there.
+[07:34] But I think I really sort of preferred the format of what happened in Bangkok the year before.
+[07:39] There were certain things about the format here that made it difficult.
+[07:43] First thing is that there was less going on at the main venue and we had to spend a lot of time sort of like signing up for all these off-site things.
+[07:51] And these off-site things were like big and would go on for hours.
+[07:55] So it would sort of pull you away from the main event for the whole day.
+[07:58] Maybe you could kind of come back at the end of the day.
+[08:00] But then I tried that a little bit at first.
+[08:02] Like, you know, I signed up for like an off-site thing and then I kind of came back and once I got to the main event, you're sort of just wandering around and it was, it was hard, you know, maybe...
+[08:12] Did you guys like find a good schedule for what was happening right there?
+[08:15] Because mostly I was just walking around and like there was one area, I guess it was the yellow pavilion where the big room was and you could get a couple small talks there.
+[08:24] But mostly it was just sort of like outdoor study areas and not as much going on in the main area.
+[08:29] I don't know.
+[08:30] What did you guys think about that break apart?
 
 **SPEAKER_02:**
-[07:00] It was haphazard.
-[07:01] But I liked a bunch of the main stage talks.
-[07:04] There were a few good ones on the Friday, there were good opening ones, and then there was a little amphitheater that had some of the good DeFi app talks.
-[07:11] But I agree, it was sort of like a crapshoot.
-[07:14] The registration procedures... sometimes you had to register for an event that was inside the venue.
-[07:18] Sometimes that wouldn't work, but you would go by the booth or whatever and they would just tell you, "Oh yeah, just don't worry, just show up," you know.
-[07:25] So it contributed to an impression of never quite knowing.
-[07:28] Like agendas weren't really posted for any of these side events.
-[07:31] They were not even really posted for the main event until the night before.
-[07:34] Like they were kind of lazily, I mean, in the computer science sense, updating the agendas as you went, so to speak.
-[07:42] So it was very hard to come in with a target and hit everything with that target.
-[07:46] You kind of had to just sort of go with the flow, and it doesn't feel optimal.
-[07:51] But I still got quite a lot out of it.
+[08:33] It was haphazard.
+[08:34] But the, I liked a bunch of the main stage talks.
+[08:37] There were a few good ones on the Friday, there were good opening ones and then there was a little amphitheater that had some of the good like DeFi app talks that...
+[08:47] But if it...
+[08:48] I agree, it was sort of like a crapshoot.
+[08:50] Like the, the registration procedures.
+[08:53] Sometimes you had to register for an event that was inside the venue.
+[08:56] Sometimes that wouldn't work, but you would go like by the booth or whatever and they would just tell you like, oh yeah, just don't worry, just show up, you know.
+[09:05] And it...
+[09:06] So like, it contributed to an impression of like never quite knowing.
+[09:10] Like agendas weren't really posted for any of these side events.
+[09:14] They were not even really posted for the main event until like the night before.
+[09:18] Like they were kind of, you know, lazily, I mean, in the computer science sense, updating the, the agendas as you, as you went, so to speak.
+[09:27] So it was very hard to like come in with a target and hit everything with that target.
+[09:33] You kind of had to just sort of go with the flow and you know, it doesn't, doesn't feel optimal.
+[09:39] But I actually I, you know, I still got quite a lot out of it.
 
 **SPEAKER_01:**
-[07:54] Yeah.
+[09:42] Yeah.
 
 **SPEAKER_02:**
-[07:54] Even with that.
-[07:55] But yeah, the endless registrations were quite annoying.
-[07:59] And there were big side events in the event, small ones. Like I discovered a couple of days in, there was a quite large Polygon side event in the main venue.
-[08:08] And yeah, it was sort of hard to...
+[09:43] Even with that.
+[09:44] But yeah, it, the endless registrations were quite annoying, you know, and the, yeah, there were big side events in the event, small ones, like I discovered a couple days in, there was like a quite large, like, Polygon side event in the main venue, you know, and...
+[10:02] Yeah, yeah, it was sort of hard to.
 
 **SPEAKER_00:**
-[08:10] Well.
+[10:04] Well.
 
 **SPEAKER_03:**
-[08:11] Because everything was right there together.
-[08:12] And you can kind of walk to...
+[10:05] Because everything was right there together.
+[10:06] And you can kind of walk to.
 
 **SPEAKER_02:**
-[08:14] Something else that could be way better.
+[10:08] Something else that could be way better.
 
 **SPEAKER_00:**
-[08:15] Yeah, yeah, yeah.
+[10:10] Yeah, yeah, yeah.
 
 **SPEAKER_03:**
-[08:16] You could kind of test something out, and if it was looking silly, you could just run out and find another room.
-[08:21] And so it allowed you to... I don't know, it's like looking for a movie on Netflix or something.
-[08:26] You can try a bunch of movies and then settle on one versus the olden days where you had to buy a ticket to go to a theater.
-[08:31] And if you bet wrong, you're out of luck.
-[08:34] That's what a lot of this felt like, is I would sort of sign up for some event and then that would be half an hour drive out of the main event.
-[08:42] And by the time things would start, if it hit me I was into something silly, I'd still be like, "Well, maybe I should stay a little bit longer. I did sign up for this, and I can't sign up for another thing right now."
-[08:52] In the main area, I hit a couple of good ones there, but often the topic wasn't something I was interested in at the moment.
-[08:58] So.
+[10:11] You could kind of test something out, and if it was looking silly, you could just run out and find another room.
+[10:17] And so it allowed you to, like, kind of...
+[10:19] I don't know, it's like...
+[10:20] It's like looking for a movie on Netflix or something.
+[10:22] You can try a bunch of movies and then settle on one versus, like, the olden days where you had to buy a ticket to go to a theater.
+[10:29] And if you...
+[10:30] If you bet wrong, you're out of luck.
+[10:31] That's...
+[10:32] That's what a lot of this felt like is like I would sort of sign up for some event and then that would be...
+[10:38] That would be like half an hour drive out of the main event.
+[10:41] And by the time things would start, you know, if I...
+[10:44] If I...
+[10:45] If it hit me I was into something silly, you know, I'd still be like, well, maybe I should stay a little bit longer.
+[10:49] I did sign up for this, and I can't sign up for another thing right now, so...
+[10:53] Main area.
+[10:54] I hit a couple good ones there, but often, like, just the topic wasn't something I was interested in at the moment.
+[10:59] So.
 
 **SPEAKER_00:**
-[08:58] Well, I found what was kind of strange was that you signed up for these large blocks of time, and then the agenda wouldn't be clear when you were signing up.
-[09:06] Right.
-[09:07] And then you might see one good talk in that.
-[09:09] Some of them lasted like nine to five.
-[09:12] And so you get one good talk in there, and then people...
+[11:00] Well, I...
+[11:01] I found what was kind of strange was that you signed up for these, like, large blocks of time and then you wouldn't...
+[11:07] The agenda wouldn't be clear when you were signing up.
+[11:10] Right.
+[11:11] And then you might, like, see one good talk in that.
+[11:13] You know, like, some of them lasted like, nine to five.
+[11:16] And like, so you get, like, one good talk in there, and then people.
 
 **SPEAKER_02:**
-[09:14] Were just hanging out, co-working and having coffee and whatever for most of it.
-[09:18] And the talks were in this tight segment that they didn't name until much later.
+[11:19] Were just hanging out, like, co-working and having coffee and whatever for most of it.
+[11:23] And the talks were, like, in this tight segment that they didn't name until, like, much later.
 
 **SPEAKER_00:**
-[09:22] Yes, exactly.
-[09:23] And some of the more important, like, Vitalik saying something, and then the rest of it were hit or miss kind of afterwards.
-[09:28] Right.
+[11:28] Yes, exactly.
+[11:29] And some of the more important, like, you know, Vitalik saying something, and then the rest of it were like, you know, hit or miss kind of afterwards.
+[11:36] Right.
 
 **SPEAKER_02:**
-[09:29] So I tended to find out about Vitalik speaking by seeing that he was speaking.
-[09:33] Yeah.
+[11:37] So it was like, I tended to find out about Vitalik speaking by seeing that he was speaking.
+[11:41] Yeah, like.
 
 **SPEAKER_00:**
-[09:34] Yeah.
-[09:35] And then he's coming on.
+[11:42] Yeah.
+[11:43] And then he's, like, coming on and like, yeah, like.
 
 **SPEAKER_03:**
-[09:36] And I kind of would have liked to have seen that too.
-[09:38] But the thing is, I had signed up for a thing and I was across town when Kieran mentioned, "Hey, Vitalik's speaking here now."
-[09:44] And I'm like, well, that was the day that I probably chose unwisely too.
-[09:48] I wasn't happy with the talks I had gone to.
+[11:46] And I kind of would have liked to have seen that too.
+[11:48] But the thing is, I had signed up for a thing and I was like, across town when Kieran mentioned, hey, Vitalik speaking here now.
+[11:54] And I'm like, well, that was the day that I...
+[11:56] That was the day that I probably chose unwisely too.
+[11:59] I wasn't happy with the talks I had gone to.
 
 **SPEAKER_00:**
-[09:50] Right.
-[09:51] Well, and speaking of that, maybe we can touch upon some of the big themes of DevConnect.
-[09:55] Let's start with sort of the headline thing about Vitalik saying elliptic curves are going to die.
-[10:00] That seemed to make a lot of news.
-[10:02] And quantum computing was coming for us all.
-[10:04] What were your thoughts on that?
-[10:06] It's a Jim question, I guess.
-[10:08] Let's start with Jim.
-[10:09] Bring out that physics background, Jim.
+[12:02] Right.
+[12:03] Well, and speaking of that, maybe we can touch upon some of the big themes of DevConnect.
+[12:08] Let's start with sort of the headline thing about Vitalik saying elliptic curves are going to die.
+[12:13] That seemed to make a lot of news.
+[12:15] And quantum computing was coming for us all.
+[12:18] What were your thoughts on that?
+[12:19] It's a Jim question I guess there.
+[12:21] Let's start with Jim.
+[12:22] Bring out that physics background.
+[12:24] Jim.
 
 **SPEAKER_03:**
-[10:11] I'll pass this to Kieran.
+[12:25] I, I'll pass this to Kieran.
 
 **SPEAKER_02:**
-[10:13] Okay, so I will say that both Jim and I have a physics background, but mine was more from the math side where we're good at the beauty of the equations but don't necessarily have an intuitive sense of... the physics people were good at estimating the answer and then back-working into the actuality of it, where the math people might have actually been better at the math side, though the physicists are quite good at it, but less so. Nevertheless.
-[10:32] I had spent some time in quantum and the machinery on how a quantum computer might work and so on.
-[10:37] I still don't have that much evidence that it's coming soon.
-[10:40] But would you really?
-[10:42] I don't know.
-[10:42] It's hard to keep secrets under wraps.
-[10:45] I think probably governments and private sector researchers are putting a bunch of money into it.
-[10:50] But for a long time, there were these... Google got it to 20 qubits and they stayed together for 10 to the negative 7 seconds instead of negative 9, and it computed the divisors of 63 or whatever, something like that.
-[11:01] Right.
-[11:02] And so yeah, I mean, I don't know how we would know when quantum's coming, like, these coins are stolen.
-[11:07] But even then, you might not want to do that.
-[11:09] I also think the cryptography tends to come back pretty fast when new cryptanalytic tools come in.
-[11:15] I believe there's already quantum-resistant stuff.
-[11:18] It'll be a hard switchover, but once you knew that the Bitcoin were still getting stolen, you might still have... I don't know how, do you steal them all in one 10-minute segment or is it still kind of slow and you have a little bit of time to migrate over? Or you just snapshot all the balances at one date when you're pretty sure that... I don't know how we would deal with it.
-[11:36] And yeah, I'm often skeptical, but color me a little skeptical on quantum happening much faster than people expect, which is the real scenario you're worried about.
+[12:27] Okay, so I will say that both Jim and I have a physics background, but mine was more from like the math side where we're like good at the beauty of the equations but like don't necessarily have it as an intuitive sense of like the physics people were good at like estimating the answer and then like back working into the actuality of it where the math people might have actually been better at the math side though the physicists are quite good at it, but less so so nevertheless.
+[12:53] I had spent some time in quantum and like the machinery on how quantum computer might work and so on.
+[13:00] I still don't have that much evidence that it's coming soon.
+[13:03] But would you really?
+[13:04] I don't know.
+[13:05] It's like it's hard to keep secrets under wraps.
+[13:07] Like I, I think probably governments and private sector researchers are putting like a bunch of money into it.
+[13:13] But for a long time there were these like Google got it to 20 qubits and they stayed together for 10 to the negative 7 seconds instead of negative 9 and it computed the divisors of 63 or whatever, something like that.
+[13:28] Right.
+[13:29] And so yeah, I mean I think, I don't know how we would know when quantum's coming like these coins are stolen.
+[13:35] But even then like you might not want to do that.
+[13:38] I think.
+[13:39] I also think the cryptography tends to come back pretty fast when new crypt analytic tools come in.
+[13:44] Like I believe there's already quantum resistant stuff.
+[13:47] It'll be a hard switch over like, but once you knew that the Bitcoin were still getting stolen, you might still have like, I don't know how, like do you steal them all in one, you know, 10 minute segment or like is it still kind of slow and you have a little bit of time to migrate over or you just snapshot all the balances at one date when you're pretty sure that I don't know how we would deal with it but...
+[14:12] And yeah, I'm, I guess I'm often skeptical, but color me a little skeptical on quantum happening much faster than people expect, which is the real scenario you're worried about.
 
 **SPEAKER_03:**
-[11:45] It's one of those stories that's always in the news like, "Oh, was there some big breakthrough or progress in quantum computing? It's coming in a couple of years," but that's what they've been saying for decades now.
-[11:55] So.
+[14:23] It's one of those stories that always in the news like, like oh, was there some big breakthrough or progress in quantum computer.
+[14:30] It's coming in a couple years but that's what they've been saying for decades now.
+[14:34] So.
 
 **SPEAKER_00:**
-[11:55] Yeah, and it seems like a bunch of people are... I mean, I would say quantum resistance was a big theme.
-[12:00] Like there were a lot of people claiming either research or advances in quantum resistance at the conference as well.
-[12:05] So it seems like Ethereum is probably better situated to implement quantum resistance.
-[12:09] I mean, it would be painful, but it would be very hard to do it on Bitcoin more structurally, I think, than... they like to change less.
-[12:16] Yeah, exactly.
-[12:17] But what do you think, Bob?
-[12:19] What was your impression of that?
+[14:35] Yeah, and it seems like a bunch of people are...
+[14:37] I mean I would say quantum resistance was a big theme.
+[14:40] Like there were a lot of people claiming either research or advances in quantum resistance at the conference as well.
+[14:47] So it seems like Ethereum is probably better situated to implement a quantum resistance.
+[14:51] I mean it would be painful but you know, like it would be very hard to do it on Bitcoin more structurally I think than, you know, they like change less.
+[15:00] Yeah, exactly.
+[15:01] They, they, it would but what do you think Bob?
+[15:03] What was your impression of that?
 
 **SPEAKER_01:**
-[12:20] Yeah, I mean, I don't know.
-[12:22] You can't really tell when the thing's coming up.
-[12:24] But I'm not worried really.
-[12:26] It's like everyone's talking about it.
-[12:28] It'll all be fine.
-[12:29] Everyone's very aware.
+[15:05] Yeah, I mean I, I don't know.
+[15:07] You can, you can't really tell when the thing's coming up.
+[15:10] But I'm not, I'm not worried really.
+[15:12] Like it's like everyone's talking about it.
+[15:14] It's all be fine.
+[15:15] Everyone's very aware.
 
 **SPEAKER_00:**
-[12:30] It's a known problem that a bunch of people are working on, but it's unknown when it's going to hit us, I guess is the way I'd put it.
+[15:17] It's a known problem that a bunch of people are working at it.
+[15:20] But no, it's unknown when it's going to hit us I guess is the way I put it.
 
 **SPEAKER_01:**
-[12:35] Yeah, I mean, honestly, there are chains that have already got quantum resistance stuff.
-[12:40] It just seems to be a cost thing from what I can see of going, "Okay. Well, it's probably not a problem. So why would we make ourselves less competitive now?"
-[12:48] I don't think it's a market winner of saying, "Oh yeah, we're like 10x slower but we're resistant."
+[15:24] Yeah, I mean honestly, you know that there are, there are change that chains that have already got quantum resistance stuff.
+[15:30] It just seems to be like a cost thing from what I can see is, is going okay.
+[15:35] Well it's probably not a problem.
+[15:36] So why would we make ourselves less competitive now?
+[15:38] Like I don't think it's a market winner of saying oh yeah, like we're like 10x slower but you know, we're resistant.
 
 **SPEAKER_02:**
-[12:53] Yeah.
+[15:46] Yeah.
 
 **SPEAKER_01:**
-[12:54] But it's obviously an incoming matter, though the hotter matter really is privacy.
-[13:00] I think that's really...
+[15:47] But, but it's obviously, you know, an incoming matter though the, the hotter matter really is, is privacy.
+[15:53] I think that's really.
 
 **SPEAKER_00:**
-[13:01] Well, I think the other thing in between those two things is ZK. So maybe we can... Bob, I know you have some thoughts on that.
-[13:07] Maybe we can start with you this time.
+[15:54] Well, I think the hot...
+[15:55] I mean the other thing in between those two things is ZK so maybe we can, I mean Bob, I know you have some thoughts on that.
+[16:01] Maybe we can start with you this time.
 
 **SPEAKER_01:**
-[13:09] Yeah, so talking about where we went, I was mainly just in the main venue with the exception of the day before the main event, where we had the second Ethereum Cypherpunk Congress, which is a good fun event.
-[13:19] And the other thing that there was on the final day was the Ethereum Privacy Stack event.
-[13:24] So both of them were organized by Web3Privacy Now, the second one in collaboration with the privacy guys at the Ethereum Foundation.
-[13:31] So that is a pretty new group, I think about 50 people working on that at the EF.
+[16:03] Yeah, so I mean talking about where we went, I was mainly just in the main venue with the exception of the day before the main event where we had the second Ethereum Cypherpunk Congress, which is a good fun event.
+[16:16] And the other thing that there was on the final day was the Ethereum Privacy Stack event.
+[16:21] So both of them were organized by Web3Privacy Now the second one in collaboration with the...
+[16:26] The privacy guys at the Ethereum Foundation.
+[16:29] So that is a pretty new group, I think about 50 people working on that at the EF.
 
 **SPEAKER_02:**
-[13:36] 50 people, wow.
-[13:37] Yes, a lot of ETH.
-[13:39] Good.
-[13:39] I mean, good for them.
-[13:40] Wow.
+[16:35] 50 people, wow.
+[16:36] Yes, a lot of ETH.
+[16:37] Good.
+[16:38] I mean, good for them.
+[16:39] Wow.
 
 **SPEAKER_01:**
-[13:41] So, yeah, pretty serious and in multiple different areas.
-[13:44] So they've got the Kopeto project, which basically seems to be like SDK and tooling to help with integration of privacy features into wallets, using existing projects, with Railgun being a key one.
-[13:56] Basically like, "Hey, here's how to plug in privacy into an existing wallet. And we've kind of done most of the work."
+[16:40] So, yeah, you know, pretty serious and in multiple different areas.
+[16:45] So they've got the...
+[16:46] The Kotaku project, which basically seems to be like SDK and tooling to help with integration of privacy features into wallets, using existing projects with Railgun being a key one.
+[16:57] Basically like, hey, here's how to plug in privacy into an existing wallet.
+[17:01] And we've kind of done most of the work.
 
 **SPEAKER_03:**
-[14:02] Also.
+[17:03] Also.
 
 **SPEAKER_01:**
-[14:02] On that, one of the major main talks that there was on that last day was Vitalik and Roger Dingledine, great name, of Tor, really talking about the Tor-ification of Ethereum, which is planned.
-[14:15] So that was a bit of a reveal that there is work underway to look at all of the different levels and components of that protocol stack and work out how to unify them really, or at least make them Tor-friendly, including things like the block formation and the validator leader stuff and hiding all of that.
+[17:04] On that...
+[17:05] One of the major main talks that there was on that last day was, was Vitalik and Roger Dingledine, great name of Tor, really talking about the Torification of Ethereum, which is planned.
+[17:16] So that was a bit of a reveal that there is work underway to look at all of the different levels and components of that protocol stack and work out how to, you know, unify them really, or at least make them Tor friendly, including things like the block formation, you know, and the validator, you know, leader stuff and hiding.
+[17:39] All of that.
 
 **SPEAKER_02:**
-[14:31] I want to jump in quickly on the Congress.
-[14:33] I want to hate a little bit first.
-[14:35] Okay.
-[14:35] The Infinite Garden appeared on the screen again.
+[17:40] I want to jump in quickly on the Congress.
+[17:42] I want to hate a little bit first.
+[17:44] Okay.
+[17:45] The infinite garden appear on the screen again.
 
 **SPEAKER_01:**
-[14:38] Like at DevConnect, you mean?
-[14:39] Sorry, no.
+[17:47] Like a DevConnect, you mean?
+[17:49] Sorry, no, no.
 
 **SPEAKER_02:**
-[14:40] On the Cypherpunk Congress.
-[14:42] I'm not sure you saw that one.
+[17:50] On the Cypher Congress.
+[17:51] I'm not sure you saw that one.
 
 **SPEAKER_01:**
-[14:43] Okay, okay.
+[17:52] Okay, okay.
 
 **SPEAKER_02:**
-[14:44] Yeah, I took a picture of it for the record, put it in the show notes.
-[14:47] We're like halfway to a wartime EF, but we've kept the old generals and put them on the National Guard or something, the Coast Guard.
-[14:58] And let me connect this to sort of a broader point.
-[15:01] I really liked that you saw a bunch of the old faces at DevConnect.
-[15:04] People have been around for a long time.
-[15:06] When I watched the Sky and Uniswap talks... Sky is formerly MakerDAO.
-[15:11] I'm against this rebrand, but they seem to really take being a DAO seriously, where a lot of DAOs, it's sort of like marketing and you kind of don't... it's led pretty top-down.
-[15:20] But they were up there talking about the DAO way of doing things, and they've got proposals that you vote on. And I'm sure it's still a little bit oligarchic, but they really meant it, the DAO part, on some level.
-[15:32] I was talking to a cool guy who I need to follow up with, actually with Victor.
-[15:36] And we were showing him the app on the phone, and he was like, "Oh, are you getting a whole node on there?"
-[15:40] I was like, no.
-[15:41] Those days, we've given up on this dream.
-[15:44] I think it's like the thing needs to be fast and you're not going to run the node on the phone even if you could.
-[15:49] It's going to melt maybe one day. Maybe the tech on the watch.
-[15:53] Yes, node on the watch.
-[15:54] Exactly.
-[15:55] On the Apple Watch.
+[17:53] Yeah, I took a picture of it for the...
+[17:55] The record, put in the show notes.
+[17:57] The...
 
 **SPEAKER_03:**
-[15:56] But.
+[17:58] We're...
 
 **SPEAKER_02:**
-[15:57] So I'm making fun of it a little bit, but I like that these people still exist.
-[16:01] And it's like 2017, 2015, the same things.
-[16:06] And in that same conversation, we were talking to an old friend of ours.
-[16:10] He's like, "Yeah, Railgun, it's great, but I want it to go harder. I want there to be one account for the whole network that all activity goes under, and then you use your ZK receipts to pull out what's specific to you."
-[16:22] But all that's like, hell yeah, you know, let's go hardcore dreamer, cypherpunk.
-[16:27] And almost no other conference is like that.
-[16:30] I haven't been to a big Solana builder conference, but I assume that those are pretty commercial, just from the whole Solana ecosystem ethos.
-[16:37] I'm surprised these people are still around.
-[16:39] But this is great.
-[16:40] So I wanted to throw a plug out that if you're on crypto Twitter too much, you worry that just literally everything about the industry is price action, and there are still some true believers.
-[16:50] It's kind of the same people that it was in somewhere between 2015 and 2017.
-
-**SPEAKER_01:**
-[16:55] Lefteris did a good tweet, a good little video clip, actually, because Lefteris, famously one of those OG builders with Rotki portfolio management software that he has as his main product, being offline, so it's a local app.
-[17:11] He had a good new phrase as well, which was "aligned apps," with that alignment being with you, the user, not some weird Ethereum alignment or anything, but saying it's on your side.
-[17:22] But the tweet that he had was one of the terrible things... there was the network, the Wi-Fi was just wrecked for many of the days. Like nothing, even data on your phone.
-[17:32] Because there's so many people doing it at the same time.
-[17:34] But he did a little video saying, "The network's down, but my app still runs."
+[17:59] We're like halfway to a wartime EF, but we've like kept the old generals and like put them on the, you know, National Guard or something, the Coast Guard, you know, and let me connect this to sort of like a broader point.
+[18:11] I really liked that you saw a bunch of the old faces at DevConnect.
+[18:15] People have been around for a long time.
+[18:17] Like when I watched the Sky and Uniswap talks, they did seem, you know, Sky has always formerly MakerDAO.
+[18:24] I'm against this rebrand, but they seem to really take being a DAO seriously, where a lot of DAOs is sort of like marketing and you kind of don't, you know, it's led pretty top down.
+[18:35] But like they, you know, they were, they were up there talking about the DAO way of doing things and you know, they, they've got proposals that you vote on and I'm sure it's still like a little bit oligarchic, but they really meant it.
+[18:49] The DAO part on some level.
+[18:50] I was talking to a cool guy who I need to follow up with, actually with Victor.
+[18:55] And we're showing him the app on the phone, and he was like, oh, are you getting a whole note on there?
+[18:59] I was like, no.
+[19:00] Like, those days, we've given up on this dream.
+[19:02] I think, like, it's like the thing needs to be fast and, like, you're not gonna run the node on the phone even if you could.
+[19:08] It's gonna melt maybe one day, you know, maybe the tech on the watch.
+[19:12] Yes, known on the watch.
+[19:13] Exactly.
+[19:14] I'm the Apple Watch.
 
 **SPEAKER_03:**
-[17:39] Look.
-
-**SPEAKER_00:**
-[17:40] But I will say on that... not to push back against what you're saying, but I do think the privacy people have kind of gotten more customer-aligned than purely philosophical-aligned.
-[17:50] In the Ethereum Privacy Summit, I heard many times like, "Yes, we want consumer privacy, no, we don't want to support North Korea or pedophiles," which seems to be the right line to draw.
-[18:01] You know, it's like, I think it's.
+[19:15] But.
 
 **SPEAKER_02:**
-[18:02] Well, okay, there's a debate.
-[18:04] Bob, do you want to jump in?
-[18:05] I ran into Amin during the conference who seems to have created this debate.
-[18:09] You might have more context on it than I do.
-[18:12] But I'll backfill if need be.
+[19:16] So I'm making fun of it a little bit, but I...
+[19:18] I like that these people still exist.
+[19:20] And they...
+[19:21] It's like 2017, 2015, like, the same things.
+[19:24] And, you know, they're...
+[19:25] We in that same conversation.
+[19:26] We're talking to old friend of ours.
+[19:28] He's like, yeah, Railgun, it's great, but I want it to go harder.
+[19:32] I want there to be one account for the whole network that, you know, all activity goes under, and then you use your ZK receipts to pull out what's specific to you.
+[19:41] But all that's like, hell, yeah, you know, let's go hardcore dreamer, Cypherpunk, you know, and almost no other conferences like that.
+[19:49] Like, I haven't been to, like, a big Solana builder conference, but I assume that those are, like, pretty commercial.
+[19:54] Just from the whole Solana ecosystem ethos.
+[19:57] I'm surprised these people are still around.
+[19:59] But this is great.
+[20:00] So I wanted to, you know, throw a plug out that if you're on crypto Twitter too much, you worry that just like literally everything about the industry is price action, and there are still some true believers.
+[20:10] It's kind of the same people that it was in somewhere between 2015 and 2017.
 
 **SPEAKER_01:**
-[18:14] Yeah, sure.
-[18:15] So I guess specifically there you have this philosophical question of if you do have a privacy tech, should that be unconditionally single anonymity set with the whole world?
-[18:27] Obviously, the larger the anonymity set that you have, the better security you have, with the ideal being it's everything, it's all transactions for everything.
-[18:35] So I mean, that's the scenario that you have with Monero, though Monero is using ring signatures at the moment.
-[18:41] There are plans for use of ZK to... it's a full membership proof thing that they got proposed.
-[18:47] But right now it's just ring sigs.
-[18:48] But it's on by default, so privacy on by default, mixing with everything by default.
-[18:54] On the other side, on Zcash, for example, you can have transparent transactions or you can go into the different shielded pools.
-[19:01] The one that you're talking about in particular is Privacy Pools.
-[19:05] Privacy Pools I think was either a suggestion from Vitalik or Vitalik was one of many.
-
-**SPEAKER_02:**
-[19:10] He's on the paper.
-
-**SPEAKER_01:**
-[19:11] Yeah, yeah.
-[19:12] A number of co-authors, but Amin Soleimani is a primary guy, and Zac Cole as well. They just did a raise at 0xbow, which I believe raised three and a half million.
-
-**SPEAKER_02:**
-[19:21] But the approach... quite a responsible number.
-
-**SPEAKER_01:**
-[19:24] Yes, it's maybe about how much it might cost to develop the technology and...
-
-**SPEAKER_02:**
-[19:27] A little bit more.
-
-**SPEAKER_01:**
-[19:28] But the approach there, and it was really in reaction to the legal action on Tornado Cash, was really saying, "Okay, well if you do this blind privacy approach, you do intermingle yourself with North Korea and terrorists and crime."
-
-**SPEAKER_00:**
-[19:42] Yeah.
-
-**SPEAKER_01:**
-[19:42] And the Monero reaction to that is yes.
-
-**SPEAKER_02:**
-[19:44] So let me...
-
-**SPEAKER_01:**
-[19:45] If you can back up... sorry, just to finish the thought there.
-[19:47] So yeah, really a primary thing was not wanting to have that disassociation, but also not wanting developers to go to jail, and saying if you can credibly show, "Look, here is a ZK proof that shows that I am not in the same group as these known baddies," then that's a kind of a responsible middle ground.
-[20:07] It does affect your anonymity set, but maybe not that much.
-
-**SPEAKER_02:**
-[20:10] Let me add maybe the flip side argument.
-[20:12] I'm never a user of any of these technologies.
-[20:14] I'm sure I will test some at de minimis amounts at some point.
-[20:18] Tornado Cash.
-[20:19] Terrible name.
-[20:20] I believe that it actually also contained a capability, at least, to prove source of funds on one side.
-[20:27] So you could prove that your funds were acquired legitimately even if they were obscured later.
-[20:31] I don't think you can do a severability with the bad funds.
-[20:34] And that's the key point that Amin was telling me is the difference.
-[20:37] But I think that the counterfactuals, what the hardcore other-side cypherpunks would say is something like, "Well, what about cash? Like, all cash is dirty. It's all been used in some bathroom to get some illegal substance from point A to point B."
-[20:51] It's really the preferred technology for certain kinds of money laundering and all that sort of thing.
-[20:57] There are serial numbers, I guess, but we don't go and say cash is the problem.
-[21:01] And the anonymity set of cash includes lots of bad acts.
-[21:04] Right.
-[21:04] And so this sort of kind of presumption of guilt, like, if you're putting your money in the pool, you're aiding and abetting North Korean money laundering... I don't buy it at all.
-[21:14] And on the other side, you don't want to cede that argument.
-[21:17] And everywhere in the world is trying to cede that argument.
-[21:20] The banking system definitely has a "guilty by default" ethos, like prove everything about you and we're going to surveil every transaction and we'll tell you if you're allowed to bank, basically.
-
-**SPEAKER_01:**
-[21:31] I mean, I think there's certainly a very valid argument on that side of sort of this supposition of you going, "But it wasn't me, sir. Here's my ZK proof, I promise."
-[21:40] "What's a ZK proof? What are you even talking about?"
-
-**SPEAKER_02:**
-[21:43] Exactly.
-[21:43] So if you pick this half-step, you're kind of just saying, "Oh, you use this privacy tech, but you're one of the easy ones to pick off."
-[21:50] I don't know.
-
-**SPEAKER_01:**
-[21:51] And it makes it a permissioned system again.
-
-**SPEAKER_02:**
-[21:53] Yeah.
-
-**SPEAKER_01:**
-[21:54] And you could say, "Oh, it's only a bit."
-[21:55] But yeah, talking to Zac, it was really...
-
-**SPEAKER_02:**
-[21:57] I don't know the details.
-[21:58] Amin said it does break the fungibility, which is kind of a way of saying the same thing.
-[22:03] There's like, with Bitcoin you have tainted ones and not.
-
-**SPEAKER_01:**
-[22:06] But talking to Zac, it seemed a primary motivation wasn't so much being compliant as it was, "We don't want any or more of our friends to go to jail."
-
-**SPEAKER_02:**
-[22:15] Totally.
-[22:15] Yeah, I guess.
-
-**SPEAKER_01:**
-[22:16] And maybe that's a passing phase.
-
-**SPEAKER_02:**
-[22:17] It's that these...
+[20:15] To Lefteris.
+[20:16] Did a good tweet, a good little video clip, actually, because Lefteris, you know, famously one of those OG builders with Rotki portfolio management software that he has as his main product being offline, you know, so it's a local app.
+[20:30] It was...
+[20:31] He had a good new phrase as well, which was aligned apps with that alignment being with you, the user, not, you know, some weird Ethereum alignment or anything, but saying it's on your side.
+[20:42] But the tweet that he had was one of the terrible things that was...
+[20:45] There was the network, like the Wi-Fi was just wrecked, like many of the days, like, nothing even data on your phone pretty.
+[20:53] Because there's so many people doing at the same time.
+[20:55] But he...
+[20:56] He did a little video saying, the network's down, but my app still runs.
 
 **SPEAKER_03:**
-[22:18] Yes.
-
-**SPEAKER_02:**
-[22:19] At the same time, I don't really know what the Tornado Cash people did other than build software.
-[22:23] It could have been more than building the software.
-[22:25] There's no way that building some software should count as a conspiracy to launder some money.
-[22:30] That's never applied in any other case, really.
-[22:33] Maybe except as regards the crypto industry.
-
-**SPEAKER_01:**
-[22:36] Also worth saying though, I think, is that many parts of the world are not so progressive as the US on that matter.
-
-**SPEAKER_02:**
-[22:42] Yeah.
+[21:02] Look.
 
 **SPEAKER_00:**
-[22:42] Well, Jim, I think we're starting to get... we're a little bit over 30 minutes.
-[22:46] Want to kind of touch base with you.
-[22:48] I know you're still pretty jet-lagged on what were your impressions at the conference, especially since you attended a lot of agentic AI talks too.
-[22:55] So, how real is that?
-[22:57] What do you think about whether... what were your big takeaways from the conference?
+[21:03] But I will say, I mean on that kind of like I, I, I would not to push back against what you're saying but like I do think the site, the privacy people have kind of gotten more customer aligned than purely philosophical aligned.
+[21:16] Like in the Ethereum Privacy Summit, I heard many times like yes, we want consumer privacy, no, we don't want to support North Korea or pedophiles like, like, which seems to be the right line to draw.
+[21:28] You know, it's like I think it's.
+
+**SPEAKER_02:**
+[21:29] Well, okay, there's a debate.
+[21:30] Bob, do you want to jump in?
+[21:32] I ran into Ameen during the conference who seems to have created this debate.
+[21:36] You might have more context on it than you know, than I do.
+[21:38] But I'll, I'll backfill if need be.
+
+**SPEAKER_01:**
+[21:40] Yeah, sure.
+[21:41] So, so I guess specifically there you have this philosophical question of if you do have a, you know, a privacy tech, should that be unconditionally, you know, single anonymity set with the whole world?
+[21:55] You know, do obviously the larger anonymity set that you have, the better security you have with the ideal being it's everything, you know, it's all transactions for everything.
+[22:04] So I mean that's the scenario that you have with, with Monero though.
+[22:08] Monero is, you know, using ring signatures at the moment.
+[22:11] There are plans for use of use of ZK to, you know, it's a full, full membership proof thing that they got proposed.
+[22:18] But right now it's just ring sigs.
+[22:20] But it's on by default, you know, so privacy on by default, mixing with everything by default.
+[22:25] On the other side on Zcash for example, you can have...
+[22:28] Transparent transactions or you can go into the different shielded pools.
+[22:31] The one that you're talking about in particular is Privacy Pools.
+[22:34] Privacy Pools I think was either a suggestion from Vitalik or Vitalik was one of many.
+
+**SPEAKER_02:**
+[22:40] He's on the paper.
+
+**SPEAKER_01:**
+[22:41] Yeah, yeah.
+[22:42] A number of co-authors but, but I mean Soleimani is, is a primary guy and Zac Cole as well, they just did a raise at 0xBow which I believe raised three and a half million.
+
+**SPEAKER_02:**
+[22:54] But the approach quite a responsible number in the.
+
+**SPEAKER_01:**
+[22:57] Yes, it's maybe about how much it might cost to develop the technology and.
+
+**SPEAKER_02:**
+[23:01] A little bit more.
+
+**SPEAKER_01:**
+[23:02] But, but yeah, the approach there and it was really in reaction to the legal action on Tornado Cash was really saying okay, well if you do this blind privacy approach, you do intermingle yourself with North Korea and terrorists and crime.
+
+**SPEAKER_00:**
+[23:18] Yeah.
+
+**SPEAKER_01:**
+[23:19] And the Monero reaction to that is yes.
+
+**SPEAKER_02:**
+[23:22] So let me, let me, but if.
+
+**SPEAKER_01:**
+[23:23] You can back up.
+[23:24] Sorry, just to finish the thought there.
+[23:25] So yeah, really a primary thing was like not wanting, wanting to have that disassociation but also not wanting developers to go to, to go to jail and saying if you can credibly show, look, here is a ZK proof that shows that I am not in the same group as these known baddies, then you know that that's a kind of a responsible middle ground.
+[23:49] It does affect your anonymity set, but maybe not that much.
+
+**SPEAKER_02:**
+[23:52] Let me add maybe the flip side argument, but also...
+[23:54] So I never a user of any of these technologies.
+[23:56] I'm sure I will test some at the minimous amounts at some, some point.
 
 **SPEAKER_03:**
-[23:02] Well, I was pretty excited to go to anything AI, but I don't know, we're sort of in the hype part of the hype cycle right now.
-[23:09] And I went on the first day to one where multiple... I don't know, it was like typical people speaking would be somebody who had put together a company where they were using AI to maybe go and do DeFi trading or something like that.
-[23:21] And it would holistically understand what's happening in the world and try to use that to trade. And there were panels of people where it was multiple people with a variant of that story.
-[23:31] And it was all very inspirational-sounding and a little bit light on the details, but everybody was very excited by it.
-[23:38] But I'm sitting there listening, and I'm like, "There's no way that this stuff is really cool. There's no way they're doing it, though."
-[23:44] And I remember it would be a much bigger deal if some of these succeeded.
-[23:47] And it's funny because at these events you can still have a lot of marketers are there, but there are still enough geeks there that sometimes people just blurt out honest things.
-[23:55] And after hearing lots of marketing speak, I remember... I forget who it was, and I probably wouldn't say who it was anyway.
-[24:01] But one guy, they had been spinning up this whole story again, like I had said before, but they were like, "Oh, and this actually works."
-[24:08] And he got a little too honest and he was like, "Oh, if this thing actually worked, you think I'd be sitting here right now?"
-[24:14] And so that was sort of the theme to me.
-[24:16] It's overpromising some really cool ideas, but it didn't look like it was actually... and this is kind of the case in AI in general right now.
-[24:24] There are huge breakthroughs.
-[24:26] AI can do a lot of stuff that would have shocked me a few years ago, but it's hard to get them to actually complete the whole job for you or actually work as advertised.
-[24:36] So that's the common theme I was seeing there in these talks.
-
-**SPEAKER_00:**
-[24:39] Yeah.
-
-**SPEAKER_01:**
-[24:39] Did you see anything with post-apps?
-[24:42] Any kind of post-app, sort of like, "Hey, look, we've... you can just AI-drive this and you know, that kind of text or voice interface as opposed to UI?"
+[24:00] The...
 
 **SPEAKER_02:**
-[24:50] I'm confused.
-
-**SPEAKER_00:**
-[24:51] Yeah.
-
-**SPEAKER_01:**
-[24:52] What's post-applications?
+[24:01] Tornado Cash.
+[24:02] Terrible name.
+[24:03] You know, I think the...
+[24:04] I believe that it actually also contained a capability at least to prove source of funds on one side.
+[24:10] So like you could prove that your funds were acquired legitimately even if they were obscured later.
+[24:16] I don't think you can do a severability with the bad funds.
+[24:19] And I, that's the key point that Ameen was telling me is the difference.
+[24:22] But you know, I think that the counterfactuals, what the, the hard core other side Cypherpunks would say is something like, well, what about like cash, like all cash is dirty.
+[24:34] It's all been used in some bathroom to get some illegal substance from point A to point B.
+[24:39] You know, it's really the preferred still technology for certain kinds of money laundering and, and all that sort of thing.
+[24:46] There are serial numbers, I guess, but we don't go and say cash is the problem.
+[24:50] And the anonymity set of cash includes lots of bad acts.
 [24:53] Right.
-[24:54] Soon we won't have applications.
-[24:56] We'll just be talking.
-
-**SPEAKER_02:**
-[24:57] Oh, post-apps, yes.
-
-**SPEAKER_01:**
-[24:59] Yeah.
-[24:59] Was it more infrastructure stuff that you were seeing?
-
-**SPEAKER_03:**
-[25:02] It looked like infrastructure stuff, what I heard, but there were many, many groups up there talking about it.
-
-**SPEAKER_02:**
-[25:07] The trading bots are arguably post-apps.
-[25:09] I mean, you kind of probably tell them what to do and they theoretically give you more money than you had when you gave it to them.
-[25:15] It is like a little financial manager.
-[25:17] But I've also, I think I've said before, when I've test-driven Claude and told it to go do a swap on our testnet, it can do it.
-[25:25] Yeah, yeah, but it goes pretty slow through the UI.
-[25:28] It's like understanding it visually, and I don't know that it's that much easier than a human, but I think you could mostly give a declarative intention to an AI.
-[25:37] Like, "Hey, I want to rebalance from Bitcoin into Bitcoin and ETH."
-[25:41] Well, they can do it, but it's not like... sorry, go, Jim.
-
-**SPEAKER_03:**
-[25:45] Well, I guess there is a subtle distinction between an agent and a helper, or just using AI as the UI as an autonomous agent.
-[25:52] That's the stuff that seems not quite baked to me yet.
-[25:55] But I saw a couple talks where people were talking about just using it in place of the existing UIs that are out there right now to help you each step of the way do things.
-[26:03] And that probably is great at... we all sort of use AI in that kind of thing right now.
-
-**SPEAKER_00:**
-[26:08] Yeah, I did hear a very interesting talk by the people formerly Infura, but now DIN, Decentralized Infrastructure Network, who are talking about really thinking about AI agents as users and how to make it easier for them to interact with the network.
-[26:21] So from that point of view, I do think that there's some... I don't think it's really replacing UX.
-[26:26] I think it's more targeting a different class of user entirely, agents.
-
-**SPEAKER_02:**
-[26:30] Let me add to that.
-[26:31] For a long time I've been worried about our mobile story.
-[26:34] During the conference, I was using our app on mobile a bunch, and while I'm still worried about it, I think in many cases it will be leapfrogged by just like, "Hey, chat, go do this thing in this app for me."
-
-**SPEAKER_00:**
-[26:44] Yeah.
-
-**SPEAKER_02:**
-[26:44] And there's a downside to that in that we have just yet another aggregator, but an upside in that you might not have to make a really slick mobile app.
-
-**SPEAKER_00:**
-[26:54] Yeah.
-
-**SPEAKER_02:**
-[26:54] And I think that'll continue.
-[26:56] And I don't use that pattern much yet, but it's something we should definitely lean into.
-[27:01] And I've also seen pretty funny things.
-[27:04] Some B2B SaaS Twitter handle made some post, was like, "Yeah, we sold the enterprise our app. We wanted them to use it more. So we made an AI to use it for them and they're using it more."
-[27:14] So, whoa.
-
-**SPEAKER_00:**
-[27:15] What you described, though, I heard the MetaMask team, they're really talking about intents, like trying to, instead of making you do a lot of clicks or stuff, just tell it, "Okay, this is what I'm trying to achieve," and then "Find me the best savings."
-[27:28] Right.
-[27:28] And then we'll go and do all of that stuff.
-[27:30] I know we're over time, so I want to go around the horn and say what is the biggest takeaway you got from this DevConnect?
-[27:36] Let's start with you, Kieran.
-
-**SPEAKER_02:**
-[27:38] Privacy seems much more viable now than I thought.
-[27:41] I've been generally a skeptic, even us having worked on it a bunch, but I think there are pretty solid mainnet live use cases for it that work now that we could also incorporate.
-[27:52] I honestly think if we're talking about consumer mass adoption, you can't really have these cleartext balances.
-[27:58] Yes, it's pseudonymous, but it makes everybody uncomfortable.
-[28:03] Like Bob is fond of quoting the time when very obviously one of the Ethereum core devs moved a quarter billion dollars into finance or whatever.
-[28:10] So I've tried to accelerate our privacy roadmap in response.
-
-**SPEAKER_00:**
-[28:14] Jim, what was your big takeaway from this conference?
-
-**SPEAKER_03:**
-[28:17] Well, the coolest thing that I saw, if it's real, is ZK is also one of these things which is prone to overhyping.
-[28:23] But it seems like maybe scalability of Ethereum might be solved through some ZK means sometime in the next couple of years, if that really happens.
-[28:32] Maybe I've heard something about that before, but I probably just ignored it.
-[28:36] But people were talking about it like it's around the corner right now.
-[28:39] Looked into it a little bit.
-[28:40] It looks, if it does what they say it does, it could be pretty impressive.
-[28:45] So that was exciting to me.
-
-**SPEAKER_00:**
-[28:47] Bob, what was the biggest takeaway for you?
+[24:54] And so this sort of kind of like presumption of guilt, like you know, if you're putting your money in the pool, you're aiding and abetting North Korean money laundering.
+[25:03] I, I don't buy it at all.
+[25:05] And you know, on the other side, like you don't want to cede that argument.
+[25:09] And everywhere in the world is trying to cede that argument.
+[25:12] Like the, the banking system definitely has like a guilty by default ethos like prove everything about you and we're going to surveil every transaction and you know, we'll tell you if you're allowed to bank basically.
 
 **SPEAKER_01:**
-[28:49] Yeah, and I think that's true on a few different pieces.
-[28:52] Both in terms of that privacy.
-[28:54] But yeah, also scaling. Like I think some of these things have taken so long.
-[28:58] Here we are 10 years in.
-[29:00] I just looked. It was November 10th, by the way, the Strato talk.
-[29:04] Congratulations.
-
-**SPEAKER_00:**
-[29:05] Yeah, exactly.
-[29:06] Almost exactly.
-
-**SPEAKER_01:**
-[29:07] But yeah, some of these things have taken 10 years really to get where we thought we'd get in a few months even.
-[29:13] And yeah, I think that will be the ZK-ification of the L1 that would basically end up with not really doing any execution on the L1.
-[29:21] It's just proofs of things that are happening up above in whatever execution environment that might be.
-[29:27] So yeah, I'm feeling very... we didn't talk about the price action, but that does not at all to my mind reflect where we are on the tech, which I think it was a really positive checkpoint for me of like, a lot of these things, yeah, we're kind of really there and things moving really fast.
-[29:41] So if we look back in five years, say, or even three, I think we're going to be in a great place where it's like we're almost feature-complete.
-[29:49] Maybe.
-
-**SPEAKER_00:**
-[29:50] Software is never really feature-complete, but I would say that I guess the biggest takeaway I had is ZK proving, which is different than the compilation part, has come way faster and way down.
-[29:59] Like last year when they were talking about it, I think a typical proof took minutes and required 48 GPUs.
-[30:05] And now I'm seeing two GPUs and closer to the 10-second, real-time holy grail that we're getting to.
-[30:11] When I looked at the things on ef-proof.org, I was really impressed at how close it was and what people are doing there.
-[30:17] So I think we'll call it there because we're already 15 minutes over.
-[30:20] But where can we find you?
-[30:22] I'm Victor Wong.
-[30:23] You can find me on X at @vicfourwong, W O N G.
-[30:27] Kieran, where can we find you?
+[25:25] I mean, I think there's certainly a very valid argument on that side of sort of like this supposition of you going but, but it wasn't me, sir.
+[25:32] Here's my ZK proof, I promise.
+[25:34] What's the ZK proof?
+[25:35] Like what you even talking about?
 
 **SPEAKER_02:**
-[30:29] KJamesLubin on X and most places.
-
-**SPEAKER_00:**
-[30:32] Jim.
-
-**SPEAKER_03:**
-[30:33] Still Twitter, and I've also forgotten my handle again.
-[30:36] I should probably... you should remind me next time to look it up.
-[30:38] It's... what is it?
-[30:40] Jamsheed Hormuz or something.
-
-**SPEAKER_02:**
-[30:42] I looked it up, but I can't... it was like two weeks ago.
-
-**SPEAKER_00:**
-[30:45] Okay, I'm going to keep asking you.
-[30:46] This is a weekly pop quiz for you, Jim.
-[30:48] So you better learn it.
+[25:36] Exactly.
+[25:37] So if you pick this like half step, you're kind of just saying, oh, you use this privacy tech, but you're like one of the easy ones to pick off, you know, like, I don't know.
 
 **SPEAKER_01:**
-[30:49] Look at the notes on our website.
-[30:51] I always do the link.
-[30:52] I always reply to that and correct it.
-[30:54] So I'm Bob Summerwill.
-[30:56] Summer like the season and W I L L on Twitter.
+[25:47] And it makes it a permission system again.
 
-**SPEAKER_00:**
-[31:01] And thank you for joining us.
-[31:02] Take care.
+**SPEAKER_02:**
+[25:48] Yeah.
+
+**SPEAKER_01:**
+[25:49] And you could say, oh, it's only a bit.
+[25:51] But yeah, talking to Zach, it was really.
+
+**SPEAKER_02:**
+[25:53] I don't know the details.
+[25:54] Ameen said it does break the fungibility, which is like kind of a way of the same thing.
+[25:58] The same...
+[25:59] There's like, it's like with Bitcoin you have like tainted ones and not, you know, but.
+
+**SPEAKER_01:**
+[26:03] But talking to Zach, it seemed a primary motivation wasn't so much as being compliant as it was we don't want any or more of our friends to go to jail.
+
+**SPEAKER_02:**
+[26:13] Totally.
+[26:14] Yeah, I guess.
+
+**SPEAKER_01:**
+[26:15] And maybe that's a passing phase.
+
+**SPEAKER_02:**
+[26:17] It's that these.
 
 **SPEAKER_03:**
-[31:03] I'm looking at my handle right now.
-[31:04] It's JamsheedHormuz.
+[26:18] Yes.
+
+**SPEAKER_02:**
+[26:19] At the same time, I don't really know what the Tornado Cash people did other than build software.
+[26:24] Could have been more than building the software.
+[26:25] You know, there's no way that building some software, like, should count as like a conspiracy to launder some money like that.
+[26:33] That's never applied in any other case, really.
+[26:36] Maybe...
+[26:37] Except as regards the crypto industry.
+
+**SPEAKER_01:**
+[26:39] Also worth saying though, I think, is that many parts of the world are not so progressive as the US on that matter.
+
+**SPEAKER_02:**
+[26:45] Yeah.
 
 **SPEAKER_00:**
-[31:06] Okay, you get a 50.
-[31:07] Just pass.
+[26:46] Well, Jim, I think we're starting to get, you know, we're a little bit over 30 minutes.
+[26:50] Want to kind of touch base with you.
+[26:52] I know you're still pretty jet lagged on what were your impressions at the conference, especially since you attended a lot of agentic AI talks too.
+[27:00] So, you know, how real is that?
+[27:03] What do you think about whether...
+[27:05] Whether...
+[27:06] What were your big takeaways from the conference?
 
 **SPEAKER_03:**
-[31:08] That's even more embarrassing than failing.
+[27:08] Well, I was pretty excited to go to...
+[27:10] To anything AI, but I don't know, we're sort of like in the hype part of the hype cycle right now.
+[27:15] And I went to, on the first day to one where multiple, I don't know, it was like typical people speaking would be like somebody who had like put together a company where they were using AI to maybe you go and do DeFi trading or something like that.
+[27:28] And it would like sort of holistically understand what's happening in the world and try to use that to trade and like, I don't know, like there were like panels of people where, where it was like multiple people with a variant of that story.
+[27:40] And it was all very inspirational sounding and, and little bit light on the details, but everybody was very excited by it.
+[27:47] But I'm sitting there listening, and I'm like, there's no way that this stuff is really cool.
+[27:51] There's no way they're doing it, though.
+[27:52] And I remember it would be a much bigger deal if some of these succeeded.
+[27:56] And most...
+[27:57] It's funny because at these events you can still have...
+[28:00] A lot of marketers are there, but there's still enough geeks there that sometimes people just blurt out honest things.
+[28:05] And after hearing like lots of marketing speak, I remember I forget who it was and I probably wouldn't say who it was anyway.
+[28:11] But one guy, they were like...
+[28:12] They were like they had been spinning up this whole story again, like I had said before, but they were like, oh, and this actually works.
+[28:18] And he got a little too honest and he was like, oh, if this thing actually worked, you think I'd be sitting here right now.
+[28:23] And so that was sort of like the theme to me.
+[28:26] It's like over...
+[28:27] Promising some really cool ideas, but...
+[28:29] But it didn't look like it was actually...
+[28:31] And this is kind of the case in AI in general right now.
+[28:34] There's like huge breakthroughs.
+[28:35] AI can do a lot of stuff that would have shocked me, you know, just a few years ago, but...
+[28:40] But it's hard to get them to actually sort of complete the whole job for you or actually, you know, like work as advertised.
+[28:47] So that's what, like the common theme I was seeing there in these talks.
+
+**SPEAKER_00:**
+[28:51] Yeah.
+
+**SPEAKER_01:**
+[28:52] Did you see anything with post-apps?
+[28:54] Any kind of post-app, sort of like, hey, look, we've...
+[28:57] You can just AI drive this and you know, that kind of text or voice interface as opposed to UI?
+
+**SPEAKER_02:**
+[29:03] I'm confused.
+
+**SPEAKER_00:**
+[29:04] Yeah.
+
+**SPEAKER_01:**
+[29:05] What's a post applications?
+[29:07] Right.
+[29:08] You know, soon we won't have applications.
+[29:09] We'll just be talking.
+
+**SPEAKER_02:**
+[29:10] Oh, post-apps, yes.
+
+**SPEAKER_01:**
+[29:12] Yeah.
+[29:13] Was it more infrastructure stuff that you were seeing?
+
+**SPEAKER_03:**
+[29:15] It looked like infrastructure stuff, what I heard, but there were many, many groups up there talking about it.
+
+**SPEAKER_02:**
+[29:20] The trading bots are arguably post-apps.
+[29:22] I mean, you kind of probably tell them what to do when they like, theoretically give you more money than you had, you know, when you gave it to the...
+[29:30] Is the, like a little financial manager.
+[29:32] But I've also, like, I think I've said before, like, when I've test driven Cline and told it to like, go do a swap on our testnet, it can do it in a...
+[29:41] Yeah, yeah, but it's like, it goes pretty slow through the UI.
+[29:44] It's like understanding it visually and, you know, like, I don't know that it's that much easier than a human, but I think you could mostly give a declarative intention to an AI.
+[29:53] Like, hey, like, I want to rebalance from Bitcoin into Bitcoin and ETH.
+[29:57] Well, they can do it, but it's not like, you know, sorry, go, Jim.
+
+**SPEAKER_03:**
+[30:02] Well, I guess there is a subtle distinction between an agent and a helper, or just using AI as the UI as an autonomous agent.
+[30:09] That's the stuff that seems not quite baked to me yet.
+[30:12] But I saw a couple talks where people were talking about just using it in place of the existing UIs that are out there right now to help you each step of the way do things.
+[30:21] And that...
+[30:22] That probably is great at...
+[30:23] That's...
+[30:24] We all, we all sort of use AI in that kind of thing right now.
+
+**SPEAKER_00:**
+[30:27] Yeah, I did hear a very interesting talk by the people formerly Infura, but now DIN, like Decentralized Infrastructure Network, who are talking about really thinking about AI agents as users and how to make it easier for them to interact with the network.
+[30:42] So from that point of view, I do think that there's some...
+[30:45] I don't think it's really replacing UX.
+[30:47] I think it's more targeting a different class of user entirely, agents, which, I.
+
+**SPEAKER_02:**
+[30:52] Mean, let me add to that.
+[30:53] I, you know, for a long time I've been worried about our, like, mobile story.
+[30:57] During the conference, I was using our app on mobile a bunch, and while I'm still worried about it, I think in many cases it will be leapfrogged by just like, hey, chat, like, go do this thing in this app for me.
+
+**SPEAKER_00:**
+[31:10] Yeah.
+
+**SPEAKER_02:**
+[31:11] And in a...
+[31:12] There's a downside to that and that we have just like, yet another aggregator, but an upside in that, like, you might not have to make a really slick mobile app.
+
+**SPEAKER_00:**
+[31:21] Yeah.
+
+**SPEAKER_02:**
+[31:22] And I think that'll continue.
+[31:23] And I do...
+[31:24] I don't use that pattern much yet, but, you know, it's something we should definitely lean into.
+[31:28] And, you know, I've also seen like, pretty funny things.
+[31:31] Some like B2B Sass Twitter handle made some post, was like, yeah, we sold the enterprise our app.
+[31:37] We wanted them to use it more.
+[31:38] So we made an AI to use it for them and they're using it more, you know, so.
+[31:43] Whoa.
+
+**SPEAKER_00:**
+[31:44] What you described, though, I heard the MetaMask team, they're really talking about intents, like trying to kind of like, you know, instead of like making you do a lot of clicks or stuff, just tell it, okay, this is what I'm trying to achieve and then like, find me the best savings.
+[31:58] Right.
+[31:59] And then we'll go and do off all of that stuff.
+[32:01] I know we're over time, so I want to go around the horn and say what is the biggest takeaway you got from this DevConnect?
+[32:07] Let's start with you, Kieran.
+
+**SPEAKER_02:**
+[32:09] Privacy seems much more viable now than I thought.
+[32:12] I've been generally a skeptic, even us having worked on it a bunch, but I think there are pretty solid mainnet live use cases for it that work now that we could also incorporate.
+[32:22] I honestly think if we're talking about, you know, consumer mass adoption, you can't really have these like clear text balances.
+[32:28] Like, you know, yes, it's pseudonymous, but it's, it's, you know, make makes everybody uncomfortable.
+[32:34] Like Bob is fond of quoting the time when very obviously one of the Ethereum core devs move like a quarter billion dollars into Binance or whatever.
+[32:42] It's like it's not...
+[32:43] So I've tried to accelerate our privacy roadmap in response.
+
+**SPEAKER_00:**
+[32:46] Jim, what was your big takeaway from this conference?
+
+**SPEAKER_03:**
+[32:49] Well, the coolest thing that I saw, if it's real, is ZK is also one of these things which is prone to overhyping.
+[32:56] But it seems like maybe scalability of Ethereum might, might be solved through some ZK means sometime in the next couple of years, if that really happens.
+[33:05] You know, maybe I've heard something about that before, but I probably just ignored it.
+[33:09] But, but people were talking about it like it's around the corner right now.
+[33:13] Looked into it a little bit.
+[33:14] It looks, if it does what they say it does, it could be, it could be pretty impressive.
+[33:18] So that was exciting to me.
+
+**SPEAKER_00:**
+[33:20] Bob, what would, what was the biggest takeaway from you?
+
+**SPEAKER_01:**
+[33:23] Yeah, so, and I think that's true on a few different pieces.
+[33:26] Both, both in terms of that privacy.
+[33:28] But...
+[33:29] But yeah, also scaling like I think some of these things have taken so long, you know, like here we are 10, 10 years in.
+[33:35] I just looked.
+[33:36] It was November 10th.
+[33:37] By the way, the, the Strato talk on...
+[33:39] Congratulations.
+
+**SPEAKER_00:**
+[33:40] Yeah, exactly.
+[33:41] Almost exactly.
+
+**SPEAKER_01:**
+[33:42] But yeah, some of these things have taken 10 years really to get where we thought would get in a few months even.
+[33:48] And yeah, I think that will be like, you know, the, the ZK-ification.
+[33:53] Of the L1 that would basically end up with not really doing any execution on the L1.
+[33:57] It's just proofs of things that are happening up above in whatever execution that environment that might be.
+[34:03] So yeah, I'm, I'm feeling very like we didn't talk about the price action, but that does not at all to my mind reflect where we are on the tech, which I think it was a really positive checkpoint for me of like, like a lot of these things...
+[34:16] Yeah, we're kind of like really there and things moving really fast.
+[34:19] So, you know, if we, if we look back in five years, say, or even three, I think we're going to be in a great place where it's like we're almost feature complete.
+[34:28] Maybe.
+
+**SPEAKER_00:**
+[34:29] Software is never really feature complete, but I would say that I guess the biggest takeaway I had is like, I think ZK proving, which is different than the compilation part has come way faster and way down.
+[34:40] Like last year when they were talking about it, I think a typical proof took minutes and required 48 GPUs.
+[34:46] And you know, now I'm seeing two GPUs and like closer to kind of the 10 second real time holy grail that we're getting to.
+[34:53] Like when I looked at the things on fprooth.org I was really impressed at how close it was and what people are doing there.
+[34:59] So I think we'll call it there because we're already 15 minutes over.
+[35:03] But where can we find you?
+[35:04] I'm Victor Wong.
+[35:05] You can find me at X at @vic4wong.
+[35:08] W O N G.
+[35:09] Kieran, where can we find you?
+
+**SPEAKER_02:**
+[35:10] K James Lubin on X and most places.
+
+**SPEAKER_00:**
+[35:14] Jim.
+
+**SPEAKER_03:**
+[35:15] Still Twitter and I've also forgotten my handle again.
+[35:18] I should probably...
+[35:19] You should remind me next time to look it up.
+[35:21] It's...
+[35:22] What is it?
+[35:23] John...
+[35:24] John, Feed Hormuz or something.
+
+**SPEAKER_02:**
+[35:26] I looked it up, but I can't...
+[35:27] It was like two weeks ago.
+
+**SPEAKER_00:**
+[35:29] Okay, I'm gonna keep asking you.
+[35:30] You're good.
+[35:31] This is a pop quiz weekly pop quiz for you, Jim.
+[35:33] So you better learn it.
+
+**SPEAKER_01:**
+[35:34] Look at the notes on our website.
+[35:35] I always like do the link.
+[35:36] I always reply to that and correct it and yeah, so I'm...
+[35:39] I'm Bob Summerwill.
+[35:40] Summer, like the season and W I L L write your will on.
+
+**SPEAKER_00:**
+[35:45] On Twitter and thank you for joining us.
+[35:47] Take care.
+
+**SPEAKER_03:**
+[35:48] I'm looking at my handle right now.
+[35:49] It's...
+[35:50] It's Jamshid Hormoz.
+
+**SPEAKER_00:**
+[35:51] Okay, you, you, you, you get a 50.
+[35:54] Just pass.
+
+**SPEAKER_03:**
+[35:55] That's even more embarrassing than failing.

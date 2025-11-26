@@ -41,7 +41,7 @@ All services include speaker diarization (identifying who said what).
 |-----------|------------|---------------|---------|---------------------|----------|
 | **sonnet** | Claude Sonnet 4.5 | Anthropic | 200K | $3/$15 per MTok | Complex technical content, long transcripts |
 | **chatgpt** | GPT-4.1 | OpenAI | 128K | $2.50/$10 per MTok | Extended context, 32K output tokens |
-| **gemini** | Gemini 2.5 Pro | Google | 128K | ~$1.25 per MTok | Very long transcripts, multilingual |
+| **gemini** | Gemini 3.0 Pro | Google | 128K | ~$1.25 per MTok | Very long transcripts, multilingual |
 | **llama** | Llama 3.3 70B | Groq | 128K | $0.59/$0.79 per MTok | ⚡ BLAZING FAST (300+ tok/s), Meta's latest |
 | **qwen-cloud** | Qwen3 32B | Groq | 128K | $0.08/$0.08 per MTok | 🔬 MAXIMUM QUALITY for technical content |
 | **qwen** | Qwen2.5:14B | Ollama (local) | 32K | FREE | 🎮 Local GPU (12GB+ VRAM), skipped on CPU |

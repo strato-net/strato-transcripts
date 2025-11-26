@@ -45,14 +45,16 @@ def save_processed_files(output_dir, basename, transcriber, processor, content):
     content_lines = [line.rstrip() for line in content.split('\n')]
     content_clean = '\n'.join(content_lines)
     
-    # Save text version (NO timestamps)
-    # Strip timestamps like [150.9s] from beginning of lines
+    # Save text version (NO timestamps, NO markdown)
     text_lines = []
     for line in content_clean.split('\n'):
-        # Remove timestamp pattern [XXX.Xs] at start of line
-        clean_line = re.sub(r'^\[[\d.]+s\] ', '', line)
+        clean_line = line
+        # Remove timestamps like [MM:SS] or [XXX.Xs] or [XXX.Xs] from beginning of lines
+        clean_line = re.sub(r'^\[[\d.:]+s?\]\s?', '', clean_line)
+        # Remove markdown bold from speaker labels (**SPEAKER_XX:** -> SPEAKER_XX:)
+        clean_line = re.sub(r'\*\*(SPEAKER_\d+)\*\*:?', r'\1:', clean_line)
         text_lines.append(clean_line)
-    
+
     with open(output_path, 'w', encoding='utf-8') as f:
         f.write('\n'.join(text_lines))
     
@@ -322,8 +324,8 @@ def process_with_openai(transcript, api_key, context):
     return result
 
 def process_with_gemini(transcript, api_key, context):
-    """Process transcript using Gemini 2.5 Pro with streaming."""
-    model = "gemini-2.5-pro"
+    """Process transcript using Gemini 3.0 Pro with streaming."""
+    model = "models/gemini-3-pro-preview"
     try:
         import google.generativeai as genai
     except ImportError:
@@ -722,7 +724,7 @@ def main():
     key_mapping = {
         'sonnet': 'ANTHROPIC_API_KEY',     # Claude Sonnet 4.5 via Anthropic
         'chatgpt': 'OPENAI_API_KEY',       # ChatGPT-4o-latest via OpenAI
-        'gemini': 'GOOGLE_API_KEY',        # Gemini 2.5 Pro via Google
+        'gemini': 'GOOGLE_API_KEY',        # Gemini 3.0 Pro via Google
         'llama': 'GROQ_API_KEY',           # Llama 3.3 70B via Groq
         'qwen-cloud': 'GROQ_API_KEY'       # Qwen3 32B via Groq
     }
