@@ -36,8 +36,11 @@ def save_transcript_files(output_dir, basename, service_name, segments, speaker_
     Returns:
         Path object for the .txt file
     """
-    output_path = Path(output_dir) / f"{basename}_{service_name}.txt"
-    output_path.parent.mkdir(parents=True, exist_ok=True)
+    # Create episode-specific subdirectory
+    episode_dir = Path(output_dir) / basename
+    episode_dir.mkdir(parents=True, exist_ok=True)
+    
+    output_path = episode_dir / f"{basename}_{service_name}.txt"
     
     # Save text version (NO timestamps)
     with open(output_path, 'w', encoding='utf-8') as f:
@@ -83,8 +86,11 @@ def save_raw_transcript_from_text(output_dir, basename, service_name, formatted_
     """
     import re
     
-    output_path = Path(output_dir) / f"{basename}_{service_name}.txt"
-    output_path.parent.mkdir(parents=True, exist_ok=True)
+    # Create episode-specific subdirectory
+    episode_dir = Path(output_dir) / basename
+    episode_dir.mkdir(parents=True, exist_ok=True)
+    
+    output_path = episode_dir / f"{basename}_{service_name}.txt"
     
     # Save text version (NO timestamps)
     # Strip timestamps like [150.9s] from beginning of lines

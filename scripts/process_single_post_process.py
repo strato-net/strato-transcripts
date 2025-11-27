@@ -40,8 +40,11 @@ def save_processed_files(output_dir, basename, transcriber, processor, content):
     """Save txt (clean) and md (with timestamps)."""
     import re
     
-    output_path = Path(output_dir) / f"{basename}_{transcriber}_{processor}.txt"
-    output_path.parent.mkdir(parents=True, exist_ok=True)
+    # Create episode-specific subdirectory
+    episode_dir = Path(output_dir) / basename
+    episode_dir.mkdir(parents=True, exist_ok=True)
+    
+    output_path = episode_dir / f"{basename}_{transcriber}_{processor}.txt"
     
     # Clean up content
     content_lines = [line.rstrip() for line in content.split('\n')]
