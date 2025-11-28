@@ -33,7 +33,7 @@
 [54.9s] Thank you for the intro and good question .
 [54.9s] Yeah .
 [54.9s] It was in Bogota .
-[54.9s] I I think I knew about you or of you for longer than since then, but yeah, I think
+[54.9s] I I think I knew about you of you for longer than since then, but yeah, I think
 [64.6s] you were chatting with someone
 [66.4s] and talking about Florian .
 [66.4s] Florian and Glatz maybe and talking about the old days and Right .

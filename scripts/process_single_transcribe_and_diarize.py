@@ -20,11 +20,87 @@ from common import (Colors, success, failure, skip, validate_api_key,
 # ============================================================================
 
 
+def format_timestamp(seconds):
+    """
+    Format seconds into MM:SS or H:MM:SS format (rounded to nearest second).
+    
+    Args:
+        seconds: Time in seconds (float or int)
+    
+    Returns:
+        Formatted timestamp string like "00:00", "01:23", or "1:02:34"
+    """
+    total_seconds = round(seconds)
+    hours = total_seconds // 3600
+    minutes = (total_seconds % 3600) // 60
+    secs = total_seconds % 60
+    
+    if hours > 0:
+        return f"{hours}:{minutes:02d}:{secs:02d}"
+    else:
+        return f"{minutes:02d}:{secs:02d}"
+
+
+def merge_consecutive_speaker_segments(segments, speaker_key="speaker"):
+    """
+    Merge consecutive segments from the same speaker into single paragraphs.
+    
+    Args:
+        segments: List of segment dicts with 'speaker', 'start', 'text' keys
+        speaker_key: Key name for speaker in segments (default: 'speaker')
+    
+    Returns:
+        List of merged segment dicts, each representing a continuous speaker turn
+    """
+    if not segments:
+        return []
+    
+    merged = []
+    current_speaker = None
+    current_start = None
+    current_texts = []
+    
+    for segment in segments:
+        speaker = segment.get(speaker_key, "UNKNOWN")
+        text = segment.get("text", "").strip()
+        start_time = segment.get("start", 0)
+        
+        if not text:
+            continue
+        
+        if speaker != current_speaker:
+            # Save previous speaker's accumulated text
+            if current_speaker is not None and current_texts:
+                merged.append({
+                    'speaker': current_speaker,
+                    'start': current_start,
+                    'text': ' '.join(current_texts)
+                })
+            # Start new speaker
+            current_speaker = speaker
+            current_start = start_time
+            current_texts = [text]
+        else:
+            # Same speaker, accumulate text
+            current_texts.append(text)
+    
+    # Don't forget the last speaker
+    if current_speaker is not None and current_texts:
+        merged.append({
+            'speaker': current_speaker,
+            'start': current_start,
+            'text': ' '.join(current_texts)
+        })
+    
+    return merged
+
+
 def save_transcript_files(output_dir, basename, service_name, segments, speaker_key="speaker"):
     """
     Save transcript in both txt and md formats with consistent naming.
-    TXT format: No timestamps (clean text only)
-    MD format: With timestamps for reference
+    Consecutive segments from the same speaker are merged into paragraphs.
+    TXT format: No timestamps, no markdown - just "SPEAKER_XX: text"
+    MD format: With rounded timestamps - "**[MM:SS] SPEAKER_XX:** text"
     
     Args:
         output_dir: Directory to save files
@@ -42,44 +118,62 @@ def save_transcript_files(output_dir, basename, service_name, segments, speaker_
     
     output_path = episode_dir / f"{basename}_{service_name}.txt"
     
-    # Save text version (NO timestamps)
+    # Merge consecutive segments from same speaker into paragraphs
+    merged_segments = merge_consecutive_speaker_segments(segments, speaker_key)
+    
+    # Save text version (NO timestamps, NO markdown)
+    # Format: SPEAKER_XX: text
     with open(output_path, 'w', encoding='utf-8') as f:
-        current_speaker = None
-        for segment in segments:
-            speaker = segment.get(speaker_key, "UNKNOWN")
-            if speaker != current_speaker:
-                f.write(f"\n{speaker}:\n")
-                current_speaker = speaker
-            text = segment.get("text", "").strip()
-            f.write(f"{text}\n")
+        for segment in merged_segments:
+            speaker = segment['speaker']
+            text = clean_text(segment['text'])
+            if text:
+                f.write(f"{speaker}: {text}\n\n")
     
     # Save markdown version (WITH timestamps)
+    # Format: **[MM:SS] SPEAKER_XX:** text
     md_path = output_path.with_suffix('.md')
     with open(md_path, 'w', encoding='utf-8') as f:
-        current_speaker = None
-        for segment in segments:
-            speaker = segment.get(speaker_key, "UNKNOWN")
-            if speaker != current_speaker:
-                f.write(f"\n**{speaker}:**\n")
-                current_speaker = speaker
-            start_time = segment.get("start", 0)
-            text = segment.get("text", "").strip()
-            f.write(f"[{start_time:.1f}s] {text}\n")
+        for segment in merged_segments:
+            speaker = segment['speaker']
+            start_time = segment['start']
+            text = clean_text(segment['text'])
+            timestamp = format_timestamp(start_time)
+            if text:
+                f.write(f"**[{timestamp}] {speaker}:** {text}\n\n")
     
     return output_path
+
+
+def clean_text(text):
+    """
+    Clean up text by removing spaces before punctuation marks.
+    
+    Args:
+        text: Raw text that may have spaces before punctuation
+    
+    Returns:
+        Cleaned text with spaces before punctuation removed
+    """
+    import re
+    # Remove spaces before punctuation marks (. , ! ? : ; ' ")
+    text = re.sub(r'\s+([.,!?;:\'\"])', r'\1', text)
+    return text
 
 
 def save_raw_transcript_from_text(output_dir, basename, service_name, formatted_text):
     """
     Save pre-formatted transcript text in both txt and md formats.
-    TXT format: No timestamps (clean text only)
-    MD format: With timestamps for reference
+    Consecutive segments from the same speaker are merged into paragraphs.
+    TXT format: No timestamps, no markdown - "SPEAKER_XX: text"
+    MD format: With rounded timestamps - "**[MM:SS] SPEAKER_XX:** text"
     
     Args:
         output_dir: Directory to save files
         basename: Base filename without extension
         service_name: Name of transcription service
         formatted_text: Pre-formatted text with speaker labels and timestamps
+                       Format: "SPEAKER_XX:\n[123.4s] text\n[125.0s] more text\n"
     
     Returns:
         Path object for the .txt file
@@ -92,28 +186,52 @@ def save_raw_transcript_from_text(output_dir, basename, service_name, formatted_
     
     output_path = episode_dir / f"{basename}_{service_name}.txt"
     
-    # Save text version (NO timestamps)
-    # Strip timestamps like [150.9s] from beginning of lines
-    text_lines = []
-    for line in formatted_text.split('\n'):
-        # Remove timestamp pattern [XXX.Xs] at start of line
-        clean_line = re.sub(r'^\[[\d.]+s\] ', '', line)
-        text_lines.append(clean_line)
+    # Parse the formatted text into segments
+    # Format: SPEAKER_XX: header, then [XXX.Xs] text lines
+    segments = []
+    current_speaker = None
     
+    for line in formatted_text.split('\n'):
+        line = line.strip()
+        if not line:
+            continue
+        
+        # Check for speaker header: "SPEAKER_XX:"
+        speaker_match = re.match(r'^(SPEAKER_\d+):$', line)
+        if speaker_match:
+            current_speaker = speaker_match.group(1)
+            continue
+        
+        # Check for timestamped line: "[XXX.Xs] text"
+        time_match = re.match(r'^\[([\d.]+)s\]\s*(.+)', line)
+        if time_match and current_speaker:
+            timestamp_seconds = float(time_match.group(1))
+            text = time_match.group(2).strip()
+            if text:
+                segments.append({
+                    'speaker': current_speaker,
+                    'start': timestamp_seconds,
+                    'text': text
+                })
+    
+    # Merge consecutive segments from same speaker into paragraphs
+    merged_segments = merge_consecutive_speaker_segments(segments)
+    
+    # Save text version (NO timestamps, NO markdown)
+    # Format: SPEAKER_XX: text
     with open(output_path, 'w', encoding='utf-8') as f:
-        f.write('\n'.join(text_lines))
+        for segment in merged_segments:
+            text = clean_text(segment['text'])
+            f.write(f"{segment['speaker']}: {text}\n\n")
     
-    # Save markdown version (WITH timestamps, convert SPEAKER_ labels to bold)
+    # Save markdown version (WITH timestamps)
+    # Format: **[MM:SS] SPEAKER_XX:** text
     md_path = output_path.with_suffix('.md')
-    md_lines = []
-    for line in formatted_text.split('\n'):
-        # Bold speaker labels: SPEAKER_XX: becomes **SPEAKER_XX:**
-        if re.match(r'^SPEAKER_\d+:', line):
-            line = line.replace('SPEAKER_', '**SPEAKER_').replace(':', ':**', 1)
-        md_lines.append(line)
-    md_content = '\n'.join(md_lines)
     with open(md_path, 'w', encoding='utf-8') as f:
-        f.write(md_content)
+        for segment in merged_segments:
+            timestamp = format_timestamp(segment['start'])
+            text = clean_text(segment['text'])
+            f.write(f"**[{timestamp}] {segment['speaker']}:** {text}\n\n")
     
     return output_path
 

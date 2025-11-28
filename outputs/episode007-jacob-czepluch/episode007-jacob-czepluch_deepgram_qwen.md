@@ -1,11 +1,11 @@
-SPEAKER_00:
-So hello?
+**SPEAKER_00:**
+[00:01] So hello?
 
-SPEAKER_01:
-Hello, Bob.
+**SPEAKER_01:**
+[00:03] Hello, Bob.
 
-SPEAKER_00:
-So, yes, I'm Bob Samuel recording here at dark Prague for early days of Ethereum.
+**SPEAKER_00:**
+[00:05] So, yes, I'm Bob Samuel recording here at dark Prague for early days of Ethereum.
 And I have here Jacob.
 Good enough .
 Good enough .
@@ -28,8 +28,8 @@ DEFCON one.
 So how
 how did you come to be involved with Ethereum at that time?
 
-SPEAKER_01:
-Oh, yeah .
+**SPEAKER_01:**
+[00:26] Oh, yeah .
 Thank you for the intro and good question .
 Yeah .
 It was in Bogota .
@@ -53,13 +53,15 @@ fog where the Go client
 fogged from the
 plus
 
-SPEAKER_00:
-plus and Python client .
+**SPEAKER_00:**
+[01:06] plus and Python client .
 There was a chain split on mainnet ?
-Yes.
 
-SPEAKER_01:
-And it happened I think the second day I was there.
+**SPEAKER_01:**
+[01:09] Yes.
+
+**SPEAKER_00:**
+[01:12] And it happened I think the second day I was there.
 And that was the same day that there was a meetup planned in the
 office .
 Right.
@@ -125,8 +127,8 @@ Took take more pictures or appreciate some of the things a little bit more, but 
 Yeah.
 But yeah, I I enjoyed it a lot.
 
-SPEAKER_00:
-So, I mean, it was primarily
+**SPEAKER_00:**
+[03:15] So, I mean, it was primarily
 c plus plus development under Gav that was happening in that office .
 Right ?
 But also Felix Lang, I know, was there on the gas team .
@@ -135,12 +137,12 @@ There were some different people out there .
 Then some Python dev .
 I he
 
-SPEAKER_01:
-was doing Go stuff .
+**SPEAKER_01:**
+[03:29] was doing Go stuff .
 Right.
 
-SPEAKER_00:
-And yeah, the Solidity team was also there .
+**SPEAKER_00:**
+[03:33] And yeah, the Solidity team was also there .
 I think they were under the C plus plus team .
 That's right .
 Then .
@@ -149,8 +151,8 @@ And remix as well .
 Well, mix, sorry, at the time .
 Yeah.
 
-SPEAKER_01:
-And I also remember
+**SPEAKER_01:**
+[03:42] And I also remember
 mist, I guess .
 At least Fabian was also around .
 So there was Right .
@@ -190,12 +192,12 @@ And that's cross client testing as well, wasn't it ?
 Right ?
 That was the If I remember correctly, like, he was building a lot of,
 
-SPEAKER_00:
-like, just JSON data that they fit to the client .
+**SPEAKER_00:**
+[05:12] like, just JSON data that they fit to the client .
 And that was from the c plus plus client, I know that that that CPP Ethereum was leading
 
-SPEAKER_01:
-and the tests were generated from that .
+**SPEAKER_01:**
+[05:19] and the tests were generated from that .
 Mhmm .
 But then running those against the Python and and Geth clients .
 Pro yeah .
@@ -219,8 +221,8 @@ That's right .
 The c plus plus team was kind of
 cut off.
 
-SPEAKER_00:
-And you also so you also had, you know, Ming Chan, her first official date was first of August
+**SPEAKER_00:**
+[06:15] And you also so you also had, you know, Ming Chan, her first official date was first of August
 of of of twenty fifteen.
 So, yeah, you basically have those kind of cost cutting measures coming in quite fast
 of looking at the spend where,
@@ -228,8 +230,8 @@ you know, it had been going for a year.
 It was it was the July of the previous year that the foundation had been formed and you had the crowdsale, but, like, nearly all of the money was gone in that year .
 And I think that was also, like, maybe not the most responsible,
 
-SPEAKER_01:
-like,
+**SPEAKER_01:**
+[06:43] like,
 usage of money, but also the Bitcoin price was doing really poorly .
 Yeah .
 That's right .
@@ -243,27 +245,27 @@ But,
 yeah, I didn't have any interactions with No .
 With me back back then.
 
-SPEAKER_00:
-So maybe Actually,
+**SPEAKER_00:**
+[07:12] So maybe Actually,
 
-SPEAKER_01:
-one thing I just remembered now, I was actually supposed to done my internship
+**SPEAKER_01:**
+[07:14] one thing I just remembered now, I was actually supposed to done my internship
 on the c plus plus team in London .
 But Oh, yeah .
 Right .
 Yeah .
 And a couple of weeks before that, was told, sorry, we can't do it anyway because, like, we don't have the money anymore.
 
-SPEAKER_00:
-Right .
+**SPEAKER_00:**
+[07:32] Right .
 That's Well, because they they were getting very rapidly the funding or even shut down entirely, I think .
 Yeah .
 Probably already
 caused this .
 All that was coming.
 
-SPEAKER_01:
-Yeah .
+**SPEAKER_01:**
+[07:41] Yeah .
 So that's why it ended up being the Python team instead because there was some budget.
 But, yeah, like, sitting as the only person working on the Python client in in that office in in my small corner,
 I had a lot of fun kind of following
@@ -274,14 +276,14 @@ And I didn't really know in the beginning what was going on until I I was also a
 presenting ideas of like what would happen next with the c plus plus team and if we wanted to consider
 joining there or whatever.
 
-SPEAKER_00:
-Yeah.
+**SPEAKER_00:**
+[08:25] Yeah.
 So that was sort of the pre
 pre formation
 of what became ethereum later parity?
 
-SPEAKER_01:
-Yeah .
+**SPEAKER_01:**
+[08:31] Yeah .
 I I think so .
 So I I was witnessing that without knowing what was going on .
 I I had no insight into
@@ -293,8 +295,8 @@ Things
 later.
 But so maybe
 
-SPEAKER_00:
-it's quite interesting to see .
+**SPEAKER_00:**
+[08:45] it's quite interesting to see .
 So I mean, let maybe let's let's talk about Devcon one .
 So
 you'd so the first devcon was devcon zero,
@@ -319,8 +321,8 @@ conference.
 So how was
 that?
 
-SPEAKER_01:
-It was for me, it was amazing .
+**SPEAKER_01:**
+[10:03] It was for me, it was amazing .
 Like, I
 I've never been good at, like, sitting still on a chair for a long period of time, but there I was at every talk from the beginning in the morning until the end .
 I think I missed one talk because I had to go catch my flight to go back on the last day or like but it was I was just sitting there and sucking up all of these ideas
@@ -354,12 +356,12 @@ Yeah .
 I I was not so sold on hydrogen back then because it was, like, aimed at at Yes .
 Like Yep.
 
-SPEAKER_00:
-One of the very first permissioned
+**SPEAKER_00:**
+[12:35] One of the very first permissioned
 Ethereum.
 
-SPEAKER_01:
-Exactly .
+**SPEAKER_01:**
+[12:40] Exactly .
 It was like a round robin kind of
 algorithm .
 And
@@ -376,11 +378,11 @@ I just remember was it app .
 What was the name of the project ?
 Block
 
-SPEAKER_00:
-block app strato.
+**SPEAKER_00:**
+[13:24] block app strato.
 
-SPEAKER_01:
-Yeah .
+**SPEAKER_01:**
+[13:26] Yeah .
 Block block app .
 I remember they had like a small booth I think .
 Right .
@@ -460,13 +462,13 @@ No .
 Took took days .
 Even if you had the devs available right next to you, it it
 
-SPEAKER_00:
-wasn't easy .
+**SPEAKER_00:**
+[17:24] wasn't easy .
 No .
 No.
 
-SPEAKER_01:
-So, yeah, I think that's mainly what I have to
+**SPEAKER_01:**
+[17:26] So, yeah, I think that's mainly what I have to
 share without going into too much Yeah .
 Detail about about things .
 But Well, thanks so much .

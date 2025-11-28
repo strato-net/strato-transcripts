@@ -37,7 +37,12 @@ def extract_transcriber_from_filename(filepath):
 
 
 def save_processed_files(output_dir, basename, transcriber, processor, content):
-    """Save txt (clean) and md (with timestamps)."""
+    """Save txt (clean) and md (with timestamps).
+    
+    Input format from AI: **[MM:SS] SPEAKER_XX:** paragraph text
+    Output MD: Same as input (preserved)
+    Output TXT: SPEAKER_XX: paragraph text (no timestamps, no markdown)
+    """
     import re
     
     # Create episode-specific subdirectory
@@ -46,29 +51,30 @@ def save_processed_files(output_dir, basename, transcriber, processor, content):
     
     output_path = episode_dir / f"{basename}_{transcriber}_{processor}.txt"
     
-    # Clean up content
+    # Clean up content (remove trailing whitespace)
     content_lines = [line.rstrip() for line in content.split('\n')]
     content_clean = '\n'.join(content_lines)
     
+    # Save markdown version (preserve the AI's output format)
+    md_path = output_path.with_suffix('.md')
+    with open(md_path, 'w', encoding='utf-8') as f:
+        f.write(content_clean)
+    
     # Save text version (NO timestamps, NO markdown)
+    # Transform: **[MM:SS] SPEAKER_XX:** text -> SPEAKER_XX: text
     text_lines = []
     for line in content_clean.split('\n'):
         clean_line = line
-        # Remove timestamps like [MM:SS] or [XXX.Xs] from beginning of lines
+        # Remove **[MM:SS] SPEAKER_XX:** pattern and convert to SPEAKER_XX:
+        clean_line = re.sub(r'\*\*\[[\d:]+\]\s*(SPEAKER_\d+):\*\*', r'\1:', clean_line)
+        # Also handle old format: **SPEAKER_XX:** with [timestamp] on line
+        clean_line = re.sub(r'\*\*(SPEAKER_\d+):\*\*', r'\1:', clean_line)
+        # Remove standalone timestamps like [MM:SS] or [XXX.Xs]
         clean_line = re.sub(r'^\[[\d:.]+\]\s?', '', clean_line)
-        # Remove markdown bold from speaker labels (**SPEAKER_XX:** -> SPEAKER_XX:)
-        clean_line = re.sub(r'\*\*(SPEAKER_\d+)\*\*:?', r'\1:', clean_line)
         text_lines.append(clean_line)
 
     with open(output_path, 'w', encoding='utf-8') as f:
         f.write('\n'.join(text_lines))
-    
-    # Save markdown version (WITH timestamps, convert SPEAKER_ labels to bold)
-    md_path = output_path.with_suffix('.md')
-    md_content = content_clean.replace('\n\nSPEAKER_', '\n\n**SPEAKER_')
-    md_content = md_content.replace(':\n', ':**\n')
-    with open(md_path, 'w', encoding='utf-8') as f:
-        f.write(md_content)
     
     return output_path
 
@@ -100,12 +106,15 @@ CRITICAL CONTENT PRESERVATION RULES
    - Significantly shorter output means you've removed too much content
    - This is non-negotiable - check your word count before finalizing
 
-3. **PRESERVE ALL TIMESTAMPS** - Every line of dialogue MUST retain its timestamp
-   - Format: [MM:SS] at the start of each line
-   - Use minutes:seconds format (e.g., 00:05, 02:12, 15:47, 63:30)
-   - Always use 2 digits for both minutes and seconds
+3. **PRESERVE TIMESTAMPS** - One timestamp per speaker turn at the START of each paragraph
+   - Format: [MM:SS] with 2 digits each (e.g., 00:05, 02:12, 15:47)
    - No decimal fractions - round to nearest second
-   - Never remove or skip timestamps
+   - Only ONE timestamp per speaker paragraph (at the beginning)
+
+4. **MERGE CONSECUTIVE SPEECH INTO PARAGRAPHS**
+   - All speech from one speaker before another speaks = ONE paragraph
+   - The timestamp is the START time of that speaker's turn
+   - Separate sentences with spaces, NOT line breaks
 
 WHAT TO FIX (Corrections Only)
 
@@ -120,9 +129,6 @@ WHAT TO FIX (Corrections Only)
   
 ✓ Punctuation and sentence structure for readability
   Examples: Add periods, commas, capitalize sentences
-  
-✓ Paragraph breaks at natural conversation transitions
-  Examples: New topic = new paragraph
 
 WHAT TO REMOVE (Cleanup Only - Be Selective)
 
@@ -141,52 +147,54 @@ WHAT TO PRESERVE (Critical - Never Remove)
 ✓ ALL substantive dialogue and discussion points
 ✓ ALL technical explanations, code examples, and demonstrations
 ✓ ALL speaker labels (SPEAKER_01, SPEAKER_02, etc. - do not add actual names)
-✓ ALL timestamps in [MM:SS] format
+✓ Timestamps (one per speaker paragraph)
 ✓ Natural conversation flow and authentic speaking patterns
 ✓ Context and background information
 ✓ Questions and answers
 ✓ Reactions and commentary
 
-FORMAT REQUIREMENTS
+REQUIRED OUTPUT FORMAT
 
-**SPEAKER_01:**
-[00:01] First line of dialogue here.
-[00:05] Second line of dialogue continues.
+Each speaker turn is ONE paragraph with:
+- Bold speaker label with timestamp: **[MM:SS] SPEAKER_XX:**
+- All their speech in a single paragraph (sentences separated by spaces)
+- Blank line before next speaker
 
-**SPEAKER_02:**
-[00:12] Response from another speaker.
+CORRECT FORMAT EXAMPLE:
+```
+**[00:01] SPEAKER_00:** So, hello.
 
-CORRECT FORMAT EXAMPLES:
+**[00:02] SPEAKER_01:** Hello, Bob.
+
+**[00:03] SPEAKER_00:** So, yes, I'm Bob Samuel, recording here at DevCon Prague for Early Days of Ethereum. And I have here Jakob. We've known each other about three years or so now, I think. We did meet in Bogota for DevCon 6 for the first time where you introduced yourself.
+
+**[00:38] SPEAKER_01:** Oh, yeah, thank you for the intro and good question. It was in Bogota. I think I knew about you or of you for longer than since then. But yeah, I think you were chatting with someone and talking about Florian Glatz, maybe, and talking about the old days. And I just jumped in because I know Florian.
+
+**[01:08] SPEAKER_00:** I think it was like maybe August to December.
+```
+
+INCORRECT FORMAT TO AVOID:
 ```
 **SPEAKER_01:**
-[00:01] Okay, welcome everyone.
-[00:03] We have a very special topic today.
-[02:12] Let me explain the technical details.
-[15:47] This is how smart contracts work.
+[00:01] First line here.
+[00:05] Second line here.
 ```
-
-INCORRECT FORMATS TO AVOID:
-```
-[1.8s] Wrong - no decimal fractions
-[132.2s] Wrong - must use MM:SS format
-Okay, welcome everyone. Wrong - missing timestamp
-SPEAKER_01 (no bold formatting) Wrong - must be bold
-```
+This is WRONG - do not put speaker and timestamp on separate lines, and do NOT have multiple timestamps per speaker turn.
 
 VALIDATION CHECKLIST (Before Submitting)
 
 1. ☐ Count words in input transcript
 2. ☐ Count words in your output
 3. ☐ Verify output is 90-110% of input length
-4. ☐ Verify ALL timestamps are present in [MM:SS] format
-5. ☐ Verify speaker labels are bold: **SPEAKER_XX:**
+4. ☐ Verify format: **[MM:SS] SPEAKER_XX:** followed by full paragraph
+5. ☐ Verify ONE timestamp per speaker paragraph (at the start)
 6. ☐ Verify no major discussion points were removed
-7. ☐ Verify paragraph breaks exist at topic transitions
+7. ☐ Verify paragraphs are separated by blank lines
 
 If your output is significantly shorter than input, you have removed too much content.
 Go back and restore the missing dialogue.
 
-Output the corrected transcript maintaining exact format with all timestamps and content intact."""
+Output the corrected transcript in the exact format specified above."""
 
 def build_prompt(context, transcript):
     """Build complete prompt from template."""
