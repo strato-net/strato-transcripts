@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Unified transcription with speaker diarization.
-Supports: WhisperX (local), WhisperX Cloud (Replicate), Deepgram, AssemblyAI.
+Supports: WhisperX (local), WhisperX Cloud (Replicate), AssemblyAI.
 """
 
 import sys
@@ -250,7 +250,7 @@ def main():
     parser.add_argument(
         "--transcribers",
         required=True,
-        help="Comma-separated list of transcription services (whisperx,whisperx-cloud,deepgram,assemblyai)"
+        help="Comma-separated list of transcription services (whisperx,whisperx-cloud,assemblyai)"
     )
     parser.add_argument("--output-dir", default="intermediates", help="Output directory")
     parser.add_argument("--force-cpu", action="store_true", help="Force CPU for WhisperX")
@@ -265,7 +265,7 @@ def main():
     
     # Parse transcribers
     transcribers = [t.strip() for t in args.transcribers.split(',')]
-    valid_transcribers = {'whisperx', 'whisperx-cloud', 'deepgram', 'assemblyai'}
+    valid_transcribers = {'whisperx', 'whisperx-cloud', 'assemblyai'}
     
     for transcriber in transcribers:
         if transcriber not in valid_transcribers:
@@ -318,9 +318,7 @@ def main():
         
         # Check API keys using utility
         skip_reason = None
-        if transcriber == 'deepgram':
-            _, skip_reason = validate_api_key('DEEPGRAM_API_KEY')
-        elif transcriber == 'assemblyai':
+        if transcriber == 'assemblyai':
             _, skip_reason = validate_api_key('ASSEMBLYAI_API_KEY')
         elif transcriber == 'whisperx':
             _, skip_reason = validate_api_key('HF_TOKEN')
@@ -343,8 +341,6 @@ def main():
                 )
             elif transcriber == 'whisperx-cloud':
                 output_path = transcribe_whisperx_cloud(str(audio_path), args.output_dir)
-            elif transcriber == 'deepgram':
-                output_path = transcribe_deepgram(str(audio_path), args.output_dir)
             elif transcriber == 'assemblyai':
                 output_path = transcribe_assemblyai(str(audio_path), args.output_dir)
             
@@ -674,118 +670,6 @@ def transcribe_whisperx_cloud(audio_path, output_dir):
         
     except Exception as e:
         raise RuntimeError(f"WhisperX Cloud transcription failed: {e}")
-
-
-def transcribe_deepgram(audio_path, output_dir):
-    """Deepgram cloud transcription with speaker diarization"""
-    import time
-    import re
-    from deepgram import DeepgramClient
-    
-    api_key = os.environ.get('DEEPGRAM_API_KEY')
-    if not api_key:
-        raise ValueError("DEEPGRAM_API_KEY environment variable not set")
-    
-    audio_file_path = Path(audio_path)
-    
-    print(f"  Model: Nova-3 General")
-    print(f"  Uploading and transcribing...")
-    
-    deepgram = DeepgramClient(api_key=api_key)
-    
-    with open(audio_file_path, 'rb') as audio_file:
-        buffer_data = audio_file.read()
-    
-    start_time = time.time()
-    
-    # Load custom vocabulary (people names + technical terms)
-    custom_vocab = load_vocabulary()
-    print(f"  Loaded {len(custom_vocab)} custom terms")
-    
-    # Model: nova-3-general (updated 2025-11-10)
-    # Best accuracy for multi-speaker conversations and technical content
-    # utterances=True: Returns transcript organized by speaker turns (continuous speech segments)
-    #                  Each utterance = one speaker's uninterrupted speech with timestamps
-    #                  This is how we get clean speaker separation
-    response = deepgram.listen.v1.media.transcribe_file(
-        request=buffer_data,
-        model="nova-3-general",
-        smart_format=True,
-        diarize=True,
-        punctuate=True,
-        paragraphs=True,
-        utterances=True,  # Returns speaker turns (see comment above)
-        filler_words=False,  # Don't include filler words in transcript
-        # Boost accuracy for Ethereum people/terms from vocabulary files
-        # Deepgram may limit array size, using first 100 items
-        keyterm=custom_vocab[:100],
-    )
-    
-    elapsed = time.time() - start_time
-    print(f"  Transcribed in {elapsed:.1f}s")
-    
-    # Format output
-    result = response.results
-    formatted_lines = []
-    
-    if hasattr(result, 'utterances') and result.utterances:
-        for utterance in result.utterances:
-            start = utterance.start
-            speaker = int(getattr(utterance, 'speaker', 0))
-            text = utterance.transcript.strip()
-            speaker_label = f"SPEAKER_{speaker:02d}"
-            formatted_lines.append(f"[{start:.1f}s] {speaker_label}: {text}")
-    else:
-        channels = result.channels
-        if channels and channels[0].alternatives:
-            alternative = channels[0].alternatives[0]
-            text = getattr(alternative, 'transcript', "")
-            formatted_lines.append(f"[0.0s] SPEAKER_00: {text}")
-    
-    # Reformat to WhisperX style - split text into proper sentences WITH timestamps
-    current_speaker = None
-    output_lines = []
-    
-    for line in formatted_lines:
-        match = re.match(r'\[(\d+\.\d+)s\]\s+(SPEAKER_\d+):\s*(.+)', line)
-        if match:
-            timestamp, speaker, text = match.groups()
-            if speaker != current_speaker:
-                if output_lines:
-                    output_lines.append('')
-                output_lines.append(f'{speaker}:')
-                current_speaker = speaker
-            
-            # Split text into sentences
-            sentences = re.split(r'([.!?])\s+', text)
-            
-            # Rejoin punctuation with sentences and add timestamps
-            current_sentence = ''
-            for part in sentences:
-                if part in '.!?':
-                    current_sentence += part
-                    if current_sentence.strip():
-                        output_lines.append(f'[{timestamp}s] {current_sentence.strip()}')
-                    current_sentence = ''
-                elif part.strip():
-                    current_sentence += part + ' '
-            
-            # Add any remaining text with timestamp
-            if current_sentence.strip():
-                output_lines.append(f'[{timestamp}s] {current_sentence.strip()}')
-    
-    # Count speakers
-    speakers = set()
-    for line in formatted_lines:
-        if "SPEAKER_" in line:
-            speaker = line.split("SPEAKER_")[1].split(":")[0]
-            speakers.add(speaker)
-    
-    print(f"  Detected {len(speakers)} speakers")
-    
-    # Save using utility function
-    formatted_text = '\n'.join(output_lines) + '\n'
-    return save_raw_transcript_from_text(output_dir, audio_file_path.stem, "deepgram", formatted_text)
 
 
 def transcribe_assemblyai(audio_path, output_dir):
