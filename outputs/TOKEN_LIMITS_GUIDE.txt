@@ -1,94 +1,136 @@
 TOKEN LIMITS AND CONTEXT WINDOWS - PRACTICAL GUIDE
-Updated: November 26, 2025
+Updated: November 30, 2025
 
-## PROVIDER MATRIX - COMPLETE OVERVIEW
+## CURRENT SUPPORTED ARCHITECTURE
+
+After extensive testing, we support a streamlined set of providers for production use:
+
+**3 Transcribers × 2 Post-Processors = 6 Combinations**
 
 ### TRANSCRIPTION PROVIDERS (ASR + DIARIZATION)
 
 | Service | Provider | Cost/hour | Speed | Model | Best For |
 |---------|----------|-----------|-------|-------|----------|
-| **WhisperX** | Local | **FREE** | 5-10 min | large-v3 | Quality-focused, private/offline |
-| **WhisperX-Cloud** | Replicate | $2.88 | 2-3 min | large-v3 | Fast cloud processing |
-| **AssemblyAI** | Cloud | $1.08 | 3-4 min | Best | Highest accuracy |
-| **Deepgram** | Cloud | $0.27 | 23 sec | nova-3-general | Budget-optimized speed |
+| **WhisperX** | Local GPU | **FREE** | 30-120 min | large-v3 | Privacy/offline, unlimited use |
+| **WhisperX-Cloud** | Replicate | $24 | 2-5 min | large-v3 | Production workflows |
+| **AssemblyAI** | Cloud | $22 | 3-5 min | Best | Enterprise/highest accuracy |
 
-### POST-PROCESSING PROVIDERS (AI CORRECTION)
+### POST-PROCESSING PROVIDERS (AI ENHANCEMENT)
 
-| Provider | Model | Context Tokens | Cost (Input/Output) | Quality Rating | Speed |
-|----------|-------|----------------|---------------------|----------------|-------|
-| **Claude Opus 4.5** | opus | **150,029** | $15/$75 per MTok | ⭐⭐⭐⭐⭐ (Premium Reasoning) | Medium |
-| **Claude Sonnet 4.5** | sonnet | **150,029** | $3/$15 per MTok | ⭐⭐⭐⭐⭐ (Balanced Quality) | Medium |
-| **Gemini 3 Pro** | gemini | **128,065** | ~$1.25 per MTok | ⭐⭐⭐⭐⭐ (Technical Excellence) | Fast |
-| **ChatGPT-4o** | chatgpt | **120,041** | $2.50/$10 per MTok | ⭐⭐⭐⭐ (General Purpose) | Fast |
-| **Llama 3.3 70B** | llama | **~128K** | $0.59/$0.79 per MTok | ⭐⭐⭐⭐⭐ (Ultra-Fast) | ⚡ BLAZING |
-| **Qwen 3 32B** | qwen-cloud | **~128K** | $0.08/$0.08 per MTok | ⭐⭐⭐⭐⭐ (Maximum Quality) | Medium |
-| **Qwen2.5:14B** | qwen | **32K** | FREE | ⭐⭐⭐☆ (Limited Context) | Local GPU |
+| Provider | Model | Context Tokens | Cost (per hour audio) | Quality Rating | Speed |
+|----------|-------|----------------|----------------------|----------------|-------|
+| **Claude Opus 4.5** | opus | **150,029** | $1.50-$3.00 | ⭐⭐⭐⭐⭐ (9.4/10) | Medium |
+| **Gemini 3.0 Pro** | gemini | **128,065** | FREE-$1.00 | ⭐⭐⭐⭐⭐ (9.0/10) | Fast |
 
-## COMPLETE AI PROVIDER MATRIX
+## CONTEXT WINDOW CAPABILITIES
 
-**Post-Processing Providers: sonnet, opus, chatgpt, gemini, llama, qwen-cloud, qwen**
-**Transcription Providers: whisperx, whisperx-cloud, assemblyai, deepgram**
+**Proven Working Limits (Tested November 2025):**
+- **Claude Opus 4.5**: 150,029 tokens ✅ (93-98% content retention)
+- **Gemini 3.0 Pro**: 128,065 tokens ✅ (84-98% content retention)
 
-## CONTEXT WINDOW LIMITS (ACTUAL TESTED CAPABILITIES)
-
-**Proven Working Limits:**
-- **Anthropic Claude Sonnet 4.5**: 150,029 tokens ✅
-- **Anthropic Claude Opus 4.5**: 150,029 tokens ✅
-- **Google Gemini 3 Pro**: 128,065 tokens ✅
-- **OpenAI ChatGPT-4o**: 120,041 tokens ✅
-- **Meta Llama 3.3 70B (Groq)**: ~128K tokens ✅
-- **Qwen 3 32B (Groq)**: ~128K tokens ✅
-
-**Can Handle Full Transcripts:** All major providers handle 45K+ token workloads without chunking
+**Can Handle Full Transcripts:** Both providers handle typical podcast workloads (20-80K tokens) without chunking
 
 ## TRANSCRIPT SIZES FOR CONTEXT
 
-**DevConnect Recap (31 minutes):**
-- WhisperX raw: ~11K tokens input
-- AssemblyAI raw: ~12K tokens input
-- Deepgram raw: ~14K tokens input
-- **Total processing required: ~25-30K tokens** (fits all providers easily)
+**Typical Episode Patterns:**
+- 30min episode: ~20K tokens total (fits ×7 in Opus, ×6 in Gemini)
+- 60min episode: ~35K tokens total (fits ×4 in Opus, ×3 in Gemini)
+- 90min episode: ~50K tokens total (fits ×3 in Opus, ×2 in Gemini)
+- 120min episode: ~70K tokens total (fits ×2 in both)
 
-**Typical Podcast Patterns:**
-- 30min episode: ~20K tokens total (context fits ×5+ comfortably)
-- 60min episode: ~35K tokens total (context fits ×3-4 comfortably)
-- 90min episode: ~50K tokens total (fits Sonnet ×3, others ×2-3 comfortably)
+**Real Examples:**
+- Episode001 (Bitcoin origins): ~19K tokens → All providers handle easily
+- DevConnect Recap (31 min): ~25-30K tokens → All providers handle easily
+- Episode006 (The DAO): ~45K tokens → All providers handle comfortably
 
-## QUALITY BY CONTEXT LIMIT
+## SUPPORTED COMBINATIONS MATRIX
 
-**GOLD STANDARD QUALITY (9.0-9.5/10):**
-1. **WhisperX + Sonnet** = Excellent context capacity, premium quality
-2. **WhisperX + Gemini** = Superior technical preservation with large context
-3. **AssemblyAI + Gemini** = Superior technical preservation with verbose inputs
+| Transcriber | Post-Processor | Quality | Speed | Cost/hr | Best For |
+|-------------|----------------|---------|-------|---------|----------|
+| whisperx-cloud | opus | 9.5/10 | Medium | $26-27 | **BEST OVERALL** |
+| assemblyai | opus | 9.4/10 | Medium | $24-26 | Enterprise/accuracy |
+| whisperx | opus | 9.4/10 | Slow | $1.50-3 | Premium offline |
+| whisperx-cloud | gemini | 9.2/10 | Fast | $24 | **FAST & ACCURATE** |
+| assemblyai | gemini | 8.9/10 | Fast | $22 | Professional speed |
+| whisperx | gemini | 9.2/10 | Slow | **FREE** | **BUDGET OPTION** |
 
-**HIGH QUALITY (8.8-9.0/10):**
-1. **WhisperX + Llama** = Optimal all-around performer with blazing speed
-2. **WhisperX + Qwen-Cloud** = Maximum quality with unlimited context scaling
+## QUALITY RATINGS
 
-**SOLID QUALITY (8.5/10):**
-1. **Deepgram + Gemini** = Reliable technical quality on budget
+**PREMIUM TIER (9.4-9.5/10):**
+- **whisperx-cloud + opus** = Best overall preservation, professional results
+- **assemblyai + opus** = Highest transcription accuracy, enterprise quality
+- **whisperx + opus** = Premium offline processing
 
-## RECOMMENDED COMBINATIONS
+**FAST TIER (8.9-9.2/10):**
+- **whisperx-cloud + gemini** = Fast processing, excellent technical handling
+- **whisperx + gemini** = FREE option, high quality
+- **assemblyai + gemini** = Fast professional workflow
 
-**Best for Technical Ethereum Podcasts:**
-1. **WhisperX + Gemini** (9.4/10 quality - technical excellence)
-2. **WhisperX + Llama** (9.3/10 quality - speed & balance)
-3. **AssemblyAI + Gemini** (9.0/10 quality - premium combination)
+## RECOMMENDATIONS BY USE CASE
 
-**Working but Limited:**
-- **ChatGPT combinations** (7.8/10 quality - some content loss)
-- **Qwen local combos** (7.5/10 quality - context limited)
+**For Archival Quality:**
+→ whisperx-cloud + opus (Best preservation of content and nuance)
 
-**Production Notes:**
-- **Gemini 3 Pro output truncated** (8K max - requires multiple passes for long docs)
-- **Llama/Qwen-Cloud preferred** (∞ scaling, premium quality, optimal speed)
+**For Speed/Efficiency:**
+→ whisperx-cloud + gemini (Fast, excellent for technical content)
 
-## SUMMARY TABLE
+**For Budget/Free:**
+→ whisperx + gemini (Completely free, requires local GPU)
 
-| ASR → LLM | Context Capacity | Content Retention | Quality Score |
-|-----------|------------------|-------------------|----------------|
-| **WhisperX + Gemini** | ✅ 128K | 95% | ⭐⭐⭐⭐⭐ (9.4/10) |
-| **WhisperX + Llama** | ✅ 128K | 89% | ⭐⭐⭐⭐⭐ (9.3/10) |
-| **AssemblyAI + Gemini** | ✅ 128K | 94% | ⭐⭐⭐⭐⭐ (9.0/10) |
+**For Offline/Privacy:**
+→ whisperx + (opus or gemini) (All processing local)
 
-**Best Production Choice:** WhisperX + Gemini (unlimited scaling, technical excellence, long context)
+**For Enterprise:**
+→ assemblyai + opus (Professional service + premium quality)
+
+## HISTORICAL NOTE - DISCONTINUED PROVIDERS
+
+The following were tested and discontinued (November 2025):
+
+**Removed Transcriber:**
+- Deepgram: Too verbose (152-156% word count bloat)
+
+**Removed Post-Processors:**
+- ChatGPT: 90% content loss (unusable)
+- Sonnet: Redundant (Opus better, Gemini faster)
+- Llama: 70% content loss (over-summarization)
+- Qwen (local): Mediocre quality (35-49% loss)
+- Qwen-Cloud: Broken (formatting failures, hallucinations)
+
+See outputs/ALL_EPISODES_QUALITY_ASSESSMENT.txt for detailed analysis.
+
+## PRODUCTION WORKFLOW
+
+**Standard Production:**
+```bash
+# Transcribe with WhisperX-Cloud
+./scripts/process_single_transcribe_and_diarize.py episode001.mp4 whisperx-cloud
+
+# Post-process with Opus for premium quality
+./scripts/process_single_post_process.py episode001 opus
+
+# Or with Gemini for fast/free processing
+./scripts/process_single_post_process.py episode001 gemini
+```
+
+**Budget/Offline Production:**
+```bash
+# Transcribe locally (FREE but slower)
+./scripts/process_single_transcribe_and_diarize.py episode001.mp4 whisperx
+
+# Post-process with Gemini (FREE)
+./scripts/process_single_post_process.py episode001 gemini
+```
+
+## SUMMARY
+
+**Current Architecture: 3 transcribers × 2 post-processors = 6 combinations**
+
+All combinations provide excellent quality (8.9-9.5/10) with different trade-offs:
+- **Best Overall**: whisperx-cloud + opus
+- **Best Value**: whisperx-cloud + gemini  
+- **Best Free**: whisperx + gemini
+
+Context limits are not a concern - both post-processors handle typical podcast lengths easily.
+
+For detailed quality analysis, see outputs/ALL_EPISODES_QUALITY_ASSESSMENT.txt

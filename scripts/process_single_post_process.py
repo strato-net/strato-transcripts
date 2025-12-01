@@ -28,7 +28,7 @@ def extract_transcriber_from_filename(filepath):
 
     # CHECK LONGER NAMES FIRST to avoid substring matching issues
     # (whisperx-cloud must be checked before whisperx)
-    for service in ['whisperx-cloud', 'assemblyai', 'deepgram', 'whisperx', 'openai']:
+    for service in ['whisperx-cloud', 'assemblyai', 'whisperx']:
         if f'_{service}' in filename:
             basename = filename.replace(f'_{service}', '')
             return basename, service

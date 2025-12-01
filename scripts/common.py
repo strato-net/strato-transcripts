@@ -171,7 +171,7 @@ def save_transcript_dual_format(output_dir, basename, service_name, content,
     Args:
         output_dir: Directory to save files
         basename: Base filename without extension
-        service_name: Name of service (whisperx, deepgram, etc.)
+        service_name: Name of service (whisperx, whisperx-cloud, assemblyai)
         content: Either pre-formatted text or list of segment dicts
         content_type: "text" or "segments"
     
