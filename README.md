@@ -12,16 +12,16 @@ nano setup_env.sh  # Add API keys
 
 # 2. Process single file
 source venv/bin/activate && source setup_env.sh
-./scripts/process_single.sh audio.mp3 --transcribers whisperx --processors chatgpt
+./scripts/process_single.sh audio.mp3 --transcribers whisperx --processors opus
 
-# 3. Multiple combinations (2 transcribers × 3 processors = 6 outputs)
-./scripts/process_single.sh audio.mp3 --transcribers whisperx,deepgram --processors sonnet,chatgpt,llama
+# 3. Multiple combinations (2 transcribers × 2 processors = 4 outputs)
+./scripts/process_single.sh audio.mp3 --transcribers whisperx,assemblyai --processors opus,gemini
 
 # 4. Cloud WhisperX (paid but no local GPU required)
-./scripts/process_single.sh audio.mp3 --transcribers whisperx-cloud --processors chatgpt
+./scripts/process_single.sh audio.mp3 --transcribers whisperx-cloud --processors opus
 
-# 4. Batch process all MP3s
-./scripts/process_all.sh --transcribers deepgram --processors sonnet
+# 5. Batch process all MP3s
+./scripts/process_all.sh --transcribers assemblyai --processors opus
 ```
 
 ## Transcription Services
@@ -32,7 +32,6 @@ All services include speaker diarization (identifying who said what).
 |---------|--------|------|-----------|-------|
 | **WhisperX** | large-v3 | Local GPU | FREE | 5-10 min |
 | **WhisperX-Cloud** | large-v3 | Cloud API | $2.88 | 2-3 min |
-| **Deepgram** | nova-3-general | Cloud API | $0.27 | 23 sec |
 | **AssemblyAI** | Best | Cloud API | $1.08 | 3-4 min |
 
 ## AI Post-Processors
@@ -40,12 +39,7 @@ All services include speaker diarization (identifying who said what).
 | Processor | Model | Cloud Service | Context Limit | Cost (Input/Output) | Best For |
 |-----------|------------|---------------|---------------|---------------------|----------|
 | **opus** | Claude Opus 4.5 | Anthropic | **150K** | $15/$75 per MTok | **PREMIUM QUALITY** - Best reasoning, long context |
-| **sonnet** | Claude Sonnet 4.5 | Anthropic | **150K** | $3/$15 per MTok | **BALANCED** - Excellent quality, reliable |
 | **gemini** | Gemini 3.0 Pro | Google | **128K** | ~$1.25 per MTok | **TECHNICAL** - Superior technical preservation |
-| **chatgpt** | GPT-4o | OpenAI | **120K** | $2.50/$10 per MTok | **GENERAL** - Solid all-around performance |
-| **llama** | Llama 3.3 70B | Groq | **128K** | $0.59/$0.79 per MTok | ⚡ **ULTRAFAST** (300+ tok/s), Meta's latest |
-| **qwen-cloud** | Qwen3 32B | Groq | **128K** | $0.08/$0.08 per MTok | 🔬 **MAXIMUM QUALITY** for technical content |
-| **qwen** | Qwen2.5:14B | Ollama (local) | 32K | FREE | 🎮 **LOCAL GPU** (8GB+ VRAM), private/offline |
 
 ## Setup
 
@@ -56,19 +50,21 @@ All services include speaker diarization (identifying who said what).
 **API Keys in `setup_env.sh`:**
 ```bash
 export HF_TOKEN="hf_..."              # Required for WhisperX diarization
-export DEEPGRAM_API_KEY="..."         # Optional transcription services
-export ANTHROPIC_API_KEY="sk-ant-..."  # Optional AI processors
-export OPENAI_API_KEY="sk-..."
-export GROQ_API_KEY="gsk_..."
+export ANTHROPIC_API_KEY="sk-ant-..." # For Claude Opus post-processing
+export GOOGLE_API_KEY="..."           # For Gemini post-processing
+export ASSEMBLYAI_API_KEY="..."       # Optional: AssemblyAI transcription
+export REPLICATE_API_TOKEN="..."      # Optional: Cloud WhisperX
 ```
 
 ## Output Files
 
-**Naming:** `{basename}_{transcriber}_{processor}_processed.{txt|md}`
+**Naming:** `{basename}_{transcriber}_{processor}.{txt|md}`
 
-Example: `interview_deepgram_llama_processed.txt`
+Example: `interview_assemblyai_opus.txt`
 
-Processors: `sonnet`, `chatgpt`, `gemini`, `llama`, `qwen-cloud`, `qwen`
+**Transcribers:** `whisperx`, `whisperx-cloud`, `assemblyai`
+
+**Processors:** `opus`, `gemini`
 
 ## License
 

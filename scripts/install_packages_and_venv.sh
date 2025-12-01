@@ -268,87 +268,9 @@ elif [ "$OS_TYPE" = "ubuntu" ]; then
     echo -e "${GREEN}✓ System dependencies installed${NC}"
 fi
 
-echo ""
-echo -e "${YELLOW}[3/15] Installing Ollama (optional AI tool)...${NC}"
-echo "Installing/upgrading Ollama for local AI post-processing (optional, FREE, private)..."
-if command -v ollama &> /dev/null; then
-    CURRENT_VERSION=$(ollama --version 2>/dev/null | sed -n 's/.*ollama version is \([0-9.]*\).*/\1/p' || echo "unknown")
-    echo "Current version: $CURRENT_VERSION"
-    echo "Checking for updates..."
-else
-    echo "Installing Ollama..."
-fi
-
-# Platform-specific installation
-if [ "$OS_TYPE" = "macos" ]; then
-    # macOS: Use Homebrew to install Ollama
-    if brew list ollama &>/dev/null; then
-        # Already installed, check for upgrade
-        if brew outdated ollama &>/dev/null; then
-            echo "Upgrading Ollama via Homebrew..."
-            brew upgrade ollama
-            NEW_VERSION=$(ollama --version 2>/dev/null | sed -n 's/.*ollama version is \([0-9.]*\).*/\1/p' || echo "unknown")
-            echo -e "${GREEN}✓ Ollama upgraded via Homebrew: $CURRENT_VERSION → $NEW_VERSION${NC}"
-        else
-            echo -e "${GREEN}✓ Ollama already at latest version (via Homebrew)${NC}"
-        fi
-    else
-        # Not installed, install it
-        if brew install ollama; then
-            NEW_VERSION=$(ollama --version 2>/dev/null | sed -n 's/.*ollama version is \([0-9.]*\).*/\1/p' || echo "unknown")
-            echo -e "${GREEN}✓ Ollama installed via Homebrew (version: $NEW_VERSION)${NC}"
-        else
-            echo -e "${YELLOW}⚠ Ollama installation via Homebrew failed (non-fatal)${NC}"
-            echo "  You can install it manually: brew install ollama"
-            echo "  Or download from: https://ollama.com/download/mac"
-        fi
-    fi
-elif [ "$OS_TYPE" = "ubuntu" ]; then
-    # Ubuntu: Use official installer script
-    if curl -fsSL https://ollama.com/install.sh | sh; then
-        NEW_VERSION=$(ollama --version 2>/dev/null | sed -n 's/.*ollama version is \([0-9.]*\).*/\1/p' || echo "unknown")
-        if [ "$CURRENT_VERSION" != "unknown" ] && [ "$NEW_VERSION" != "$CURRENT_VERSION" ]; then
-            echo -e "${GREEN}✓ Ollama upgraded: $CURRENT_VERSION → $NEW_VERSION${NC}"
-        elif [ "$CURRENT_VERSION" = "$NEW_VERSION" ]; then
-            echo -e "${GREEN}✓ Ollama already at latest version: $NEW_VERSION${NC}"
-        else
-            echo -e "${GREEN}✓ Ollama installed (version: $NEW_VERSION)${NC}"
-        fi
-    else
-        echo -e "${YELLOW}⚠ Ollama installation failed (non-fatal)${NC}"
-        echo "  You can install it manually: curl -fsSL https://ollama.com/install.sh | sh"
-    fi
-fi
-
-# Start Ollama service and pull default model
-if command -v ollama &> /dev/null; then
-    echo "Starting Ollama service..."
-    # Start in background, redirect output to avoid clutter
-    if ! pgrep -x "ollama" > /dev/null; then
-        nohup ollama serve > /tmp/ollama.log 2>&1 &
-        sleep 2  # Give service time to start
-        echo "✓ Ollama service started"
-    else
-        echo "✓ Ollama service already running"
-    fi
-    
-    echo "Pulling Ollama model for qwen (lightweight: qwen2.5:7b)..."
-    echo "Note: Qwen requires NVIDIA GPU with 6GB+ VRAM for transcript processing"
-    echo "This will download ~4.7GB - may take 3-7 minutes depending on your internet speed..."
-    echo ""
-    
-    if ollama pull qwen2.5:7b 2>&1 | grep -q "success"; then
-        echo -e "${GREEN}✓ Model qwen2.5:7b downloaded${NC}"
-    else
-        echo -e "${YELLOW}⚠ Model qwen2.5:7b pull completed (check with: ollama list)${NC}"
-    fi
-    
-    echo ""
-    echo -e "${GREEN}✓ Qwen 7B model ready (lightweight, stable):${NC}"
-    echo "  • Optimized for: RTX 5070, RTX 4060+, and similar GPUs (6GB+ VRAM)"
-    echo "  • Uses: ~5-6GB VRAM during processing"
-    echo "  • CPU-only systems: Qwen will be automatically skipped with warning"
-    echo "  • Performance: 15-30 seconds per transcript"
+    echo -e "${GREEN}✓ Ollama ready for local AI processing${NC}"
+    echo "  • Pull models as needed: ollama pull <model>"
+    echo "  • See available models: ollama list"
 fi
 echo ""
 
@@ -383,8 +305,8 @@ source "$VENV_DIR/bin/activate"
 # ==============================================================================
 # Installs WhisperX, AI provider SDKs, and dependencies from requirements.txt.
 # WhisperX will pull PyTorch 2.8.0, which we'll upgrade in the next step.
-# Includes transcription services (AssemblyAI, Deepgram, OpenAI)
-# and post-processing services (Anthropic, Google Gemini, OpenAI).
+# Includes transcription service (AssemblyAI)
+# and post-processing services (Anthropic, Google Gemini).
 # ==============================================================================
 echo -e "${YELLOW}[5/15] Installing base packages...${NC}"
 echo "Installing WhisperX, AI provider SDKs, and dependencies from requirements.txt"
@@ -660,14 +582,12 @@ echo ""
 # ==============================================================================
 echo -e "${YELLOW}[13/15] Verifying AI provider SDKs...${NC}"
 echo "Verifying packages installed from requirements.txt:"
-echo "  Cloud transcription: assemblyai, deepgram-sdk, openai"
+echo "  Cloud transcription: assemblyai"
 echo "  AI post-processing: anthropic, google-generativeai"
 echo "  Utilities: requests"
 
 # Test key imports
 python3 -c "import assemblyai; print('✓ assemblyai')"
-python3 -c "import deepgram; print('✓ deepgram-sdk')"
-python3 -c "import openai; print('✓ openai')"
 python3 -c "import anthropic; print('✓ anthropic')"
 python3 -c "import google.generativeai; print('✓ google-generativeai')"
 python3 -c "import requests; print('✓ requests')"
@@ -736,11 +656,10 @@ echo "3. Accept model agreements:"
 echo "   - https://huggingface.co/pyannote/speaker-diarization-3.1"
 echo "   - https://huggingface.co/pyannote/segmentation-3.0"
 echo ""
-echo -e "${YELLOW}OPTIONAL: Get API keys for remote AI providers${NC}"
+echo -e "${YELLOW}OPTIONAL: Get API keys for cloud AI providers${NC}"
 echo ""
-echo "4. For cloud-based AI providers (if not using local Ollama):"
-echo "   - OpenAI (GPT-4.1): https://platform.openai.com/api-keys"
-echo "   - Anthropic (Claude): https://console.anthropic.com/"
+echo "4. For cloud-based AI post-processing:"
+echo "   - Anthropic (Claude Opus): https://console.anthropic.com/"
 echo "   - Google (Gemini): https://makersuite.google.com/app/apikey"
 echo ""
 echo -e "${GREEN}Ready to use!${NC}"
@@ -748,13 +667,13 @@ echo ""
 echo "Basic Usage:"
 echo "  source setup_env.sh"
 echo "  source venv/bin/activate"
-echo "  ./scripts/process_single.sh audio.mp3 --transcribers whisperx --processors openai"
+echo "  ./scripts/process_single.sh audio.mp3 --transcribers whisperx --processors opus"
 echo ""
-echo "Available transcribers: whisperx, deepgram, assemblyai"
-echo "Available processors: sonnet, chatgpt, gemini, llama, qwen"
+echo "Available transcribers: whisperx, whisperx-cloud, assemblyai"
+echo "Available processors: opus, gemini"
 echo ""
 echo "Batch Processing:"
-echo "  ./scripts/process_all.sh --transcribers deepgram --processors anthropic"
+echo "  ./scripts/process_all.sh --transcribers assemblyai --processors opus"
 echo ""
 echo "See README.md and AI_PROVIDERS_GUIDE.md for complete documentation."
 echo ""

@@ -2,7 +2,7 @@
 """
 AI transcript post-processor for Ethereum/blockchain content.
 Batch process transcripts with multiple AI providers.
-Supports: sonnet, opus, chatgpt, gemini, llama, qwen-cloud, qwen.
+Supports: opus, gemini.
 """
 
 import os
@@ -13,8 +13,8 @@ from pathlib import Path
 import argparse
 
 # Import shared utilities
-from common import (Colors, success, failure, skip, validate_api_key, 
-                    load_people_list, load_terms_list, start_ollama, stop_ollama, cleanup_gpu_memory)
+from common import (Colors, success, failure, skip, validate_api_key,
+                    load_people_list, load_terms_list, cleanup_gpu_memory)
 
 
 # ============================================================================
@@ -28,7 +28,7 @@ def extract_transcriber_from_filename(filepath):
 
     # CHECK LONGER NAMES FIRST to avoid substring matching issues
     # (whisperx-cloud must be checked before whisperx)
-    for service in ['whisperx-cloud', 'assemblyai', 'deepgram', 'whisperx', 'openai']:
+    for service in ['whisperx-cloud', 'assemblyai', 'whisperx']:
         if f'_{service}' in filename:
             basename = filename.replace(f'_{service}', '')
             return basename, service
@@ -267,35 +267,6 @@ def build_context_summary():
     
     return "\n\n".join(context_parts) if context_parts else "No additional context available."
 
-def process_with_anthropic(transcript, api_key, context):
-    """Process transcript using Claude Sonnet 4.5 with streaming."""
-    try:
-        import anthropic
-    except ImportError:
-        raise ImportError("anthropic package not installed. Install with: pip install anthropic")
-    
-    client = anthropic.Anthropic(api_key=api_key)
-    prompt = build_prompt(context, transcript)
-    
-    print(f"      Processing: ", end='', flush=True)
-
-    result = ""
-    chunk_count = 0
-
-    with client.messages.stream(
-        model="claude-sonnet-4-5",
-        max_tokens=64000,
-        messages=[{"role": "user", "content": prompt}]
-    ) as stream:
-        for text in stream.text_stream:
-            result += text
-            chunk_count += 1
-            if chunk_count % 100 == 0:
-                print(".", end='', flush=True)
-
-    print(" ✓")
-    return result
-
 def process_with_opus(transcript, api_key, context):
     """Process transcript using Claude Opus 4.5 with streaming."""
     try:
@@ -325,46 +296,6 @@ def process_with_opus(transcript, api_key, context):
     print(" ✓")
     return result
 
-def process_with_openai(transcript, api_key, context):
-    """Process transcript using ChatGPT-4o-latest with streaming."""
-    model = "chatgpt-4o-latest"
-    try:
-        import openai
-    except ImportError:
-        raise ImportError("openai package not installed. Install with: pip install openai")
-    
-    client = openai.OpenAI(api_key=api_key)
-    prompt = build_prompt(context, transcript)
-    
-    print(f"      Processing: ", end='', flush=True)
-    
-    result = ""
-    chunk_count = 0
-    
-    stream = client.chat.completions.create(
-        model=model,
-        messages=[
-            {"role": "system", "content": SYSTEM_PROMPT},
-            {"role": "user", "content": prompt}
-        ],
-        max_tokens=16384,
-        temperature=0.1,          # Lower for more deterministic output
-        top_p=0.9,               # Reduce randomness
-        presence_penalty=0.0,    # No penalty for repetition
-        frequency_penalty=0.0,   # Allow natural conversation flow
-        stream=True
-    )
-    
-    for chunk in stream:
-        if chunk.choices[0].delta.content:
-            result += chunk.choices[0].delta.content
-            chunk_count += 1
-            if chunk_count % 100 == 0:
-                print(".", end='', flush=True)
-    
-    print(" ✓")
-    return result
-
 def process_with_gemini(transcript, api_key, context):
     """Process transcript using Gemini 3.0 Pro with streaming."""
     model = "models/gemini-3-pro-preview"
@@ -391,82 +322,6 @@ def process_with_gemini(transcript, api_key, context):
             if chunk_count % 100 == 0:
                 print(".", end='', flush=True)
     
-    print(" ✓")
-    return result
-
-def process_with_groq(transcript, api_key, context):
-    """Process transcript using Llama 3.3 70B (via Groq) with streaming."""
-    model = "llama-3.3-70b-versatile"
-    try:
-        import openai
-    except ImportError:
-        raise ImportError("openai package not installed")
-
-    client = openai.OpenAI(api_key=api_key, base_url="https://api.groq.com/openai/v1")
-    prompt = build_prompt(context, transcript)
-
-    print(f"      Model: {model}")
-    print(f"      Processing: ", end='', flush=True)
-
-    result = ""
-    chunk_count = 0
-
-    stream = client.chat.completions.create(
-        model=model,
-        messages=[
-            {"role": "system", "content": SYSTEM_PROMPT},
-            {"role": "user", "content": prompt}
-        ],
-        max_tokens=8000,
-        temperature=0.3,
-        stream=True
-    )
-
-    for chunk in stream:
-        if chunk.choices[0].delta.content:
-            result += chunk.choices[0].delta.content
-            chunk_count += 1
-            if chunk_count % 100 == 0:
-                print(".", end='', flush=True)
-
-    print(" ✓")
-    return result
-
-def process_with_groq_qwen(transcript, api_key, context):
-    """Process transcript using Qwen3 32B (via Groq) with streaming - MAXIMUM QUALITY - No cost/speed limits."""
-    model = "qwen/qwen3-32b"
-    try:
-        import openai
-    except ImportError:
-        raise ImportError("openai package not installed")
-
-    client = openai.OpenAI(api_key=api_key, base_url="https://api.groq.com/openai/v1")
-    prompt = build_prompt(context, transcript)
-
-    print(f"      Model: {model} (hosted)")
-    print(f"      Processing: ", end='', flush=True)
-
-    result = ""
-    chunk_count = 0
-
-    stream = client.chat.completions.create(
-        model=model,
-        messages=[
-            {"role": "system", "content": SYSTEM_PROMPT},
-            {"role": "user", "content": prompt}
-        ],
-        max_tokens=32000,  # Groq Qwen supports up to 32K output tokens
-        temperature=0.3,
-        stream=True
-    )
-
-    for chunk in stream:
-        if chunk.choices[0].delta.content:
-            result += chunk.choices[0].delta.content
-            chunk_count += 1
-            if chunk_count % 100 == 0:
-                print(".", end='', flush=True)
-
     print(" ✓")
     return result
 
@@ -514,75 +369,7 @@ def validate_output_quality(input_text, output_text, provider):
     
     return len(issues) == 0, issues
 
-def process_with_qwen(transcript, context, ollama_process=None):
-    """Process transcript using Qwen 2.5 7B (via Ollama)."""
-    import subprocess
-    import time
-    
-    try:
-        import requests
-        import json
-    except ImportError:
-        raise ImportError("requests package not installed")
-    
-    # Use 7B model (lighter, more stable for transcript processing)
-    model = "qwen2.5:7b"
-    print(f"      Model: {model}")
-    
-    started_ollama = False
-    
-    try:
-        # Start Ollama if not running
-        if ollama_process is None:
-            ollama_process = start_ollama()
-            if ollama_process is not None:
-                started_ollama = True
-        
-        # Process transcript
-        prompt = build_prompt(context, transcript)
-        print(f"      Processing: ", end='', flush=True)
-        
-        response = requests.post(
-            "http://localhost:11434/api/generate",
-            json={
-                "model": model,
-                "prompt": prompt,
-                "stream": True,
-                "options": {
-                    "temperature": 0.3,
-                    "num_ctx": 32768,      # Increase context window to 32K
-                    "num_predict": -1,     # No output limit (generate until done)
-                    "stop": []             # No early stopping tokens
-                }
-            },
-            timeout=1800,
-            stream=True
-        )
-        response.raise_for_status()
-        
-        result = ""
-        chunk_count = 0
-        for line in response.iter_lines():
-            if line:
-                chunk = json.loads(line)
-                if "response" in chunk:
-                    result += chunk["response"]
-                    chunk_count += 1
-                    if chunk_count % 50 == 0:
-                        print(".", end='', flush=True)
-                if chunk.get("done", False):
-                    break
-        
-        print(" ✓")
-        return result, ollama_process if started_ollama else None
-        
-    except Exception as e:
-        print(f" {failure(f'Error: {e}')}")
-        if started_ollama and ollama_process:
-            ollama_process.terminate()
-        return None, None
-
-def process_single_combination(transcript_path, provider, api_keys, context, ollama_process=None):
+def process_single_combination(transcript_path, provider, api_keys, context):
     """Process single transcript with single provider."""
     start_time = time.time()
     
@@ -597,23 +384,12 @@ def process_single_combination(transcript_path, provider, api_keys, context, oll
     
     # Process with appropriate provider
     corrected = None
-    new_ollama_process = None
     
     try:
-        if provider == "sonnet":
-            corrected = process_with_anthropic(transcript, api_keys['sonnet'], context)
-        elif provider == "opus":
+        if provider == "opus":
             corrected = process_with_opus(transcript, api_keys['opus'], context)
-        elif provider == "chatgpt":
-            corrected = process_with_openai(transcript, api_keys['chatgpt'], context)
         elif provider == "gemini":
             corrected = process_with_gemini(transcript, api_keys['gemini'], context)
-        elif provider == "llama":
-            corrected = process_with_groq(transcript, api_keys['llama'], context)
-        elif provider == "qwen-cloud":
-            corrected = process_with_groq_qwen(transcript, api_keys['qwen-cloud'], context)
-        elif provider == "qwen":
-            corrected, new_ollama_process = process_with_qwen(transcript, context, ollama_process)
     except Exception as e:
         elapsed = time.time() - start_time
         print(f"      {failure(f'Processing failed ({elapsed:.1f}s): {e}')}")
@@ -627,7 +403,7 @@ def process_single_combination(transcript_path, provider, api_keys, context, oll
                 except Exception as cleanup_error:
                     print(f"      ⚠ Could not delete {partial_file.name}: {cleanup_error}")
         
-        return None, new_ollama_process, elapsed
+        return None, elapsed
     
     if not corrected:
         elapsed = time.time() - start_time
@@ -642,7 +418,7 @@ def process_single_combination(transcript_path, provider, api_keys, context, oll
                 except Exception as cleanup_error:
                     print(f"      ⚠ Could not delete {partial_file.name}: {cleanup_error}")
         
-        return None, new_ollama_process, elapsed
+        return None, elapsed
     
     # Validate output quality
     valid, issues = validate_output_quality(transcript, corrected, provider)
@@ -651,13 +427,7 @@ def process_single_combination(transcript_path, provider, api_keys, context, oll
         print(f"      ⚠ Quality validation failed:")
         for issue in issues:
             print(f"        • {issue}")
-        
-        # For ChatGPT/Qwen failures, note the issue but save anyway (user can review)
-        if provider in ['chatgpt', 'qwen']:
-            print(f"      → Saving output anyway (manual review recommended)")
-        else:
-            # For other providers, save with warning
-            print(f"      → Saving output with quality warning")
+        print(f"      → Saving output with quality warning")
     else:
         print(f"      ✓ Quality validation passed")
     
@@ -677,7 +447,7 @@ def process_single_combination(transcript_path, provider, api_keys, context, oll
     else:
         print(f"      ⚠ Saved: {output_path} ({elapsed:.1f}s) - REVIEW RECOMMENDED")
     
-    return output_path, new_ollama_process, elapsed
+    return output_path, elapsed
 
 def main():
     parser = argparse.ArgumentParser(
@@ -687,35 +457,13 @@ def main():
     
     parser.add_argument("transcripts", nargs='+', help="Transcript file path(s)")
     parser.add_argument("--processors", required=True,
-                       help="Comma-separated list of processors (sonnet,opus,chatgpt,gemini,llama,qwen-cloud,qwen)")
+                       help="Comma-separated list of processors (opus,gemini)")
     
     args = parser.parse_args()
     
-    # Clean up any dangling Ollama processes at startup
-    try:
-        import subprocess
-        import requests
-        
-        # Check if Ollama is running
-        try:
-            response = requests.get("http://localhost:11434/api/tags", timeout=1)
-            if response.status_code == 200:
-                print("Stopping dangling Ollama process...")
-                subprocess.run(['pkill', '-f', 'ollama serve'], 
-                             stdout=subprocess.DEVNULL, 
-                             stderr=subprocess.DEVNULL,
-                             timeout=5)
-                time.sleep(2)  # Give it time to stop
-                print("✓ Cleared")
-        except:
-            pass  # Not running, nothing to clean up
-    except Exception as e:
-        # Non-fatal if cleanup fails
-        print(f"⚠ Warning: Could not clean up dangling processes: {e}")
-    
     # Parse processors
     processors = [p.strip() for p in args.processors.split(',')]
-    valid_processors = {'sonnet', 'opus', 'chatgpt', 'gemini', 'llama', 'qwen-cloud', 'qwen'}
+    valid_processors = {'opus', 'gemini'}
     
     for proc in processors:
         if proc not in valid_processors:
@@ -723,62 +471,17 @@ def main():
             print(f"Valid options: {', '.join(sorted(valid_processors))}")
             sys.exit(1)
     
-    # Check if Qwen requested on CPU-only system
-    if 'qwen' in processors:
-        try:
-            import torch
-            has_gpu = torch.cuda.is_available()
-            
-            if not has_gpu:
-                # CPU-only system - skip Qwen with warning
-                print()
-                print(f"{Colors.YELLOW}⚠️  QWEN SKIPPED: GPU Required{Colors.RESET}")
-                print()
-                print("Qwen requires NVIDIA GPU with 12GB+ VRAM for transcript processing.")
-                print("Current system: CPU-only")
-                print()
-                print("• Qwen 7B (CPU) is insufficient for complex transcript editing tasks")
-                print("• Qwen 32B (GPU) would work excellently on RTX 5070 12GB or similar")
-                print()
-                print("Skipping Qwen processing - all other processors will continue normally.")
-                print()
-                
-                # Remove qwen from processors list
-                processors = [p for p in processors if p != 'qwen']
-                
-                if not processors:
-                    print("Error: No processors remaining after skipping Qwen")
-                    sys.exit(1)
-        except ImportError:
-            # If torch not available, can't use Qwen anyway
-            print()
-            print(f"{Colors.YELLOW}⚠️  QWEN SKIPPED: PyTorch not available{Colors.RESET}")
-            print()
-            processors = [p for p in processors if p != 'qwen']
-            
-            if not processors:
-                print("Error: No processors remaining after skipping Qwen")
-                sys.exit(1)
-    
     # Check API keys using utility
     api_keys = {}
     skip_processors = []
     
     # Map processor names to their environment variable names
     key_mapping = {
-        'sonnet': 'ANTHROPIC_API_KEY',     # Claude Sonnet 4.5 via Anthropic
         'opus': 'ANTHROPIC_API_KEY',       # Claude Opus 4.5 via Anthropic
-        'chatgpt': 'OPENAI_API_KEY',       # ChatGPT-4o-latest via OpenAI
-        'gemini': 'GOOGLE_API_KEY',        # Gemini 3.0 Pro via Google
-        'llama': 'GROQ_API_KEY',           # Llama 3.3 70B via Groq
-        'qwen-cloud': 'GROQ_API_KEY'       # Qwen3 32B via Groq
+        'gemini': 'GOOGLE_API_KEY'         # Gemini 3.0 Pro via Google
     }
     
     for proc in processors:
-        if proc == 'qwen':
-            # Qwen (local via Ollama) doesn't need an API key
-            continue
-        
         env_var = key_mapping.get(proc)
         if env_var:
             key, error = validate_api_key(env_var)
@@ -813,40 +516,29 @@ def main():
     print("="*70)
     print()
     
-    ollama_process = None
     pipeline_start = time.time()
     
-    try:
-        for transcript_path in args.transcripts:
-            if not Path(transcript_path).exists():
-                print(f"✗ Transcript not found: {transcript_path}")
-                failed_count += len(processors)
-                continue
+    for transcript_path in args.transcripts:
+        if not Path(transcript_path).exists():
+            print(f"✗ Transcript not found: {transcript_path}")
+            failed_count += len(processors)
+            continue
+        
+        for processor in processors:
+            combo_num += 1
+            print(f"[{combo_num}/{total}] {Path(transcript_path).name} + {processor}")
             
-            for processor in processors:
-                combo_num += 1
-                print(f"[{combo_num}/{total}] {Path(transcript_path).name} + {processor}")
-                
-                result, new_ollama_process, elapsed = process_single_combination(
-                    transcript_path, processor, api_keys, context, ollama_process
-                )
-                
-                # Update Ollama process reference if it was started
-                if new_ollama_process:
-                    ollama_process = new_ollama_process
-                
-                if result:
-                    success_count += 1
-                    combo_times.append((Path(transcript_path).name, processor, elapsed))
-                else:
-                    failed_count += 1
-                
-                print()
-    
-    finally:
-        # Clean up Ollama if we started it (using shared function)
-        if ollama_process:
-            stop_ollama(ollama_process)
+            result, elapsed = process_single_combination(
+                transcript_path, processor, api_keys, context
+            )
+            
+            if result:
+                success_count += 1
+                combo_times.append((Path(transcript_path).name, processor, elapsed))
+            else:
+                failed_count += 1
+            
+            print()
     
     # Summary with timing
     pipeline_elapsed = time.time() - pipeline_start

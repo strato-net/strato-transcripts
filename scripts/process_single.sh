@@ -18,18 +18,18 @@ if [ $# -eq 0 ]; then
     echo "Required:"
     echo "  <audio_file>                Path to MP3 audio file"
     echo "  --transcribers <list>       Comma-separated transcription services"
-    echo "                              (whisperx, whisperx-cloud, deepgram, assemblyai)"
+    echo "                              (whisperx, whisperx-cloud, assemblyai)"
     echo "  --processors <list>         Comma-separated AI post-processors"
-    echo "                              (sonnet, opus, chatgpt, gemini, llama, qwen-cloud, qwen)"
+    echo "                              (opus, gemini)"
     echo ""
     echo "Optional:"
     echo "  --batch-size <n>            Batch size for WhisperX (default: 16 GPU, 8 CPU)"
     echo "  --force-cpu                 Force CPU mode for WhisperX (fixes torchvision issues)"
     echo ""
     echo "Examples:"
-    echo "  $0 interview.mp3 --transcribers deepgram --processors sonnet,gemini"
-    echo "  $0 interview.mp3 --transcribers whisperx,deepgram --processors chatgpt"
-    echo "  $0 interview.mp3 --transcribers whisperx --processors sonnet --force-cpu"
+    echo "  $0 interview.mp3 --transcribers assemblyai --processors opus,gemini"
+    echo "  $0 interview.mp3 --transcribers whisperx,assemblyai --processors opus"
+    echo "  $0 interview.mp3 --transcribers whisperx --processors gemini --force-cpu"
     exit 1
 fi
 
