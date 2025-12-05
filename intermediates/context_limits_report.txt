@@ -2,7 +2,7 @@
 AI PROVIDER CONTEXT WINDOW TEST RESULTS
 ======================================================================
 
-Test Date: 2025-11-26 16:52:35
+Test Date: 2025-12-05 14:18:22
 
 For typical 60-90 minute transcripts:
   Estimated tokens: 20,000 - 40,000 tokens
@@ -20,9 +20,9 @@ Anthropic: claude-sonnet-4-5-20250929
 
   Test Results:
     ✓ 10,033 tokens - OK (2.5s)
-    ✓ 50,029 tokens - OK (3.1s)
-    ✓ 100,037 tokens - OK (4.1s)
-    ✓ 150,019 tokens - OK (7.4s)
+    ✓ 50,029 tokens - OK (3.0s)
+    ✓ 100,037 tokens - OK (4.2s)
+    ✓ 150,019 tokens - OK (4.8s)
     ✗ 190,018 tokens - FAILED
 
 Anthropic: claude-opus-4-5
@@ -32,24 +32,11 @@ Anthropic: claude-opus-4-5
   Chunking Needed: NO - Perfect for your transcripts!
 
   Test Results:
-    ✓ 10,033 tokens - OK (1.8s)
-    ✓ 50,029 tokens - OK (3.8s)
+    ✓ 10,033 tokens - OK (4.7s)
+    ✓ 50,029 tokens - OK (4.3s)
     ✓ 100,037 tokens - OK (4.2s)
-    ✓ 150,019 tokens - OK (4.6s)
+    ✓ 150,019 tokens - OK (6.0s)
     ✗ 190,018 tokens - FAILED
-
-OpenAI: gpt-4o-2024-11-20
-  Advertised: 128,000 tokens
-  Maximum Tested: 120,003 tokens
-  Recommended Safe Limit: 114,002 tokens (with 5% buffer)
-  Chunking Needed: NO - Perfect for your transcripts!
-
-  Test Results:
-    ✓ 10,033 tokens - OK (2.2s)
-    ✓ 50,029 tokens - OK (5.1s)
-    ✓ 100,037 tokens - OK (5.8s)
-    ✓ 120,003 tokens - OK (7.5s)
-    ✗ 128,043 tokens - FAILED
 
 Google: gemini-3.0-pro
   Advertised: 128,000 tokens (some claim 1M)
@@ -58,40 +45,24 @@ Google: gemini-3.0-pro
   Chunking Needed: NO - Perfect for your transcripts!
 
   Test Results:
-    ✓ 10,033 tokens - OK (3.2s)
-    ✓ 50,029 tokens - OK (3.4s)
-    ✓ 100,037 tokens - OK (8.4s)
-    ✓ 120,003 tokens - OK (10.2s)
-    ✓ 128,043 tokens - OK (5.6s)
+    ✓ 10,033 tokens - OK (2.6s)
+    ✓ 50,029 tokens - OK (3.3s)
+    ✓ 100,037 tokens - OK (3.9s)
+    ✓ 120,003 tokens - OK (4.0s)
+    ✓ 128,043 tokens - OK (5.2s)
 
-Meta: llama-3.3-70b-versatile
-  Advertised: 128,000 tokens (hosted via Groq)
-  Maximum Tested: 100,037 tokens
-  Recommended Safe Limit: 95,035 tokens (with 5% buffer)
+DeepSeek: deepseek-chat
+  Advertised: 128,000 tokens
+  Maximum Tested: 128,043 tokens
+  Recommended Safe Limit: 121,640 tokens (with 5% buffer)
   Chunking Needed: NO - Perfect for your transcripts!
 
   Test Results:
-    ✓ 20,065 tokens - OK (1.4s)
-    ✓ 40,063 tokens - OK (2.3s)
-    ✓ 60,061 tokens - OK (3.4s)
-    ✓ 80,004 tokens - OK (4.3s)
-    ✓ 100,037 tokens - OK (5.5s)
-
-Qwen: SKIPPED
-  Reason: GPU Required - Qwen skipped on CPU-only system
-
-Qwen: qwen/qwen3-32b
-  Advertised: 128,000 tokens (hosted via Groq)
-  Maximum Tested: 100,037 tokens
-  Recommended Safe Limit: 95,035 tokens (with 5% buffer)
-  Chunking Needed: NO - Perfect for your transcripts!
-
-  Test Results:
-    ✓ 20,065 tokens - OK (1.2s)
-    ✓ 40,063 tokens - OK (2.1s)
-    ✓ 60,061 tokens - OK (2.7s)
-    ✓ 80,004 tokens - OK (4.3s)
-    ✓ 100,037 tokens - OK (5.6s)
+    ✓ 10,033 tokens - OK (2.2s)
+    ✓ 50,029 tokens - OK (4.1s)
+    ✓ 100,037 tokens - OK (15.8s)
+    ✓ 120,003 tokens - OK (8.5s)
+    ✓ 128,043 tokens - OK (7.3s)
 
 ======================================================================
 
@@ -104,7 +75,5 @@ BEST CHOICE: Anthropic (claude-sonnet-4-5-20250929)
   Maintains full context for best quality
 
 ALTERNATIVES:
-  - OpenAI: 120,003 tokens
   - Google: 128,043 tokens
-  - Meta: 100,037 tokens
-  - Qwen: 100,037 tokens
+  - DeepSeek: 128,043 tokens

@@ -2,86 +2,121 @@
 QUALITY ASSESSMENT: EPISODE 008 - MICHAEL PARENTI
 ================================================================================
 Guest: Michael Parenti
-Generated: November 30, 2025
+Generated: December 5, 2025
 
-Supported Combinations: 6 (3 transcribers × 2 post-processors)
+Supported Combinations: 9 (3 transcribers × 3 post-processors)
 
 ================================================================================
 EXECUTIVE SUMMARY
 ================================================================================
 
 AVAILABLE COMBINATIONS:
-├─ WhisperX-Local + Opus         ★★★★★ Premium quality
-├─ WhisperX-Local + Gemini       ★★★★★ Excellent technical terms
-├─ WhisperX-Cloud + Opus         ★★★★★ Best overall
-├─ WhisperX-Cloud + Gemini       ★★★★★ Fast & accurate
-├─ AssemblyAI + Opus             ★★★★★ Highest transcription accuracy
-└─ AssemblyAI + Gemini           ★★★★☆ Good quality
+├─ WhisperX-Local + DeepSeek     ★★★★★ Best content retention (99.9%)
+├─ WhisperX-Local + Gemini       ★★★★★ Excellent (98.4% retention)
+├─ WhisperX-Local + Opus         ★★★★☆ Good (95.7% retention)
+├─ WhisperX-Cloud + DeepSeek     ★★★★★ Best content retention (100.1%)
+├─ WhisperX-Cloud + Gemini       ★★★★★ Excellent (97.7% retention)
+├─ WhisperX-Cloud + Opus         ★★★★☆ Good (95.5% retention)
+├─ AssemblyAI + DeepSeek         ★★★★★ Best content retention (99.9%)
+├─ AssemblyAI + Gemini           ★★★★★ Excellent (97.5% retention)
+└─ AssemblyAI + Opus             ★★★★☆ Good (92.5% retention)
 
 RECOMMENDED FOR THIS EPISODE:
-1. whisperx-cloud + opus    (Best overall preservation)
-2. assemblyai + opus        (Highest accuracy)
-3. whisperx + gemini        (Fast, excellent for technical content)
+1. assemblyai + deepseek      (Highest source accuracy + best retention)
+2. whisperx-cloud + deepseek  (Best overall content preservation)
+3. whisperx + gemini          (Fast, excellent for technical content)
+
+================================================================================
+WORD COUNT ANALYSIS
+================================================================================
+
+INPUT (Intermediate Transcripts):
+  • episode008-michael-parenti_assemblyai.txt:      4,416 words
+  • episode008-michael-parenti_whisperx-cloud.txt:  4,175 words
+  • episode008-michael-parenti_whisperx.txt:        4,219 words
+
+OUTPUT (Post-Processed):
+                              Words    Retention
+  assemblyai + deepseek       4,410    99.9%  ★★★★★
+  assemblyai + gemini         4,304    97.5%  ★★★★★
+  assemblyai + opus           4,084    92.5%  ★★★★☆
+  
+  whisperx-cloud + deepseek   4,178    100.1% ★★★★★
+  whisperx-cloud + gemini     4,078    97.7%  ★★★★★
+  whisperx-cloud + opus       3,989    95.5%  ★★★★☆
+  
+  whisperx + deepseek         4,215    99.9%  ★★★★★
+  whisperx + gemini           4,152    98.4%  ★★★★★
+  whisperx + opus             4,037    95.7%  ★★★★☆
 
 ================================================================================
 TRANSCRIBERS
 ================================================================================
 
-WhisperX-Local (whisperx)
-  • FREE local processing with GPU
-  • Excellent accuracy for technical content
-  • Good speaker diarization
-  • Best for: Privacy, offline processing
+AssemblyAI (assemblyai)
+  • Commercial cloud service
+  • Highest source word count (4,416 words)
+  • Clean speaker labels
+  • Best for: Professional workflows, highest fidelity
 
 WhisperX-Cloud (whisperx-cloud)
   • Cloud processing via Replicate  
-  • Most balanced output quality
+  • Balanced output quality (4,175 words)
   • Fast and consistent
   • Best for: Standard production workflow
 
-AssemblyAI (assemblyai)
-  • Commercial cloud service
-  • Clean speaker labels
-  • High accuracy transcription
-  • Best for: Professional workflows
+WhisperX-Local (whisperx)
+  • FREE local processing with GPU
+  • Good accuracy (4,219 words)
+  • Excellent for technical content
+  • Best for: Privacy, offline processing
 
 ================================================================================
 POST-PROCESSORS
 ================================================================================
 
-Claude Opus 4.5 (opus)
-  • Premium quality - best reasoning
-  • 93-98% content retention
-  • Excellent technical term handling
-  • 150K context window
-  • Best for: Archival quality, important discussions
+DeepSeek-V3 (deepseek) - NEW WINNER
+  • Best content retention: 99.9-100.1%
+  • Preserves nearly all original content
+  • Excellent formatting compliance
+  • 8K output token limit (sufficient for this episode)
+  • Best for: Maximum content preservation
 
 Gemini 3.0 Pro (gemini)
-  • Excellent technical accuracy
-  • 84-98% content retention  
-  • Superior technical terminology
+  • Very good retention: 97.5-98.4%
+  • Excellent technical terminology handling
+  • Fast processing
   • 128K context window
   • Best for: Fast processing, technical content
+
+Claude Opus 4.5 (opus)
+  • Good retention: 92.5-95.7%
+  • Highest editorial polish
+  • More aggressive cleanup of filler words
+  • 150K context window
+  • Best for: Archival quality, polished presentation
 
 ================================================================================
 EPISODE-SPECIFIC NOTES
 ================================================================================
 
 CONTENT CHARACTERISTICS:
-  • Interview with Michael Parenti
-  • Technical discussion
-  • Clear speaker attribution
-  • Good audio quality
+  • Interview with Michael Parenti (exiled cypherpunk)
+  • Rich early Ethereum history content
+  • Bitcoin Foundation background
+  • Berlin/Prague crypto scene connections
+  • Good audio quality, clear speakers
+
+KEY FINDING:
+  DeepSeek significantly outperforms both Opus and Gemini in content
+  retention for this episode, achieving near-perfect 100% preservation
+  while maintaining proper formatting. This makes it the recommended
+  choice when maximum content fidelity is the priority.
 
 RECOMMENDED WORKFLOW:
-  Primary:   whisperx-cloud + opus
-  Backup:    assemblyai + opus
-  Fast mode: whisperx + gemini
-
-QUALITY NOTES:
-  • All combinations deliver excellent results
-  • Opus best for preserving discussion nuance
-  • Gemini excellent for technical terminology
-  • Consistent quality across all combinations
+  Maximum Fidelity: assemblyai + deepseek (99.9% retention)
+  Balanced:         whisperx-cloud + deepseek (100.1% retention)
+  Editorial Polish: whisperx-cloud + opus (95.5% retention)
+  Fast Processing:  whisperx + gemini (98.4% retention)
 
 ================================================================================
