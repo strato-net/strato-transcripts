@@ -346,7 +346,7 @@ def process_with_deepseek(transcript, api_key, context):
             {"role": "system", "content": SYSTEM_PROMPT},
             {"role": "user", "content": prompt}
         ],
-        max_tokens=65536,  # DeepSeek-V3 supports large outputs
+        max_tokens=8192,  # DeepSeek API limit
         stream=True
     )
 
