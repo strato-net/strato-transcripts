@@ -106,9 +106,13 @@ CRITICAL CONTENT PRESERVATION RULES
    - Significantly shorter output means you've removed too much content
    - This is non-negotiable - check your word count before finalizing
 
-3. **PRESERVE TIMESTAMPS** - One timestamp per speaker turn at the START of each paragraph
-   - Format: [MM:SS] with 2 digits each (e.g., 00:05, 02:12, 15:47)
-   - No decimal fractions - round to nearest second
+3. **PRESERVE EXACT TIMESTAMPS** - CRITICAL: Do NOT modify, recalculate, or regenerate timestamps
+   - Copy timestamps EXACTLY as they appear in the input transcript
+   - If input has [00:32], output must have [00:32] - not [00:30] or [00:35]
+   - If input has [42:57], output must have [42:57] - preserve the exact values
+   - The timestamps are from speech recognition and represent ACTUAL audio positions
+   - Format: [MM:SS] with 2 digits each (already correct in input)
+   - Do NOT compress or recalculate based on estimated speech duration
    - Only ONE timestamp per speaker paragraph (at the beginning)
 
 4. **MERGE CONSECUTIVE SPEECH INTO PARAGRAPHS**
