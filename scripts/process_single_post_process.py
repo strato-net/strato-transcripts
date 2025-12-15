@@ -2,7 +2,7 @@
 """
 AI transcript post-processor for Ethereum/blockchain content.
 Batch process transcripts with multiple AI providers.
-Supports: opus, gemini, deepseek.
+Supports: opus, gemini, deepseek, chatgpt.
 """
 
 import os
@@ -364,6 +364,82 @@ def process_with_deepseek(transcript, api_key, context):
     print(" ✓")
     return result
 
+
+def process_with_chatgpt(transcript, api_key, context):
+    """Process transcript using ChatGPT 5.2 (OpenAI) with streaming.
+
+    Notes:
+    - Uses the OpenAI Python SDK already present in requirements.
+    - Prefers the Responses API for streaming, with a fallback to Chat Completions
+      to maximize compatibility across OpenAI account/model settings.
+    """
+    try:
+        from openai import OpenAI
+    except ImportError:
+        raise ImportError("openai package not installed. Install with: pip install openai")
+
+    client = OpenAI(api_key=api_key)
+    prompt = build_prompt(context, transcript)
+
+    model = os.getenv("CHATGPT_MODEL", "gpt-5.2")
+    # Keep default conservative; some accounts/models enforce tighter limits.
+    max_output_tokens = int(os.getenv("CHATGPT_MAX_OUTPUT_TOKENS", "16384"))
+
+    print(f"      Processing: ", end='', flush=True)
+
+    result = ""
+    chunk_count = 0
+
+    # Preferred: Responses API streaming
+    try:
+        with client.responses.stream(
+            model=model,
+            input=[
+                {"role": "system", "content": SYSTEM_PROMPT},
+                {"role": "user", "content": prompt},
+            ],
+            max_output_tokens=max_output_tokens,
+        ) as stream:
+            for event in stream:
+                # Event types vary slightly by SDK version; handle the common ones.
+                if getattr(event, "type", None) == "response.output_text.delta":
+                    delta = getattr(event, "delta", None)
+                    if delta:
+                        result += delta
+                        chunk_count += 1
+                        if chunk_count % 100 == 0:
+                            print(".", end='', flush=True)
+            # Ensure we drain and finalize cleanly.
+            _ = stream.get_final_response()
+
+        print(" ✓")
+        return result
+    except Exception:
+        # Fallback: Chat Completions streaming
+        pass
+
+    stream = client.chat.completions.create(
+        model=model,
+        messages=[
+            {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "user", "content": prompt},
+        ],
+        # Some OpenAI models (incl. ChatGPT 5.x) require max_completion_tokens.
+        max_completion_tokens=max_output_tokens,
+        stream=True,
+    )
+
+    for chunk in stream:
+        delta = chunk.choices[0].delta.content
+        if delta:
+            result += delta
+            chunk_count += 1
+            if chunk_count % 100 == 0:
+                print(".", end='', flush=True)
+
+    print(" ✓")
+    return result
+
 def estimate_tokens(text):
     """Estimate tokens (words × 1.3)."""
     return int(len(text.split()) * 1.3)
@@ -431,6 +507,8 @@ def process_single_combination(transcript_path, provider, api_keys, context):
             corrected = process_with_gemini(transcript, api_keys['gemini'], context)
         elif provider == "deepseek":
             corrected = process_with_deepseek(transcript, api_keys['deepseek'], context)
+        elif provider == "chatgpt":
+            corrected = process_with_chatgpt(transcript, api_keys['chatgpt'], context)
     except Exception as e:
         elapsed = time.time() - start_time
         print(f"      {failure(f'Processing failed ({elapsed:.1f}s): {e}')}")
@@ -498,13 +576,13 @@ def main():
     
     parser.add_argument("transcripts", nargs='+', help="Transcript file path(s)")
     parser.add_argument("--processors", required=True,
-                       help="Comma-separated list of processors (opus,gemini,deepseek)")
+                       help="Comma-separated list of processors (opus,gemini,deepseek,chatgpt)")
     
     args = parser.parse_args()
     
     # Parse processors
     processors = [p.strip() for p in args.processors.split(',')]
-    valid_processors = {'opus', 'gemini', 'deepseek'}
+    valid_processors = {'opus', 'gemini', 'deepseek', 'chatgpt'}
     
     for proc in processors:
         if proc not in valid_processors:
@@ -520,7 +598,8 @@ def main():
     key_mapping = {
         'opus': 'ANTHROPIC_API_KEY',       # Claude Opus 4.5 via Anthropic
         'gemini': 'GOOGLE_API_KEY',        # Gemini 3.0 Pro via Google
-        'deepseek': 'DEEPSEEK_API_KEY'     # DeepSeek-V3 via DeepSeek
+        'deepseek': 'DEEPSEEK_API_KEY',    # DeepSeek-V3 via DeepSeek
+        'chatgpt': 'OPENAI_API_KEY'        # ChatGPT 5.2 via OpenAI
     }
     
     for proc in processors:

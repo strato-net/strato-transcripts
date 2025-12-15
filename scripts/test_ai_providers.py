@@ -72,17 +72,58 @@ def test_deepseek():
         return False
 
     try:
-        import openai
-        client = openai.OpenAI(api_key=api_key, base_url="https://api.deepseek.com")
+        from openai import OpenAI
+        client = OpenAI(api_key=api_key, base_url="https://api.deepseek.com")
 
         response = client.chat.completions.create(
             model="deepseek-chat",
             messages=[{"role": "user", "content": "Say 'hello' in one word"}],
-            max_tokens=10
+            max_tokens=10,
         )
 
         print(f"✅ Connected successfully")
         print(f"Response: {response.choices[0].message.content}")
+        return True
+    except Exception as e:
+        print(f"❌ Error: {e}")
+        return False
+
+
+def test_openai_chatgpt():
+    """Test OpenAI ChatGPT 5.2 connection."""
+    print("\n" + "="*60)
+    print("Testing OPENAI (gpt-5.2 / ChatGPT 5.2)")
+    print("="*60)
+
+    api_key = os.environ.get('OPENAI_API_KEY')
+    if not api_key:
+        print("❌ OPENAI_API_KEY not set")
+        return False
+
+    model = os.environ.get('CHATGPT_MODEL', 'gpt-5.2')
+
+    try:
+        from openai import OpenAI
+        client = OpenAI(api_key=api_key)
+
+        # Prefer Responses API; fall back to chat.completions for compatibility.
+        try:
+            response = client.responses.create(
+                model=model,
+                input="Say 'hello' in one word",
+                max_output_tokens=10,
+            )
+            text = getattr(response, 'output_text', None) or str(response)
+        except Exception:
+            response = client.chat.completions.create(
+                model=model,
+                messages=[{"role": "user", "content": "Say 'hello' in one word"}],
+                max_completion_tokens=10,
+            )
+            text = response.choices[0].message.content
+
+        print(f"✅ Connected successfully")
+        print(f"Response: {text[:100]}")
         return True
     except Exception as e:
         print(f"❌ Error: {e}")
@@ -197,6 +238,7 @@ def main():
     results['anthropic'] = test_anthropic()
     results['gemini'] = test_gemini()
     results['deepseek'] = test_deepseek()
+    results['openai'] = test_openai_chatgpt()
     
     # Summary
     print("\n" + "="*60)

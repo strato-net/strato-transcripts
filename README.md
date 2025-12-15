@@ -41,6 +41,7 @@ All services include speaker diarization (identifying who said what).
 | **opus** | Claude Opus 4.5 | Anthropic | **150K** | $15/$75 per MTok | **PREMIUM QUALITY** - Best reasoning, long context |
 | **gemini** | Gemini 3.0 Pro | Google | **128K** | ~$1.25 per MTok | **TECHNICAL** - Superior technical preservation |
 | **deepseek** | DeepSeek-V3.2 | DeepSeek | **128K** | $0.28/$0.42 per MTok | **COST-EFFECTIVE** - Great quality at lowest cost |
+| **chatgpt** | ChatGPT 5.2 | OpenAI | **varies** | (see OpenAI pricing) | **BALANCED** - Strong general editing + instruction following |
 
 ## Setup
 
@@ -54,6 +55,7 @@ export HF_TOKEN="hf_..."              # Required for WhisperX diarization
 export ANTHROPIC_API_KEY="sk-ant-..." # For Claude Opus post-processing
 export GOOGLE_API_KEY="..."           # For Gemini post-processing
 export DEEPSEEK_API_KEY="..."         # For DeepSeek post-processing
+export OPENAI_API_KEY="sk-..."         # For ChatGPT 5.2 post-processing
 export ASSEMBLYAI_API_KEY="..."       # Optional: AssemblyAI transcription
 export REPLICATE_API_TOKEN="..."      # Optional: Cloud WhisperX
 ```
@@ -66,7 +68,7 @@ Example: `interview_assemblyai_opus.txt`
 
 **Transcribers:** `whisperx`, `whisperx-cloud`, `assemblyai`
 
-**Processors:** `opus`, `gemini`, `deepseek`
+**Processors:** `opus`, `gemini`, `deepseek`, `chatgpt`
 
 ## License
 
