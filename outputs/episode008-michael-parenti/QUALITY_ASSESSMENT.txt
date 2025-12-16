@@ -14,43 +14,45 @@ This quality report was refreshed after regenerating all 12 post-processing
 outputs (opus, gemini, deepseek, chatgpt) for all 3 intermediate transcripts
 (whisperx, whisperx-cloud, assemblyai).
 
+IMPORTANT PIPELINE NOTE:
+  Post-processing is now being run on the intermediate *.md transcripts
+  (not the *.txt transcripts). This is required so post-processors can
+  preserve the original timestamps.
+
 KEY FINDINGS:
 
 1) WORD-COUNT RETENTION is generally good
-   Most outputs are ~93–101% of the input transcript word count.
+   Most outputs are ~90–103% of the input transcript word count.
 
-2) TIMESTAMP INTEGRITY in POST-PROCESSED .md is NOT reliable
-   Post-processing was run on intermediate .txt transcripts, which do NOT
-   contain timestamps. As a result:
-   - Some providers emitted NO timestamps at all (md_headers=0).
-   - Some providers generated timestamps, but they are largely synthetic.
+2) TIMESTAMP PRESERVATION is now mostly correct
+   Most processors preserve timestamps well when fed the intermediate .md.
+   However, there are notable failures (see WhisperX-Cloud + Opus).
 
-   If you need accurate timestamps aligned to audio, treat the intermediate
-   .md transcripts as the ground truth.
-
-RECOMMENDED OUTPUTS (TEXT QUALITY / RETENTION):
-
-  • AssemblyAI + DeepSeek       (99.9% retention; good content preservation)
-  • WhisperX-Cloud + DeepSeek   (101.1% retention; slight expansion)
-  • WhisperX + Gemini           (98.6% retention; BUT md is missing timestamps)
-
-NOTE ON “ChatGPT” PROCESSOR:
-  ChatGPT outputs have good word retention in some cases, but they do not
-  follow the required timestamped markdown format (md_headers=0 everywhere).
+RECOMMENDED FOR THIS EPISODE:
+  • AssemblyAI + DeepSeek
+      - Best timestamp preservation (194/194)
+      - High retention (98.7%)
+  • WhisperX-Cloud + Gemini
+      - Best timestamp preservation (26/26)
+      - Good retention (97.5%)
+  • WhisperX + DeepSeek
+      - Preserves timestamps (100/100)
+      - High retention (100.1%)
 
 ================================================================================
 INPUT (INTERMEDIATE) TRANSCRIPTS
 ================================================================================
 
-Word counts (baseline for retention):
-  • episode008-michael-parenti_assemblyai.txt:      4,540 words
-  • episode008-michael-parenti_whisperx-cloud.txt:  4,316 words
-  • episode008-michael-parenti_whisperx.txt:        4,427 words
+Word counts (baseline for retention; computed from the intermediate .md
+transcripts with timestamps stripped):
+  • episode008-michael-parenti_assemblyai.md:      4,540 words
+  • episode008-michael-parenti_whisperx-cloud.md:  4,316 words
+  • episode008-michael-parenti_whisperx.md:        4,427 words
 
 Timestamp/header counts in intermediate .md (GROUND TRUTH timing):
   • episode008-michael-parenti_assemblyai.md:       194 timestamped headers
   • episode008-michael-parenti_whisperx-cloud.md:    26 timestamped headers
-  • episode008-michael-parenti_whisperx.md:         100 timestamped headers
+  • episode008-michael-parenti_whisperx.md:         100 timestamps (98 timestamped headers)
 
 ================================================================================
 OUTPUT (POST-PROCESSED) WORD COUNT ANALYSIS
@@ -58,48 +60,40 @@ OUTPUT (POST-PROCESSED) WORD COUNT ANALYSIS
 
 Legend:
   retention = output_words / input_words
-  md_headers = number of "**[MM:SS] SPEAKER_XX:**" headers detected in the .md
-  ts_overlap = percent overlap between output timestamps and intermediate .md
-               timestamps (unique set overlap; NOT sequence).
+  timestamps = output timestamp count / input timestamp count
 
-ASSEMBLYAI (input: 4,540 words)
-  processor     words    retention   md_headers   md_ts    ts_overlap
-  opus          4,227     93.1%         194        194      13.0%
-  gemini        4,389     96.7%         194        194      13.6%
-  deepseek      4,535     99.9%         194        194      14.1%
-  chatgpt       3,996     88.0%           0          0       0.0%   ⚠ no timestamped headers
+ASSEMBLYAI (input: 4,540 words; 194 timestamps)
+  processor     words    retention   timestamps
+  opus          4,220     93.0%      194/194
+  gemini        4,383     96.5%      193/194   ⚠ dropped 1 timestamp
+  deepseek      4,479     98.7%      194/194
+  chatgpt       4,093     90.2%      183/194   ⚠ dropped 11 timestamps
 
-WHISPERX-CLOUD (input: 4,316 words)
-  processor     words    retention   md_headers   md_ts    ts_overlap
-  opus          4,185     97.0%         159        159       7.7%
-  gemini        4,453    103.1%           0          0       0.0%   ⚠ no timestamped headers
-  deepseek      4,362    101.1%          82         82       0.0%   ⚠ timestamps appear fully synthetic
-  chatgpt       4,024     93.2%           0          0       0.0%   ⚠ no timestamped headers
+WHISPERX-CLOUD (input: 4,316 words; 26 timestamps)
+  processor     words    retention   timestamps
+  opus          4,279     99.1%      141/26    ⚠ CRITICAL: regenerated/over-segmented timestamps
+  gemini        4,208     97.5%      26/26
+  deepseek      4,310     99.9%      25/26    ⚠ dropped 1 timestamp
+  chatgpt       3,916     90.7%      29/26    ⚠ added timestamps
 
-WHISPERX (input: 4,427 words)
-  processor     words    retention   md_headers   md_ts    ts_overlap
-  opus          4,178     94.4%         175        175      10.8%
-  gemini        4,366     98.6%           0          0       0.0%   ⚠ no timestamped headers
-  deepseek      4,276     96.6%         110        110      11.8%
-  chatgpt       4,290     96.9%           0          0       0.0%   ⚠ no timestamped headers
+WHISPERX (input: 4,427 words; 100 timestamps)
+  processor     words    retention   timestamps
+  opus          4,081     92.2%      139/100   ⚠ CRITICAL: regenerated/over-segmented timestamps
+  gemini        4,396     99.3%      101/100   ⚠ added timestamps
+  deepseek      4,431    100.1%      100/100
+  chatgpt       3,972     89.7%      105/100   ⚠ added timestamps
 
 ================================================================================
 QUALITY FLAGS / REVIEW NOTES
 ================================================================================
 
-1) Formatting non-compliance (missing required timestamped headers)
-   The following outputs have md_headers=0, meaning they do not follow the
-   required "**[MM:SS] SPEAKER_XX:**" format:
-     - episode008-michael-parenti_assemblyai_chatgpt.md
-     - episode008-michael-parenti_whisperx-cloud_chatgpt.md
-     - episode008-michael-parenti_whisperx-cloud_gemini.md
-     - episode008-michael-parenti_whisperx_chatgpt.md
-     - episode008-michael-parenti_whisperx_gemini.md
+1) Timestamp count changes are the primary red flag
+   Any output with far more timestamps than the input is not preserving the
+   diarization paragraphing and is likely regenerating timestamps.
 
-2) Timestamp reliability warning
-   Even when md_headers exist, timestamp overlap vs the intermediate .md is low
-   (0–14%). This strongly suggests timestamps in outputs are not copied from
-   the source transcript and should be treated as synthetic.
+   CRITICAL failures observed:
+     - whisperx-cloud + opus: 141 timestamps vs 26 input
+     - whisperx + opus: 139 timestamps vs 100 input
 
 RECOMMENDATION:
   • Use intermediate .md files as the canonical timestamped transcript.
