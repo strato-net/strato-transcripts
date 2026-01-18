@@ -452,11 +452,10 @@ def transcribe_whisperx(audio_path, output_dir, force_cpu=False):
                           module='pyannote.audio.utils.reproducibility',
                           message='.*TensorFloat-32.*')
 
-    # Configure TF32 optimizations for Ampere/RDN RTX GPUs
+    # Configure TF32 optimizations for Ampere/Ada/Blackwell RTX GPUs
+    # Uses new PyTorch 2.9+ API (old allow_tf32 API deprecated)
     torch.backends.cudnn.conv.fp32_precision = 'tf32'
     torch.backends.cuda.matmul.fp32_precision = 'tf32'
-    torch.backends.cuda.matmul.allow_tf32 = True
-    torch.backends.cudnn.allow_tf32 = True
 
     # Get HuggingFace token
     hf_token = os.environ.get('HF_TOKEN')
