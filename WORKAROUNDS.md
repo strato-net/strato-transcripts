@@ -74,10 +74,6 @@ pip index versions whisperx
 
 ### Upstream Issues & Pull Requests
 
-**Related Issues (by community):**
-- **[WhisperX #992](https://github.com/m-bain/whisperx/issues/992)** - Pyannote authentication issues (January 2025)
-- **[WhisperX #1304](https://github.com/m-bain/whisperx/issues/1304)** - Shows `use_auth_token` in error traces (November 2025)
-
 **Our Contribution:**
 - **Issue [#1322](https://github.com/m-bain/whisperx/issues/1322)** - Deprecated `use_auth_token` breaks compatibility with pyannote.audio 4.x (logged by strato-transcripts, January 2026)
 - **Pull Request [#1323](https://github.com/m-bain/whisperx/pull/1323)** - Fix `use_auth_token` → `token` migration (submitted by @bobsummerwill, January 2026) ✅
