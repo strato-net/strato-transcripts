@@ -2,6 +2,7 @@
 """
 GPU Performance Benchmarking Suite
 Measures throughput, latency, and bandwidth
+Supports both NVIDIA (CUDA) and AMD (ROCm) GPUs
 """
 import torch
 import time
@@ -9,29 +10,66 @@ import argparse
 import json
 from datetime import datetime
 
+# Import unified GPU utilities
+try:
+    from gpu_utils import GPUVendor, detect_gpu_vendor, get_gpu_temperature
+    HAS_GPU_UTILS = True
+except ImportError:
+    HAS_GPU_UTILS = False
+
+def get_compute_backend():
+    """Determine if using CUDA or ROCm"""
+    if hasattr(torch.version, 'hip') and torch.version.hip is not None:
+        return 'rocm', torch.version.hip
+    elif torch.version.cuda is not None:
+        return 'cuda', torch.version.cuda
+    else:
+        return 'unknown', 'unknown'
+
 class GPUBenchmark:
     def __init__(self, gpu_id=0):
         self.device = torch.device(f'cuda:{gpu_id}')
         self.gpu_id = gpu_id
         torch.cuda.set_device(self.device)
 
+        # Detect compute backend (CUDA or ROCm)
+        self.backend, self.backend_version = get_compute_backend()
+
+        # Detect vendor
+        if HAS_GPU_UTILS:
+            self.vendor = detect_gpu_vendor()
+        else:
+            self.vendor = 'nvidia' if self.backend == 'cuda' else 'amd'
+
         props = torch.cuda.get_device_properties(self.device)
         self.gpu_name = props.name
         self.total_memory = props.total_memory / 1024**3
+
+        # Build GPU properties dict (works for both NVIDIA and AMD)
         self.gpu_props = {
             'id': gpu_id,
             'name': props.name,
             'total_memory_gb': self.total_memory,
-            'cuda_capability': f"{props.major}.{props.minor}",
             'multiprocessor_count': props.multi_processor_count,
             'max_threads_per_multiprocessor': props.max_threads_per_multi_processor,
             'warp_size': props.warp_size,
         }
 
+        # Add vendor-specific naming
+        if self.backend == 'rocm':
+            self.gpu_props['gcn_arch'] = f"{props.major}.{props.minor}"
+            self.gpu_props['compute_units'] = props.multi_processor_count
+            capability_label = "GCN Arch"
+        else:
+            self.gpu_props['cuda_capability'] = f"{props.major}.{props.minor}"
+            capability_label = "CUDA Capability"
+
+        vendor_str = self.vendor.value.upper() if hasattr(self.vendor, 'value') else str(self.vendor).upper()
         print(f"GPU {gpu_id}: {self.gpu_name}")
-        print(f"CUDA Capability: {props.major}.{props.minor}")
+        print(f"Vendor: {vendor_str} ({self.backend.upper()} {self.backend_version})")
+        print(f"{capability_label}: {props.major}.{props.minor}")
         print(f"Total Memory: {self.total_memory:.2f} GB")
-        print(f"Multiprocessors: {props.multi_processor_count}")
+        print(f"Multiprocessors/CUs: {props.multi_processor_count}")
 
     def benchmark_matmul(self, sizes=[1024, 2048, 4096, 8192], iterations=100):
         """Benchmark matrix multiplication performance"""
@@ -222,15 +260,24 @@ class GPUBenchmark:
 
         timestamp = datetime.now()
 
+        # Build test metadata with correct backend info
+        test_metadata = {
+            'timestamp': timestamp.isoformat(),
+            'date': timestamp.strftime('%Y-%m-%d'),
+            'time': timestamp.strftime('%H:%M:%S'),
+            'pytorch_version': torch.__version__,
+            'compute_backend': self.backend,
+        }
+
+        # Add backend-specific version
+        if self.backend == 'rocm':
+            test_metadata['rocm_version'] = self.backend_version
+        else:
+            test_metadata['cuda_version'] = self.backend_version
+
         all_results = {
             'gpu_info': self.gpu_props,
-            'test_metadata': {
-                'timestamp': timestamp.isoformat(),
-                'date': timestamp.strftime('%Y-%m-%d'),
-                'time': timestamp.strftime('%H:%M:%S'),
-                'pytorch_version': torch.__version__,
-                'cuda_version': torch.version.cuda,
-            },
+            'test_metadata': test_metadata,
             'benchmark_results': {
                 'matmul': self.benchmark_matmul(),
                 'memory_bandwidth': self.benchmark_memory_bandwidth(),

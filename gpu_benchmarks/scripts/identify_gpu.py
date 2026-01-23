@@ -2,11 +2,22 @@
 """
 GPU Model Identification Tool
 Identifies exact GPU model including manufacturer variant (EVGA FTW3, ASUS ROG, etc.)
+Supports both NVIDIA and AMD GPUs
 """
 import subprocess
 import re
 import json
 from datetime import datetime
+
+# Import unified GPU utilities
+try:
+    from gpu_utils import (
+        GPUVendor, detect_gpu_vendor, get_gpu_count, get_basic_gpu_info,
+        get_pci_info, identify_amd_model, get_gpu_temperature, get_gpu_power
+    )
+    HAS_GPU_UTILS = True
+except ImportError:
+    HAS_GPU_UTILS = False
 
 # EVGA RTX 3090 Model Database
 EVGA_RTX_3090_MODELS = {
@@ -42,6 +53,31 @@ class GPUIdentifier:
         self.gpu_id = gpu_id
         self.info = {}
 
+        # Detect GPU vendor
+        if HAS_GPU_UTILS:
+            self.vendor = detect_gpu_vendor()
+        else:
+            # Fallback detection
+            self.vendor = self._detect_vendor_fallback()
+
+        self.info['vendor'] = self.vendor.value if HAS_GPU_UTILS else self.vendor
+
+    def _detect_vendor_fallback(self):
+        """Fallback vendor detection without gpu_utils"""
+        try:
+            result = subprocess.run(['nvidia-smi', '-L'], capture_output=True, text=True)
+            if result.returncode == 0:
+                return 'nvidia'
+        except:
+            pass
+        try:
+            result = subprocess.run(['rocm-smi', '-i'], capture_output=True, text=True)
+            if result.returncode == 0:
+                return 'amd'
+        except:
+            pass
+        return 'unknown'
+
     def get_nvidia_smi_info(self):
         """Get basic GPU info from nvidia-smi"""
         try:
@@ -60,6 +96,81 @@ class GPUIdentifier:
                 self.info['vbios'] = parts[4]
         except Exception as e:
             print(f"Warning: Could not get nvidia-smi info: {e}")
+
+    def get_rocm_smi_info(self):
+        """Get basic GPU info from rocm-smi (AMD)"""
+        try:
+            # Get device info
+            result = subprocess.run(
+                ['rocm-smi', '-d', str(self.gpu_id), '-i'],
+                capture_output=True, text=True
+            )
+            if result.returncode == 0:
+                output = result.stdout
+
+                # Parse card series/name
+                card_match = re.search(r'Card series:\s*(.+)', output)
+                if card_match:
+                    self.info['name'] = card_match.group(1).strip()
+
+                # Parse card model
+                model_match = re.search(r'Card model:\s*(.+)', output)
+                if model_match:
+                    self.info['card_model'] = model_match.group(1).strip()
+
+                # Parse card vendor
+                vendor_match = re.search(r'Card vendor:\s*(.+)', output)
+                if vendor_match:
+                    self.info['card_vendor'] = vendor_match.group(1).strip()
+
+                # Parse card SKU
+                sku_match = re.search(r'Card SKU:\s*(.+)', output)
+                if sku_match:
+                    self.info['card_sku'] = sku_match.group(1).strip()
+
+            # Get VRAM info
+            result = subprocess.run(
+                ['rocm-smi', '-d', str(self.gpu_id), '--showmeminfo', 'vram'],
+                capture_output=True, text=True
+            )
+            if result.returncode == 0:
+                total_match = re.search(r'Total Memory.*?:\s*(\d+)', result.stdout)
+                if total_match:
+                    total_bytes = int(total_match.group(1))
+                    self.info['memory'] = f"{total_bytes // (1024*1024)} MiB"
+
+            # Get power info
+            result = subprocess.run(
+                ['rocm-smi', '-d', str(self.gpu_id), '-P'],
+                capture_output=True, text=True
+            )
+            if result.returncode == 0:
+                max_power_match = re.search(r'Max.*?:\s*([\d.]+)', result.stdout)
+                if max_power_match:
+                    self.info['power_limit'] = float(max_power_match.group(1))
+
+            # Get VBIOS info
+            result = subprocess.run(
+                ['rocm-smi', '-d', str(self.gpu_id), '-v'],
+                capture_output=True, text=True
+            )
+            if result.returncode == 0:
+                vbios_match = re.search(r'VBIOS version:\s*(.+)', result.stdout)
+                if vbios_match:
+                    self.info['vbios'] = vbios_match.group(1).strip()
+
+            # Get bus ID
+            result = subprocess.run(
+                ['rocm-smi', '-d', str(self.gpu_id), '--showbus'],
+                capture_output=True, text=True
+            )
+            if result.returncode == 0:
+                bus_match = re.search(r'BDF:\s*(\S+)', result.stdout)
+                if bus_match:
+                    self.info['bus_id'] = bus_match.group(1).strip()
+
+        except Exception as e:
+            print(f"Warning: Could not get rocm-smi info: {e}")
 
     def get_pci_info(self):
         """Get detailed PCI subsystem information"""
@@ -150,8 +261,42 @@ class GPUIdentifier:
             self.info['model_name'] = f"Unknown variant (Subsystem: {subsys_vendor}:{subsys_device})"
             self.info['model_tier'] = 'Unknown'
 
+    def identify_amd_model(self):
+        """Identify specific AMD GPU model from subsystem ID"""
+        subsys_vendor = self.info.get('subsystem_vendor_id', '').upper()
+        subsys_device = self.info.get('subsystem_device_id', '').upper()
+        device_id = self.info.get('device_id', '').upper()
+
+        if HAS_GPU_UTILS:
+            model_info = identify_amd_model(subsys_vendor, subsys_device, device_id)
+            self.info.update(model_info)
+        else:
+            # Basic fallback for AMD
+            if subsys_vendor == '1002':
+                self.info['manufacturer'] = 'AMD'
+                self.info['model_name'] = f"AMD {self.info.get('name', 'Unknown')} Reference"
+                self.info['model_tier'] = 'Reference'
+            elif subsys_vendor == '1DA2':
+                self.info['manufacturer'] = 'Sapphire'
+            elif subsys_vendor == '1682':
+                self.info['manufacturer'] = 'XFX'
+            elif subsys_vendor == '148C':
+                self.info['manufacturer'] = 'PowerColor'
+            elif subsys_vendor == '1043':
+                self.info['manufacturer'] = 'ASUS'
+            elif subsys_vendor == '1458':
+                self.info['manufacturer'] = 'Gigabyte'
+            elif subsys_vendor == '1462':
+                self.info['manufacturer'] = 'MSI'
+            else:
+                self.info['manufacturer'] = 'Unknown'
+
+            if 'model_name' not in self.info:
+                self.info['model_name'] = f"Unknown AMD variant (Subsystem: {subsys_vendor}:{subsys_device})"
+                self.info['model_tier'] = 'Unknown'
+
     def get_cuda_info(self):
-        """Get CUDA capabilities"""
+        """Get CUDA capabilities (works for both NVIDIA CUDA and AMD ROCm via HIP)"""
         try:
             import torch
             if torch.cuda.is_available() and self.gpu_id < torch.cuda.device_count():
@@ -160,6 +305,30 @@ class GPUIdentifier:
                 self.info['cuda_capability'] = f"{props.major}.{props.minor}"
                 self.info['multiprocessors'] = props.multi_processor_count
                 self.info['total_memory_gb'] = props.total_memory / 1024**3
+
+                # Check if using ROCm/HIP
+                if hasattr(torch.version, 'hip') and torch.version.hip is not None:
+                    self.info['rocm_version'] = torch.version.hip
+                    self.info['compute_api'] = 'ROCm/HIP'
+                else:
+                    self.info['cuda_version'] = torch.version.cuda
+                    self.info['compute_api'] = 'CUDA'
+        except:
+            pass
+
+    def get_rocm_info(self):
+        """Get ROCm-specific capabilities for AMD GPUs"""
+        try:
+            import torch
+            if torch.cuda.is_available() and self.gpu_id < torch.cuda.device_count():
+                props = torch.cuda.get_device_properties(self.gpu_id)
+                self.info['rocm_name'] = props.name
+                self.info['gcn_arch'] = f"{props.major}.{props.minor}"
+                self.info['compute_units'] = props.multi_processor_count
+                self.info['total_memory_gb'] = props.total_memory / 1024**3
+
+                if hasattr(torch.version, 'hip') and torch.version.hip is not None:
+                    self.info['rocm_version'] = torch.version.hip
         except:
             pass
 
@@ -167,10 +336,30 @@ class GPUIdentifier:
         """Run full identification"""
         print(f"Identifying GPU {self.gpu_id}...\n")
 
-        self.get_nvidia_smi_info()
-        self.get_pci_info()
-        self.identify_model()
-        self.get_cuda_info()
+        vendor = self.vendor.value if HAS_GPU_UTILS else self.vendor
+
+        if vendor == 'nvidia':
+            self.get_nvidia_smi_info()
+            self.get_pci_info()
+            self.identify_model()
+            self.get_cuda_info()
+        elif vendor == 'amd':
+            self.get_rocm_smi_info()
+            self.get_pci_info()
+            self.identify_amd_model()
+            self.get_rocm_info()
+        else:
+            # Try both and see what works
+            self.get_nvidia_smi_info()
+            if not self.info.get('name'):
+                self.get_rocm_smi_info()
+            self.get_pci_info()
+            if self.info.get('vendor_id', '').lower() == '10de':
+                self.identify_model()
+                self.get_cuda_info()
+            elif self.info.get('vendor_id', '').lower() == '1002':
+                self.identify_amd_model()
+                self.get_rocm_info()
 
         return self.info
 
@@ -199,12 +388,31 @@ class GPUIdentifier:
         print(f"  PCI Bus ID:        {self.info.get('bus_id', 'Unknown')}")
         print()
 
-        # CUDA Info
-        if 'cuda_capability' in self.info:
+        # CUDA/ROCm Info
+        vendor = self.info.get('vendor', 'unknown')
+        if isinstance(vendor, str):
+            vendor_str = vendor
+        else:
+            vendor_str = vendor.value if hasattr(vendor, 'value') else str(vendor)
+
+        if vendor_str == 'amd' or 'rocm_version' in self.info or 'gcn_arch' in self.info:
+            print("ROCm/HIP INFORMATION:")
+            if 'gcn_arch' in self.info:
+                print(f"  GCN Architecture:  {self.info.get('gcn_arch', 'Unknown')}")
+            if 'compute_units' in self.info:
+                print(f"  Compute Units:     {self.info.get('compute_units', 'Unknown')}")
+            if 'total_memory_gb' in self.info:
+                print(f"  Total Memory:      {self.info.get('total_memory_gb', 0):.2f} GB")
+            if 'rocm_version' in self.info:
+                print(f"  ROCm Version:      {self.info.get('rocm_version', 'Unknown')}")
+            print()
+        elif 'cuda_capability' in self.info:
             print("CUDA INFORMATION:")
             print(f"  CUDA Capability:   {self.info.get('cuda_capability', 'Unknown')}")
             print(f"  Multiprocessors:   {self.info.get('multiprocessors', 'Unknown')}")
             print(f"  Total Memory:      {self.info.get('total_memory_gb', 0):.2f} GB")
+            if 'cuda_version' in self.info:
+                print(f"  CUDA Version:      {self.info.get('cuda_version', 'Unknown')}")
             print()
 
         # PCI IDs
@@ -250,16 +458,32 @@ class GPUIdentifier:
 
 def identify_all_gpus():
     """Identify all available GPUs"""
-    try:
-        import torch
-        gpu_count = torch.cuda.device_count()
-    except:
-        # Fallback to nvidia-smi
-        result = subprocess.run(
-            ['nvidia-smi', '--query-gpu=count', '--format=csv,noheader'],
-            capture_output=True, text=True
-        )
-        gpu_count = int(result.stdout.strip()) if result.returncode == 0 else 1
+    # Detect vendor first
+    if HAS_GPU_UTILS:
+        vendor = detect_gpu_vendor()
+        gpu_count = get_gpu_count(vendor)
+        print(f"Detected GPU Vendor: {vendor.value.upper()}")
+    else:
+        vendor = None
+        try:
+            import torch
+            gpu_count = torch.cuda.device_count()
+        except:
+            # Fallback to nvidia-smi
+            result = subprocess.run(
+                ['nvidia-smi', '--query-gpu=count', '--format=csv,noheader'],
+                capture_output=True, text=True
+            )
+            if result.returncode == 0:
+                gpu_count = int(result.stdout.strip())
+            else:
+                # Try rocm-smi
+                result = subprocess.run(['rocm-smi', '-i'], capture_output=True, text=True)
+                if result.returncode == 0:
+                    gpu_count = len(re.findall(r'GPU\[(\d+)\]', result.stdout))
+                    gpu_count = max(1, gpu_count)
+                else:
+                    gpu_count = 1
 
     print(f"Found {gpu_count} GPU(s)\n")
 

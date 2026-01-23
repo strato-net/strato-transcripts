@@ -2,17 +2,56 @@
 """
 GPU Stress Test and Stability Testing
 Performs intensive compute operations to test GPU stability
+Supports both NVIDIA (CUDA) and AMD (ROCm) GPUs
 """
 import torch
 import time
 import argparse
 from datetime import datetime, timedelta
 
+# Import unified GPU utilities
+try:
+    from gpu_utils import GPUVendor, detect_gpu_vendor, get_gpu_temperature
+    HAS_GPU_UTILS = True
+except ImportError:
+    HAS_GPU_UTILS = False
+
+def get_compute_backend():
+    """Determine if using CUDA or ROCm"""
+    if hasattr(torch.version, 'hip') and torch.version.hip is not None:
+        return 'rocm', torch.version.hip
+    elif torch.version.cuda is not None:
+        return 'cuda', torch.version.cuda
+    else:
+        return 'unknown', 'unknown'
+
+def get_temperature_safe(gpu_id=0):
+    """Get GPU temperature with fallback"""
+    if HAS_GPU_UTILS:
+        temp = get_gpu_temperature(gpu_id)
+        if temp is not None:
+            return temp
+
+    # Fallback to PyTorch method (NVIDIA only)
+    try:
+        return torch.cuda.temperature(gpu_id)
+    except:
+        return None
+
 class GPUStressTest:
     def __init__(self, gpu_id=0):
         self.device = torch.device(f'cuda:{gpu_id}')
         self.gpu_id = gpu_id
         torch.cuda.set_device(self.device)
+
+        # Detect compute backend (CUDA or ROCm)
+        self.backend, self.backend_version = get_compute_backend()
+
+        # Detect vendor
+        if HAS_GPU_UTILS:
+            self.vendor = detect_gpu_vendor()
+        else:
+            self.vendor = 'nvidia' if self.backend == 'cuda' else 'amd'
 
         # Get GPU properties
         props = torch.cuda.get_device_properties(self.device)
@@ -22,11 +61,18 @@ class GPUStressTest:
             'id': gpu_id,
             'name': props.name,
             'total_memory_gb': self.total_memory,
-            'cuda_capability': f"{props.major}.{props.minor}",
             'multiprocessor_count': props.multi_processor_count,
         }
 
+        # Add vendor-specific naming
+        if self.backend == 'rocm':
+            self.gpu_props['gcn_arch'] = f"{props.major}.{props.minor}"
+        else:
+            self.gpu_props['cuda_capability'] = f"{props.major}.{props.minor}"
+
+        vendor_str = self.vendor.value.upper() if hasattr(self.vendor, 'value') else str(self.vendor).upper()
         print(f"GPU {gpu_id}: {self.gpu_name}")
+        print(f"Vendor: {vendor_str} ({self.backend.upper()})")
         print(f"Total Memory: {self.total_memory:.2f} GB")
 
     def matrix_multiply_stress(self, size=8192, duration=60, memory_fraction=0.8):
@@ -83,12 +129,13 @@ class GPUStressTest:
                     if iterations % 10 == 0:
                         elapsed = time.time() - start_time
                         remaining = duration - elapsed
-                        temp = torch.cuda.temperature()
+                        temp = get_temperature_safe(self.gpu_id)
                         mem_used = torch.cuda.memory_allocated(self.device) / 1024**3
+                        temp_str = f"{temp}°C" if temp is not None else "N/A"
                         print(f"[{datetime.now().strftime('%H:%M:%S')}] "
                               f"Iteration: {iterations} | "
                               f"Time remaining: {remaining:.1f}s | "
-                              f"Temp: {temp}°C | "
+                              f"Temp: {temp_str} | "
                               f"Memory: {mem_used:.2f}GB")
 
                     del C
@@ -225,18 +272,27 @@ def main():
 
     # Save results if requested
     if args.save:
+        # Build test metadata with correct backend info
+        test_metadata = {
+            'timestamp': timestamp.isoformat(),
+            'date': timestamp.strftime('%Y-%m-%d'),
+            'time': timestamp.strftime('%H:%M:%S'),
+            'duration': args.duration,
+            'matrix_size': args.matrix_size,
+            'test_type': args.test,
+            'pytorch_version': torch.__version__,
+            'compute_backend': tester.backend,
+        }
+
+        # Add backend-specific version
+        if tester.backend == 'rocm':
+            test_metadata['rocm_version'] = tester.backend_version
+        else:
+            test_metadata['cuda_version'] = tester.backend_version
+
         test_results = {
             'gpu_info': tester.gpu_props,
-            'test_metadata': {
-                'timestamp': timestamp.isoformat(),
-                'date': timestamp.strftime('%Y-%m-%d'),
-                'time': timestamp.strftime('%H:%M:%S'),
-                'duration': args.duration,
-                'matrix_size': args.matrix_size,
-                'test_type': args.test,
-                'pytorch_version': torch.__version__,
-                'cuda_version': torch.version.cuda,
-            },
+            'test_metadata': test_metadata,
             'test_results': results,
             'overall_status': 'PASSED' if overall_pass else 'FAILED'
         }

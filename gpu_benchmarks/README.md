@@ -2,7 +2,26 @@
 
 Comprehensive GPU benchmarking, stress testing, and identification tools.
 
+**Supports both NVIDIA (CUDA) and AMD (ROCm) GPUs.**
+
 ## Quick Start
+
+### First-Time Setup
+
+```bash
+# Automatic setup - detects GPU vendor and installs correct PyTorch
+./scripts/setup_environment.sh
+
+# Or manual setup for NVIDIA:
+python3 -m venv venv && source venv/bin/activate
+pip install torch torchvision --index-url https://download.pytorch.org/whl/cu128
+
+# Or manual setup for AMD:
+python3 -m venv venv-rocm && source venv-rocm/bin/activate
+pip install torch torchvision --index-url https://download.pytorch.org/whl/rocm6.3
+```
+
+### Running Benchmarks
 
 ```bash
 # Activate environment
@@ -21,16 +40,19 @@ python scripts/test_all_gpus.py --benchmark --stress --duration 600 --compare
 gpu_benchmarks/
 ├── benchmark              # Main launcher script (run this!)
 ├── scripts/               # All Python and shell scripts
+│   ├── gpu_utils.py              # Unified GPU utilities (NVIDIA + AMD)
 │   ├── identify_gpu.py           # GPU identification
 │   ├── gpu_benchmark.py          # Performance benchmarking
 │   ├── gpu_stress_test.py        # Stability testing
 │   ├── test_all_gpus.py          # Batch testing (all GPUs)
 │   ├── compare_results.py        # Results comparison
 │   ├── gpu_monitor.py            # Real-time monitoring
-│   └── run_benchmark.sh          # Interactive menu
+│   ├── run_benchmark.sh          # Interactive menu
+│   └── setup_environment.sh      # Auto-setup for NVIDIA/AMD
 ├── docs/                  # All documentation
 │   ├── README.md                 # Detailed documentation
 │   ├── QUICKSTART.md             # Quick reference
+│   ├── AMD_SUPPORT.md            # AMD/ROCm setup and usage
 │   ├── CARD_SWAPPING_WORKFLOW.md # Card-swapping guide
 │   ├── GPU_IDENTIFICATION_GUIDE.md # ID guide with agent instructions
 │   ├── MULTI_GPU_GUIDE.md        # Multi-GPU testing
