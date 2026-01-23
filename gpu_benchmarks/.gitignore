@@ -1,0 +1,20 @@
+# Test Results - TRACKED for version control (to see diffs over time)
+# *.json  # Commented out - we want to track result files
+# Results are tracked so you can:
+# - Compare performance changes over time
+# - Track same GPU before/after driver updates
+# - See performance degradation or improvements
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Comparison reports (can regenerate these)
+comparison_*.txt
+
+# Temp files
+*.tmp
+*.log

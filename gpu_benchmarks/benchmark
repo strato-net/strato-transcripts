@@ -1,0 +1,17 @@
+#!/bin/bash
+# GPU Benchmarking Suite - Main Launcher
+
+# Get script directory
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
+
+# Activate virtual environment
+if [ -f "$PROJECT_DIR/venv/bin/activate" ]; then
+    source "$PROJECT_DIR/venv/bin/activate"
+else
+    echo "Error: Virtual environment not found at $PROJECT_DIR/venv"
+    exit 1
+fi
+
+# Launch interactive menu
+exec "$SCRIPT_DIR/scripts/run_benchmark.sh"
