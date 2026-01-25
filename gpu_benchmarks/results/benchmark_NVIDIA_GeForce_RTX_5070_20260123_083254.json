@@ -1,0 +1,106 @@
+{
+  "gpu_info": {
+    "id": 0,
+    "name": "NVIDIA GeForce RTX 5070",
+    "total_memory_gb": 11.4906005859375,
+    "cuda_capability": "12.0",
+    "multiprocessor_count": 48,
+    "max_threads_per_multiprocessor": 1536,
+    "warp_size": 32
+  },
+  "test_metadata": {
+    "timestamp": "2026-01-23T08:32:54.690800",
+    "date": "2026-01-23",
+    "time": "08:32:54",
+    "pytorch_version": "2.10.0+cu128",
+    "cuda_version": "12.8"
+  },
+  "benchmark_results": {
+    "matmul": [
+      {
+        "size": 1024,
+        "avg_time_ms": 0.1298177400002487,
+        "min_time_ms": 0.12002800002619551,
+        "max_time_ms": 0.3317300000276191,
+        "gflops": 16542.297285377837
+      },
+      {
+        "size": 2048,
+        "avg_time_ms": 0.7799193200020227,
+        "min_time_ms": 0.7375010000032489,
+        "max_time_ms": 1.0377140000059626,
+        "gflops": 22027.75177303653
+      },
+      {
+        "size": 4096,
+        "avg_time_ms": 6.376898959996993,
+        "min_time_ms": 6.0355230000368465,
+        "max_time_ms": 6.785968000031062,
+        "gflops": 21552.631511675198
+      },
+      {
+        "size": 8192,
+        "avg_time_ms": 47.84407131000421,
+        "min_time_ms": 47.33482400001776,
+        "max_time_ms": 48.08170799998379,
+        "gflops": 22981.14683116635
+      }
+    ],
+    "memory_bandwidth": [
+      {
+        "size_mb": 1,
+        "h2d_bandwidth_gbps": 9.63422667231193,
+        "d2h_bandwidth_gbps": 7.039541453469319,
+        "h2d_time_ms": 0.10136387000386549,
+        "d2h_time_ms": 0.13872530000071492
+      },
+      {
+        "size_mb": 10,
+        "h2d_bandwidth_gbps": 10.88653497391056,
+        "d2h_bandwidth_gbps": 3.7774742994792914,
+        "h2d_time_ms": 0.8970370300011155,
+        "d2h_time_ms": 2.5852260600015597
+      },
+      {
+        "size_mb": 100,
+        "h2d_bandwidth_gbps": 9.219422821086802,
+        "d2h_bandwidth_gbps": 2.9444719592988102,
+        "h2d_time_ms": 10.592447259999744,
+        "d2h_time_ms": 33.16596366000226
+      },
+      {
+        "size_mb": 1000,
+        "h2d_bandwidth_gbps": 9.338804956797038,
+        "d2h_bandwidth_gbps": 2.99737253514883,
+        "h2d_time_ms": 104.57039252000129,
+        "d2h_time_ms": 325.8061814300004
+      }
+    ],
+    "compute_throughput": {
+      "Addition": {
+        "avg_time_us": 217.72448699925917,
+        "throughput_gops": 45.92960643895799
+      },
+      "Multiplication": {
+        "avg_time_us": 217.04533499905665,
+        "throughput_gops": 46.07332380603095
+      },
+      "Division": {
+        "avg_time_us": 217.50583599964557,
+        "throughput_gops": 45.975777863800836
+      },
+      "Sqrt": {
+        "avg_time_us": 149.7283559995708,
+        "throughput_gops": 66.78761636859664
+      },
+      "Exp": {
+        "avg_time_us": 149.72969799987368,
+        "throughput_gops": 66.78701776322582
+      },
+      "Sin": {
+        "avg_time_us": 149.7097500006248,
+        "throughput_gops": 66.79591676532935
+      }
+    }
+  }
+}
