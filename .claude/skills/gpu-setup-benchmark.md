@@ -139,6 +139,52 @@ vkmark                # integrated GPU
 
 ---
 
+## Benchmark Results Matrix
+
+### What Each Benchmark Measures
+
+| Benchmark | What It Measures | Why It Matters |
+|-----------|------------------|----------------|
+| **MatMul 8K/4K (GFLOPS)** | Matrix multiplication throughput using 8192x8192 (or 4096x4096) FP32 matrices | Core GPU compute performance; directly correlates with ML/AI workload speed |
+| **Memory BW H2D (GB/s)** | Host-to-Device memory transfer speed | How fast data can be sent to the GPU; important for large model loading |
+| **Memory BW D2H (GB/s)** | Device-to-Host memory transfer speed | How fast results can be retrieved; affects inference latency |
+| **Compute (GFLOPS)** | Sustained FP32 compute throughput | Raw computational power for general workloads |
+| **glmark2** | OpenGL rendering benchmark score | Graphics/visualization performance |
+| **vkmark** | Vulkan rendering benchmark score | Modern graphics API performance |
+
+### Tested GPU Cards
+
+| Card | GPU | Type | VRAM | MatMul 8K | MatMul 4K | glmark2 | vkmark | H2D GB/s | D2H GB/s |
+|------|-----|------|------|-----------|-----------|---------|--------|----------|----------|
+| #1 | RTX 3090 | dGPU | 24 GB | 25,658 | - | - | - | ~25 | ~25 |
+| #2 | RTX 3090 | dGPU | 24 GB | 24,586 | - | - | - | ~25 | ~25 |
+| #3 | RTX 5070 | dGPU | 12 GB | 22,981 | - | - | - | ~25 | ~25 |
+| #4 | RX 6750 XT | dGPU | 12 GB | 11,060 | - | 1,144 | 1,331 | 11.2 | 10.8 |
+| #5 | Intel MTL | iGPU | 28 GB* | - | 1,712 | 1,106 | 2,886 | 4.1 | 1.5 |
+
+*Intel MTL VRAM is shared system memory
+
+### Key Observations
+
+- **NVIDIA RTX 3090** achieves ~25,000 GFLOPS on 8K matmul, best overall compute performance
+- **NVIDIA RTX 5070** (12GB Blackwell) performs ~10% below RTX 3090 despite being newer generation
+- **AMD RX 6750 XT** achieves ~11,000 GFLOPS via ROCm, roughly 45% of RTX 3090 performance
+- **Intel MTL iGPU** achieves ~1,700 GFLOPS on 4K matmul (8K not tested due to memory constraints)
+- **Intel vkmark** score (2,886) is notably higher than AMD (1,331), suggesting good Vulkan driver optimization
+- **Memory bandwidth** on Intel iGPU is limited by system memory bus (~4 GB/s vs ~25 GB/s on discrete)
+
+### Test Coverage
+
+| Card | PyTorch | glmark2 | vkmark | Memory BW | Full Suite |
+|------|---------|---------|--------|-----------|------------|
+| #1 RTX 3090 | ✓ | - | - | ✓ | Partial |
+| #2 RTX 3090 | ✓ | - | - | ✓ | Partial |
+| #3 RTX 5070 | ✓ | - | - | ✓ | Partial |
+| #4 RX 6750 XT | ✓ | ✓ | ✓ | ✓ | Full |
+| #5 Intel MTL | ✓ (4K) | ✓ | ✓ | ✓ | Full |
+
+---
+
 ## eGPU Notes
 
 - Thunderbolt 3/4 enclosures (e.g., Razer Core X) work on Linux
