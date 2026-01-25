@@ -52,7 +52,12 @@ coverage.xml
 
 # Virtual environments
 venv/
+venv-nvidia/
+venv-amd/
+venv-intel/
+venv-cpu/
 venv311/
+venv-rocm/
 ENV/
 env/
 .venv
