@@ -5,8 +5,8 @@
 #
 # DESCRIPTION:
 #   Automated setup script that installs and configures WhisperX for audio
-#   transcription with speaker diarization. Supports both NVIDIA GPU and
-#   CPU-only systems with automatic hardware detection.
+#   transcription with speaker diarization. Supports multiple GPU vendors
+#   and CPU-only mode for flexible hardware configurations including eGPU.
 #
 # OPERATING SYSTEM SUPPORT:
 #   - macOS Sonoma (14.x)
@@ -15,39 +15,46 @@
 #
 # HARDWARE SUPPORT:
 #   - NVIDIA GPUs: RTX 5070 Blackwell, RTX 50/40/30/20 series, GTX, Tesla
-#   - CPU-only: Any system without NVIDIA GPU (including AMD GPUs via CPU)
+#   - AMD GPUs: RX 6000/7000 series via ROCm
+#   - Intel GPUs: Arc, Iris Xe, UHD Graphics via Intel Extension for PyTorch
+#   - CPU-only: Fallback for any system
 #
 # WHAT IT DOES:
 #   1. Detects OS and version
-#   2. Detects hardware (NVIDIA GPU vs CPU)
+#   2. Creates isolated Python virtual environment for selected GPU vendor
 #   3. Installs system dependencies (ffmpeg, build tools, Python dev)
-#   4. Creates isolated Python virtual environment
-#   5. Installs WhisperX and dependencies
-#   6. Installs PyTorch 2.9.1 (GPU or CPU)
-#   7. Verifies PyTorch installation
-#   8. Applies compatibility patches to WhisperX
-#   9. Installs pyannote.audio 4.0.1 (last release without torch==2.8.0 pin)
-#  10. Applies compatibility patches to SpeechBrain
-#  11. Configures LD_LIBRARY_PATH for NVIDIA
-#  12. Verifies package installations
-#  13. Installs AI provider SDKs (transcription & post-processing)
-#  14. Builds Ethereum glossaries
-#  15. Sets up environment configuration file
+#   4. Installs WhisperX and dependencies
+#   5. Installs PyTorch for selected backend (CUDA/ROCm/XPU/CPU)
+#   6. Verifies PyTorch installation
+#   7. Applies compatibility patches to WhisperX
+#   8. Installs pyannote.audio 4.0.1 (last release without torch==2.8.0 pin)
+#   9. Applies compatibility patches to SpeechBrain
+#  10. Verifies package installations
+#  11. Sets up environment configuration file
 #
 # REQUIREMENTS:
 #   - macOS Sonoma (14.x) OR Ubuntu 24.04 LTS
 #   - Python 3.12
 #   - macOS: Homebrew installed (script will check and guide installation)
 #   - Ubuntu: sudo access for system package installation
-#   - For NVIDIA (Ubuntu): Driver 565+ installed (run install_nvidia_drivers.sh first)
+#   - GPU drivers must be installed first:
+#     - NVIDIA: run install_nvidia_drivers.sh
+#     - AMD: run install_amd_drivers.sh
+#     - Intel: run install_intel_drivers.sh
 #
 # USAGE:
-#   ./install_packages_and_venv.sh                    # Auto-detect hardware
-#   ./install_packages_and_venv.sh --force-cpu        # Force CPU-only mode
+#   ./install_packages_and_venv.sh --nvidia   # NVIDIA GPU (creates venv-nvidia)
+#   ./install_packages_and_venv.sh --amd      # AMD GPU via ROCm (creates venv-amd)
+#   ./install_packages_and_venv.sh --intel    # Intel GPU via XPU (creates venv-intel)
+#   ./install_packages_and_venv.sh --cpu      # CPU-only (creates venv-cpu)
+#   ./install_packages_and_venv.sh --all      # Create all four venvs
 #
-# OPTIONS:
-#   --force-cpu       Force CPU-only installation even if NVIDIA GPU is present
-#                     Useful for testing or when you want CPU mode on GPU system
+# eGPU WORKFLOW:
+#   Pre-create all venvs, then activate the right one based on connected GPU:
+#     source venv-nvidia/bin/activate   # NVIDIA eGPU connected
+#     source venv-amd/bin/activate      # AMD eGPU connected
+#     source venv-intel/bin/activate    # Intel iGPU fallback
+#     source venv-cpu/bin/activate      # Pure CPU fallback
 #
 # POST-INSTALLATION:
 #   1. Get HuggingFace token: https://huggingface.co/settings/tokens
@@ -57,8 +64,9 @@
 #      - https://huggingface.co/pyannote/segmentation-3.0
 #
 # TROUBLESHOOTING:
-#   - If nvidia-smi fails: Reboot after driver installation
-#   - If PyTorch can't detect GPU: Check CUDA installation and driver version
+#   - NVIDIA: If nvidia-smi fails, reboot after driver installation
+#   - AMD: Set HSA_OVERRIDE_GFX_VERSION=10.3.0 for unofficial GPUs (RX 6600/6700/6750)
+#   - Intel: Ensure libze-intel-gpu1 and intel-opencl-icd are installed
 #   - If imports fail: Ensure virtual environment is activated
 #
 # ==============================================================================
@@ -76,23 +84,71 @@ NC='\033[0m'           # No Color (reset)
 # Script is in ./scripts/, so go up one level to project root
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"  # Project root (parent of scripts/)
-VENV_DIR="$PROJECT_DIR/venv"                  # Virtual environment location
 
 # Parse command-line arguments
-FORCE_CPU=false
+GPU_MODE=""
+INSTALL_ALL=false
+
+show_usage() {
+    echo "Usage: $0 [--nvidia|--amd|--intel|--cpu|--all]"
+    echo ""
+    echo "Options:"
+    echo "  --nvidia    Create venv-nvidia with CUDA PyTorch"
+    echo "  --amd       Create venv-amd with ROCm PyTorch"
+    echo "  --intel     Create venv-intel with Intel XPU PyTorch"
+    echo "  --cpu       Create venv-cpu with CPU-only PyTorch"
+    echo "  --all       Create all four venvs"
+    echo ""
+    echo "At least one option is required."
+}
+
 for arg in "$@"; do
     case $arg in
-        --force-cpu)
-            FORCE_CPU=true
+        --nvidia)
+            GPU_MODE="nvidia"
+            shift
+            ;;
+        --amd)
+            GPU_MODE="amd"
+            shift
+            ;;
+        --intel)
+            GPU_MODE="intel"
+            shift
+            ;;
+        --cpu|--force-cpu)
+            GPU_MODE="cpu"
+            shift
+            ;;
+        --all)
+            INSTALL_ALL=true
             shift
             ;;
         *)
             echo -e "${RED}Error: Unknown option: $arg${NC}"
-            echo "Usage: $0 [--force-cpu]"
+            show_usage
             exit 1
             ;;
     esac
 done
+
+# Validate arguments
+if [ "$INSTALL_ALL" = false ] && [ -z "$GPU_MODE" ]; then
+    echo -e "${RED}Error: No GPU mode specified${NC}"
+    show_usage
+    exit 1
+fi
+
+# Function to set venv directory based on mode
+set_venv_dir() {
+    local mode=$1
+    case $mode in
+        nvidia) VENV_DIR="$PROJECT_DIR/venv-nvidia" ;;
+        amd)    VENV_DIR="$PROJECT_DIR/venv-amd" ;;
+        intel)  VENV_DIR="$PROJECT_DIR/venv-intel" ;;
+        cpu)    VENV_DIR="$PROJECT_DIR/venv-cpu" ;;
+    esac
+}
 
 echo -e "${BLUE}========================================${NC}"
 echo -e "${BLUE}Python Environment Setup for WhisperX${NC}"
@@ -178,33 +234,68 @@ fi
 echo ""
 
 # ==============================================================================
-# Step 1: Hardware Detection
+# Step 1: GPU Mode Selection
 # ==============================================================================
-# Detect if an NVIDIA GPU is present to determine which PyTorch variant to install.
-# Uses nvidia-smi command which is only available with NVIDIA drivers installed.
-# Sets HAS_NVIDIA flag used throughout script for conditional logic.
-# Can be overridden with --force-cpu flag to force CPU-only installation.
+# Shows selected GPU mode and verifies driver availability.
+# GPU mode is specified via command-line flags (--nvidia, --amd, --intel, --cpu).
 # ==============================================================================
-echo -e "${YELLOW}[1/15] Detecting hardware...${NC}"
+echo -e "${YELLOW}[1/15] GPU mode selection...${NC}"
 
-if [ "$FORCE_CPU" = true ]; then
-    HAS_NVIDIA=false
-    echo -e "${YELLOW}--force-cpu flag detected${NC}"
-    echo -e "${YELLOW}⚠ Forcing CPU-only mode (ignoring any NVIDIA GPU)${NC}"
-    echo "Will install PyTorch 2.9.1 CPU-only version"
-elif [ "$OS_TYPE" = "macos" ]; then
-    HAS_NVIDIA=false
-    echo -e "${YELLOW}⚠ macOS detected - using CPU/MPS mode${NC}"
-    echo "Will install PyTorch 2.9.1 CPU-only version (Metal Performance Shaders supported)"
-elif command -v nvidia-smi &> /dev/null && nvidia-smi &> /dev/null; then
-    HAS_NVIDIA=true
-    GPU_NAME=$(nvidia-smi --query-gpu=name --format=csv,noheader 2>/dev/null || echo "NVIDIA GPU")
-    echo -e "${GREEN}✓ Detected NVIDIA GPU: $GPU_NAME${NC}"
-    echo "Will install PyTorch 2.9.1 with CUDA 13.0 support"
+show_mode_info() {
+    local mode=$1
+    case $mode in
+        nvidia)
+            echo -e "${BLUE}Mode: NVIDIA (CUDA)${NC}"
+            echo "Will create: venv-nvidia"
+            echo "PyTorch: 2.9.1+cu130"
+            if command -v nvidia-smi &> /dev/null && nvidia-smi &> /dev/null; then
+                GPU_NAME=$(nvidia-smi --query-gpu=name --format=csv,noheader 2>/dev/null || echo "NVIDIA GPU")
+                echo -e "${GREEN}✓ Detected: $GPU_NAME${NC}"
+            else
+                echo -e "${YELLOW}⚠ No NVIDIA GPU currently detected (eGPU may be disconnected)${NC}"
+            fi
+            ;;
+        amd)
+            echo -e "${BLUE}Mode: AMD (ROCm)${NC}"
+            echo "Will create: venv-amd"
+            echo "PyTorch: 2.6.0+rocm6.2"
+            if command -v rocminfo &> /dev/null; then
+                echo -e "${GREEN}✓ ROCm tools available${NC}"
+            else
+                echo -e "${YELLOW}⚠ ROCm not detected (run install_amd_drivers.sh first)${NC}"
+            fi
+            ;;
+        intel)
+            echo -e "${BLUE}Mode: Intel (XPU)${NC}"
+            echo "Will create: venv-intel"
+            echo "PyTorch: 2.5.1 + IPEX 2.5.10+xpu"
+            if [ -f /usr/lib/x86_64-linux-gnu/libze_loader.so.1 ]; then
+                echo -e "${GREEN}✓ Level Zero available${NC}"
+            else
+                echo -e "${YELLOW}⚠ Intel XPU runtime not detected (run install_intel_drivers.sh first)${NC}"
+            fi
+            ;;
+        cpu)
+            echo -e "${BLUE}Mode: CPU-only${NC}"
+            echo "Will create: venv-cpu"
+            echo "PyTorch: 2.9.1 (CPU)"
+            echo "No GPU acceleration - fallback mode"
+            ;;
+    esac
+}
+
+if [ "$OS_TYPE" = "macos" ]; then
+    # macOS only supports CPU/MPS mode
+    if [ "$GPU_MODE" != "cpu" ] && [ "$INSTALL_ALL" = false ]; then
+        echo -e "${YELLOW}⚠ macOS only supports CPU mode (with MPS acceleration)${NC}"
+        GPU_MODE="cpu"
+    fi
+fi
+
+if [ "$INSTALL_ALL" = true ]; then
+    echo "Will create all venvs: venv-nvidia, venv-amd, venv-intel, venv-cpu"
 else
-    HAS_NVIDIA=false
-    echo -e "${YELLOW}⚠ No NVIDIA GPU detected - using CPU mode${NC}"
-    echo "Will install PyTorch 2.9.1 CPU-only version"
+    show_mode_info "$GPU_MODE"
 fi
 echo ""
 
@@ -270,6 +361,30 @@ fi
 echo ""
 
 # ==============================================================================
+# Determine which modes to install
+# ==============================================================================
+if [ "$INSTALL_ALL" = true ]; then
+    MODES_TO_INSTALL="nvidia amd intel cpu"
+    echo -e "${BLUE}Installing all GPU backends...${NC}"
+else
+    MODES_TO_INSTALL="$GPU_MODE"
+fi
+
+# ==============================================================================
+# Main installation loop - install for each selected mode
+# ==============================================================================
+for CURRENT_MODE in $MODES_TO_INSTALL; do
+
+echo ""
+echo -e "${BLUE}======================================================${NC}"
+echo -e "${BLUE}Installing for: $CURRENT_MODE${NC}"
+echo -e "${BLUE}======================================================${NC}"
+echo ""
+
+# Set venv directory for current mode
+set_venv_dir "$CURRENT_MODE"
+
+# ==============================================================================
 # Step 4: Python Virtual Environment Creation
 # ==============================================================================
 # Create an isolated Python environment to avoid conflicts with system packages.
@@ -312,74 +427,130 @@ echo -e "${GREEN}✓ Base packages installed${NC}"
 echo ""
 
 # ==============================================================================
-# Step 6: PyTorch Upgrade to 2.9.1
+# Step 6: PyTorch Installation for Selected Backend
 # ==============================================================================
-# Upgrades PyTorch from 2.8.0 (WhisperX default) to 2.9.1.
-# PyTorch 2.9.1 provides:
-#   - Ubuntu: Full Blackwell (sm_120) support with CUDA 13.0 for RTX 50-series
-#   - macOS: Latest optimizations with MPS (Metal Performance Shaders) support
-# Both platforms use PyTorch 2.9.1 for version consistency.
+# Installs PyTorch for the selected GPU backend:
+#   - NVIDIA: PyTorch 2.9.1+cu130 (CUDA 13.0, Blackwell support)
+#   - AMD: PyTorch 2.6.0+rocm6.2 (ROCm)
+#   - Intel: PyTorch 2.5.1 + IPEX 2.5.10+xpu (Intel Extension for PyTorch)
+#   - CPU: PyTorch 2.9.1 (CPU-only)
 # Uses --force-reinstall to ensure correct variant is installed.
 # ==============================================================================
-echo -e "${YELLOW}[6/15] Upgrading PyTorch to 2.9.1...${NC}"
-echo "Upgrading PyTorch 2.8.0 → 2.9.1 for consistency across platforms"
+echo -e "${YELLOW}[6/15] Installing PyTorch for $CURRENT_MODE backend...${NC}"
+echo "This may take 2-5 minutes depending on internet speed..."
 
-if [ "$OS_TYPE" = "ubuntu" ]; then
-    echo "Platform: Ubuntu - installing with CUDA 13.0 support"
-    echo "Provides full Blackwell (sm_120) support for RTX 50-series GPUs"
-    echo "This may take 2-5 minutes depending on internet speed..."
-    pip install --force-reinstall --index-url https://download.pytorch.org/whl/cu130 \
-        torch==2.9.1 \
-        torchvision==0.24.1 \
-        torchaudio==2.9.1
-    echo -e "${GREEN}✓ PyTorch 2.9.1+cu130 installed${NC}"
-else
-    echo "Platform: macOS - installing with MPS (Metal) support"
-    echo "This may take 2-5 minutes depending on internet speed..."
-    pip install --force-reinstall \
-        torch==2.9.1 \
-        torchaudio==2.9.1
-    echo -e "${GREEN}✓ PyTorch 2.9.1 installed${NC}"
-fi
+case $CURRENT_MODE in
+    nvidia)
+        echo "Installing PyTorch 2.9.1 with CUDA 13.0 support"
+        echo "Provides full Blackwell (sm_120) support for RTX 50-series GPUs"
+        pip install --force-reinstall --index-url https://download.pytorch.org/whl/cu130 \
+            torch==2.9.1 \
+            torchvision==0.24.1 \
+            torchaudio==2.9.1
+        echo -e "${GREEN}✓ PyTorch 2.9.1+cu130 installed${NC}"
+        ;;
+    amd)
+        echo "Installing PyTorch 2.6.0 with ROCm 6.2 support"
+        pip install --force-reinstall --index-url https://download.pytorch.org/whl/rocm6.2 \
+            torch==2.6.0 \
+            torchvision==0.21.0 \
+            torchaudio==2.6.0
+        echo -e "${GREEN}✓ PyTorch 2.6.0+rocm6.2 installed${NC}"
+        ;;
+    intel)
+        echo "Installing PyTorch 2.5.1 with Intel XPU support (IPEX)"
+        pip install --force-reinstall \
+            torch==2.5.1 \
+            torchvision \
+            torchaudio \
+            intel-extension-for-pytorch==2.5.10+xpu \
+            --extra-index-url https://pytorch-extension.intel.com/release-whl/stable/xpu/us/
+        echo -e "${GREEN}✓ PyTorch 2.5.1 + IPEX 2.5.10+xpu installed${NC}"
+        ;;
+    cpu)
+        if [ "$OS_TYPE" = "macos" ]; then
+            echo "Installing PyTorch 2.9.1 with MPS (Metal) support"
+            pip install --force-reinstall \
+                torch==2.9.1 \
+                torchaudio==2.9.1
+            echo -e "${GREEN}✓ PyTorch 2.9.1 (MPS) installed${NC}"
+        else
+            echo "Installing PyTorch 2.9.1 CPU-only"
+            pip install --force-reinstall --index-url https://download.pytorch.org/whl/cpu \
+                torch==2.9.1 \
+                torchvision==0.24.1 \
+                torchaudio==2.9.1
+            echo -e "${GREEN}✓ PyTorch 2.9.1+cpu installed${NC}"
+        fi
+        ;;
+esac
 echo ""
 
 # ==============================================================================
 # Step 7: PyTorch Verification
 # ==============================================================================
-# Verifies PyTorch installation and hardware accessibility.
-# For NVIDIA: Confirms CUDA availability, GPU operations, and cuDNN functionality.
-# For CPU/MPS: Confirms basic CPU tensor operations work correctly.
-# Ensures the installation is ready for machine learning workloads.
+# Verifies PyTorch installation and hardware accessibility for selected backend.
 # ==============================================================================
 echo -e "${YELLOW}[7/15] Verifying PyTorch installation...${NC}"
-echo "Verifying PyTorch installation and hardware access..."
+echo "Verifying PyTorch installation for $CURRENT_MODE backend..."
 
-python3 -c "import torch; print(f'PyTorch: {torch.__version__}'); print(f'CUDA available: {torch.cuda.is_available()}'); print(f'MPS available: {torch.backends.mps.is_available() if hasattr(torch.backends, \"mps\") else False}'); print(f'Device: {torch.cuda.get_device_name(0) if torch.cuda.is_available() else \"CPU/MPS\"}')"
+case $CURRENT_MODE in
+    nvidia)
+        python3 -c "import torch; print(f'PyTorch: {torch.__version__}'); print(f'CUDA available: {torch.cuda.is_available()}'); print(f'Device: {torch.cuda.get_device_name(0) if torch.cuda.is_available() else \"No GPU detected\"}')"
 
-if [ "$HAS_NVIDIA" = true ]; then
-    if ! python3 -c "import torch; assert torch.cuda.is_available(), 'CUDA not available'" 2>/dev/null; then
-        echo -e "${RED}ERROR: PyTorch cannot detect CUDA/GPU${NC}"
-        exit 1
-    fi
-    
-    echo "Testing GPU operations..."
-    python3 -c "import torch; x = torch.randn(100,100, device='cuda'); print('✓ GPU test passed:', x.matmul(x).sum().item())"
-    
-    echo "Testing cuDNN..."
-    python3 -c "import torch.backends.cudnn as cudnn; print('✓ cuDNN version:', cudnn.version()); print('✓ cuDNN enabled:', cudnn.is_available())"
-    
-    echo -e "${GREEN}✓ PyTorch verified - GPU ready${NC}"
-else
-    echo "Testing CPU operations..."
-    python3 -c "import torch; x = torch.randn(100,100); print('✓ CPU test passed:', x.matmul(x).sum().item())"
-    
-    if [ "$OS_TYPE" = "macos" ]; then
-        echo "Testing MPS (Metal) availability..."
-        python3 -c "import torch; print('✓ MPS available:', torch.backends.mps.is_available() if hasattr(torch.backends, 'mps') else False)"
-    fi
-    
-    echo -e "${GREEN}✓ PyTorch verified - CPU ready${NC}"
-fi
+        # Only test GPU if one is currently connected (eGPU may be disconnected)
+        if python3 -c "import torch; exit(0 if torch.cuda.is_available() else 1)" 2>/dev/null; then
+            echo "Testing GPU operations..."
+            python3 -c "import torch; x = torch.randn(100,100, device='cuda'); print('✓ GPU test passed:', x.matmul(x).sum().item())"
+
+            echo "Testing cuDNN..."
+            python3 -c "import torch.backends.cudnn as cudnn; print('✓ cuDNN version:', cudnn.version()); print('✓ cuDNN enabled:', cudnn.is_available())"
+
+            echo -e "${GREEN}✓ PyTorch verified - NVIDIA GPU ready${NC}"
+        else
+            echo -e "${YELLOW}⚠ No NVIDIA GPU currently detected (eGPU may be disconnected)${NC}"
+            echo "PyTorch CUDA support installed - will work when GPU is connected"
+        fi
+        ;;
+    amd)
+        python3 -c "import torch; print(f'PyTorch: {torch.__version__}'); print(f'ROCm available: {torch.cuda.is_available()}'); print(f'HIP version: {torch.version.hip if hasattr(torch.version, \"hip\") else \"N/A\"}')"
+
+        if python3 -c "import torch; exit(0 if torch.cuda.is_available() else 1)" 2>/dev/null; then
+            echo "Testing GPU operations..."
+            python3 -c "import torch; x = torch.randn(100,100, device='cuda'); print('✓ GPU test passed:', x.matmul(x).sum().item())"
+            echo -e "${GREEN}✓ PyTorch verified - AMD GPU ready${NC}"
+        else
+            echo -e "${YELLOW}⚠ No AMD GPU currently detected (eGPU may be disconnected)${NC}"
+            echo "PyTorch ROCm support installed - will work when GPU is connected"
+            echo "Note: For unofficial GPUs (RX 6600/6700/6750), set HSA_OVERRIDE_GFX_VERSION=10.3.0"
+        fi
+        ;;
+    intel)
+        python3 -c "import torch; import intel_extension_for_pytorch as ipex; print(f'PyTorch: {torch.__version__}'); print(f'IPEX: {ipex.__version__}'); print(f'XPU available: {torch.xpu.is_available()}')" 2>/dev/null || \
+        python3 -c "import torch; print(f'PyTorch: {torch.__version__}'); print('IPEX import failed')"
+
+        if python3 -c "import torch; import intel_extension_for_pytorch; exit(0 if torch.xpu.is_available() else 1)" 2>/dev/null; then
+            echo "Testing XPU operations..."
+            python3 -c "import torch; import intel_extension_for_pytorch; x = torch.randn(100,100, device='xpu'); print('✓ XPU test passed:', x.sum().item())"
+            echo -e "${GREEN}✓ PyTorch verified - Intel XPU ready${NC}"
+        else
+            echo -e "${YELLOW}⚠ Intel XPU not available${NC}"
+            echo "Ensure libze-intel-gpu1 and intel-opencl-icd are installed"
+        fi
+        ;;
+    cpu)
+        python3 -c "import torch; print(f'PyTorch: {torch.__version__}')"
+        echo "Testing CPU operations..."
+        python3 -c "import torch; x = torch.randn(100,100); print('✓ CPU test passed:', x.matmul(x).sum().item())"
+
+        if [ "$OS_TYPE" = "macos" ]; then
+            echo "Testing MPS (Metal) availability..."
+            python3 -c "import torch; print('✓ MPS available:', torch.backends.mps.is_available() if hasattr(torch.backends, 'mps') else False)"
+        fi
+
+        echo -e "${GREEN}✓ PyTorch verified - CPU ready${NC}"
+        ;;
+esac
 echo ""
 
 # ==============================================================================
@@ -817,11 +988,29 @@ else
 fi
 echo ""
 
+echo -e "${GREEN}✓ Completed installation for: $CURRENT_MODE${NC}"
+echo ""
+
+done  # End of main installation loop
+
 # Final success message
 echo -e "${BLUE}========================================${NC}"
-echo -e "${GREEN}✓ Installation Complete!${NC}"
+echo -e "${GREEN}✓ All Installations Complete!${NC}"
 echo -e "${BLUE}========================================${NC}"
 echo ""
+
+# Show what was installed
+echo -e "${BLUE}Installed venvs:${NC}"
+for mode in $MODES_TO_INSTALL; do
+    case $mode in
+        nvidia) echo "  venv-nvidia/  - NVIDIA GPU (CUDA)" ;;
+        amd)    echo "  venv-amd/     - AMD GPU (ROCm)" ;;
+        intel)  echo "  venv-intel/   - Intel GPU (XPU)" ;;
+        cpu)    echo "  venv-cpu/     - CPU-only fallback" ;;
+    esac
+done
+echo ""
+
 echo -e "${YELLOW}MANUAL CONFIGURATION REQUIRED:${NC}"
 echo ""
 echo "1. Get a HuggingFace token:"
@@ -846,9 +1035,14 @@ echo "   - Google (Gemini): https://makersuite.google.com/app/apikey"
 echo ""
 echo -e "${GREEN}Ready to use!${NC}"
 echo ""
-echo "Basic Usage:"
+echo "Usage (activate the venv matching your current GPU):"
 echo "  source setup_env.sh"
-echo "  source venv/bin/activate"
+echo "  source venv-nvidia/bin/activate   # NVIDIA eGPU"
+echo "  source venv-amd/bin/activate      # AMD eGPU"
+echo "  source venv-intel/bin/activate    # Intel iGPU"
+echo "  source venv-cpu/bin/activate      # CPU fallback"
+echo ""
+echo "Then run:"
 echo "  ./scripts/process_single.sh audio.mp3 --transcribers whisperx --processors opus"
 echo ""
 echo "Available transcribers: whisperx, whisperx-cloud, assemblyai"

@@ -1,0 +1,91 @@
+{
+  "gpu_info": {
+    "id": 0,
+    "name": "Intel(R) Graphics",
+    "total_memory_gb": 28.503170013427734,
+    "driver_version": "1.6.33578+15",
+    "device_type": "unknown"
+  },
+  "test_metadata": {
+    "timestamp": "2026-01-25T11:26:39.275088",
+    "date": "2026-01-25",
+    "time": "11:26:39",
+    "pytorch_version": "2.5.1+cxx11.abi",
+    "ipex_version": "2.5.10+xpu",
+    "compute_backend": "xpu"
+  },
+  "benchmark_results": {
+    "matmul": [
+      {
+        "size": 1024,
+        "avg_time_ms": 1.765951790005147,
+        "min_time_ms": 1.6302340000038384,
+        "max_time_ms": 3.224417000012636,
+        "gflops": 1216.0488526098106
+      },
+      {
+        "size": 2048,
+        "avg_time_ms": 9.93757909999772,
+        "min_time_ms": 9.325586000045405,
+        "max_time_ms": 15.150620000042636,
+        "gflops": 1728.7781069339053
+      },
+      {
+        "size": 4096,
+        "avg_time_ms": 80.28308342001083,
+        "min_time_ms": 76.57502999995813,
+        "max_time_ms": 96.01913200003764,
+        "gflops": 1711.9291837979267
+      }
+    ],
+    "memory_bandwidth": [
+      {
+        "size_mb": 1,
+        "h2d_bandwidth_gbps": 1.6626649487109255,
+        "d2h_bandwidth_gbps": 1.8031307066644116,
+        "h2d_time_ms": 0.5873477399984495,
+        "d2h_time_ms": 0.5415927399997145
+      },
+      {
+        "size_mb": 10,
+        "h2d_bandwidth_gbps": 2.689124529297635,
+        "d2h_bandwidth_gbps": 3.1558573368265455,
+        "h2d_time_ms": 3.631525760002887,
+        "d2h_time_ms": 3.094444379992183
+      },
+      {
+        "size_mb": 100,
+        "h2d_bandwidth_gbps": 4.062191158820008,
+        "d2h_bandwidth_gbps": 1.4856289082481164,
+        "h2d_time_ms": 24.04028914000378,
+        "d2h_time_ms": 65.7339457100079
+      }
+    ],
+    "compute_throughput": {
+      "Addition": {
+        "avg_time_us": 2347.718591998273,
+        "throughput_gops": 4.259454277903234
+      },
+      "Multiplication": {
+        "avg_time_us": 2323.174775001121,
+        "throughput_gops": 4.304454450696752
+      },
+      "Division": {
+        "avg_time_us": 2335.353222999629,
+        "throughput_gops": 4.282007493134407
+      },
+      "Sqrt": {
+        "avg_time_us": 1772.3317850002331,
+        "throughput_gops": 5.642284410082215
+      },
+      "Exp": {
+        "avg_time_us": 1734.6522139988565,
+        "throughput_gops": 5.764844341302983
+      },
+      "Sin": {
+        "avg_time_us": 1758.5497259997283,
+        "throughput_gops": 5.6865039709440355
+      }
+    }
+  }
+}

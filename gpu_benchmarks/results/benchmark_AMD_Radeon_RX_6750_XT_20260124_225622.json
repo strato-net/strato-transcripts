@@ -1,0 +1,116 @@
+{
+  "gpu_info": {
+    "id": 0,
+    "name": "AMD Radeon RX 6750 XT",
+    "total_memory_gb": 11.984375,
+    "multiprocessor_count": 20,
+    "max_threads_per_multiprocessor": 2048,
+    "warp_size": 32,
+    "gcn_arch": "10.3",
+    "compute_units": 20
+  },
+  "test_metadata": {
+    "timestamp": "2026-01-24T22:56:22.995226",
+    "date": "2026-01-24",
+    "time": "22:56:22",
+    "pytorch_version": "2.5.1+rocm6.2",
+    "compute_backend": "rocm",
+    "rocm_version": "6.2.41133-dd7f95766"
+  },
+  "benchmark_results": {
+    "matmul": [
+      {
+        "size": 1024,
+        "avg_time_ms": 0.33137469999928726,
+        "min_time_ms": 0.27318800039211055,
+        "max_time_ms": 1.471790999858058,
+        "gflops": 6480.529889592111
+      },
+      {
+        "size": 2048,
+        "avg_time_ms": 1.6016849899642693,
+        "min_time_ms": 1.4953680001781322,
+        "max_time_ms": 1.852766999945743,
+        "gflops": 10726.122359667772
+      },
+      {
+        "size": 4096,
+        "avg_time_ms": 12.082520160029162,
+        "min_time_ms": 11.953725000239501,
+        "max_time_ms": 12.317562999669462,
+        "gflops": 11375.023724493274
+      },
+      {
+        "size": 8192,
+        "avg_time_ms": 99.41770521998478,
+        "min_time_ms": 99.23836399957509,
+        "max_time_ms": 99.52235799937625,
+        "gflops": 11059.515257801164
+      }
+    ],
+    "memory_bandwidth": [
+      {
+        "size_mb": 1,
+        "h2d_bandwidth_gbps": 1.3113192521047095,
+        "d2h_bandwidth_gbps": 1.4628364385703025,
+        "h2d_time_ms": 0.7447175799734396,
+        "d2h_time_ms": 0.6675814699792681
+      },
+      {
+        "size_mb": 10,
+        "h2d_bandwidth_gbps": 2.102194016205339,
+        "d2h_bandwidth_gbps": 2.370504329229652,
+        "h2d_time_ms": 4.645444200068596,
+        "d2h_time_ms": 4.119640229964716
+      },
+      {
+        "size_mb": 100,
+        "h2d_bandwidth_gbps": 0.6953006097539598,
+        "d2h_bandwidth_gbps": 0.3453702403676534,
+        "h2d_time_ms": 140.45184000997324,
+        "d2h_time_ms": 282.7581493299567
+      },
+      {
+        "size_mb": 1000,
+        "h2d_bandwidth_gbps": 0.6698256357236303,
+        "d2h_bandwidth_gbps": 0.49353281736355015,
+        "h2d_time_ms": 1457.935390820021,
+        "d2h_time_ms": 1978.7184674299715
+      }
+    ],
+    "compute_throughput": {
+      "Addition": {
+        "avg_time_us": 347.15316200436064,
+        "throughput_gops": 28.805729270224507
+      },
+      "Multiplication": {
+        "avg_time_us": 339.59699400475074,
+        "throughput_gops": 29.44666818770518
+      },
+      "Division": {
+        "avg_time_us": 336.4744159862312,
+        "throughput_gops": 29.719941620789406
+      },
+      "Sqrt": {
+        "avg_time_us": 181.46837599942955,
+        "throughput_gops": 55.106020235897375
+      },
+      "Exp": {
+        "avg_time_us": 175.1312880178375,
+        "throughput_gops": 57.100019723383056
+      },
+      "Sin": {
+        "avg_time_us": 176.42920399248396,
+        "throughput_gops": 56.67995872398772
+      }
+    },
+    "glmark2": {
+      "score": 1144,
+      "renderer": "AMD Radeon RX 6750 XT (radeonsi, navi22, LLVM 20.1.2, DRM 3.64)"
+    },
+    "vkmark": {
+      "score": 1331,
+      "device": "AMD Radeon RX 6750 XT (RADV NAVI22)"
+    }
+  }
+}
