@@ -32,7 +32,7 @@ from common import (Colors, success, failure, skip, validate_api_key,
 # │ chatgpt   │ GPT-5.2             │ openai/gpt-5.2                    │ 400K    │
 # │ grok      │ Grok 4              │ x-ai/grok-4                       │ 256K    │
 # │ qwen      │ Qwen3-Max           │ qwen/qwen3-max                    │ 256K    │
-# │ kimi      │ Kimi K2             │ moonshotai/kimi-k2                │ 256K    │
+# │ kimi      │ Kimi K2.5           │ moonshotai/kimi-k2.5              │ 256K    │
 # │ mistral   │ Mistral Large       │ mistralai/mistral-large-2411      │ 256K    │
 # │ minimax   │ MiniMax M2.1        │ minimax/minimax-m2.1              │ 4M      │
 # │ llama     │ Llama 4 Maverick    │ meta-llama/llama-4-maverick       │ 1M      │
@@ -60,7 +60,7 @@ OPENROUTER_MODELS = {
     'deepseek': 'deepseek/deepseek-chat',          # DeepSeek V3.2 - 128K context
     'chatgpt': 'openai/gpt-5.2',                   # GPT-5.2 - 400K context
     'qwen': 'qwen/qwen3-max',                      # Qwen3-Max - 256K context
-    'kimi': 'moonshotai/kimi-k2',                  # Kimi K2 - 256K context
+    'kimi': 'moonshotai/kimi-k2.5',                # Kimi K2.5 - 256K context
     'glm': 'z-ai/glm-4.7',                         # GLM-4.7 - 203K context
     'minimax': 'minimax/minimax-m2.1',             # MiniMax M2.1 - 4M context
     'llama': 'meta-llama/llama-4-maverick',        # Llama 4 Maverick - 1M context
