@@ -102,6 +102,17 @@ HOSTED_ONLY_MODELS = {
     'llama',      # 400B total → ~243GB Q4
 }
 
+# Direct API endpoints (bypass OpenRouter for specific providers)
+# Use when you have a direct API key - better reliability than OpenRouter for new models
+DIRECT_API_CONFIG = {
+    'kimi': {
+        'base_url': 'https://api.moonshot.ai/v1',  # Global endpoint
+        'model_id': 'kimi-k2.5',
+        'env_var': 'MOONSHOT_API_KEY',
+        'max_tokens': 16384,
+    },
+}
+
 
 # ============================================================================
 # GPU Validation for Local Mode
@@ -544,6 +555,63 @@ def process_with_openrouter(transcript, api_key, context, processor):
     return result
 
 
+def process_with_direct_api(transcript, api_key, context, processor):
+    """Process transcript using direct provider API (bypasses OpenRouter).
+
+    Some providers (like Moonshot/Kimi) work better with direct API access,
+    especially for newly released models that may not be fully integrated
+    with OpenRouter yet.
+
+    Args:
+        transcript: The raw transcript text to process
+        api_key: Direct API key for the provider
+        context: Context summary (glossary, people, terms)
+        processor: Processor name (e.g., 'kimi')
+
+    Returns:
+        Processed transcript text
+    """
+    try:
+        from openai import OpenAI
+    except ImportError:
+        raise ImportError("openai package not installed. Install with: pip install openai")
+
+    config = DIRECT_API_CONFIG.get(processor)
+    if not config:
+        raise ValueError(f"No direct API config for processor: {processor}")
+
+    client = OpenAI(
+        api_key=api_key,
+        base_url=config['base_url']
+    )
+    prompt = build_prompt(context, transcript)
+
+    print(f"      Processing (direct API): ", end='', flush=True)
+
+    result = ""
+    chunk_count = 0
+
+    stream = client.chat.completions.create(
+        model=config['model_id'],
+        messages=[
+            {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "user", "content": prompt}
+        ],
+        max_tokens=config['max_tokens'],
+        stream=True,
+    )
+
+    for chunk in stream:
+        if chunk.choices and chunk.choices[0].delta.content:
+            result += chunk.choices[0].delta.content
+            chunk_count += 1
+            if chunk_count % 100 == 0:
+                print(".", end='', flush=True)
+
+    print(" ✓")
+    return result
+
+
 def estimate_tokens(text):
     """Estimate tokens (words × 1.3)."""
     return int(len(text.split()) * 1.3)
@@ -613,12 +681,15 @@ def process_single_combination(transcript_path, provider, api_keys, context, mod
     output_txt = Path("outputs") / basename / f"{basename}_{transcriber}_{provider}.txt"
     output_md = Path("outputs") / basename / f"{basename}_{transcriber}_{provider}.md"
 
-    # Process with local model or OpenRouter based on mode
+    # Process with local model, direct API, or OpenRouter based on mode and available keys
     corrected = None
 
     try:
         if mode == 'local':
             corrected = process_with_local_model(transcript, context, provider)
+        elif provider in api_keys.get('direct', {}):
+            # Use direct API if available (better for newly released models)
+            corrected = process_with_direct_api(transcript, api_keys['direct'][provider], context, provider)
         else:
             corrected = process_with_openrouter(transcript, api_keys['openrouter'], context, provider)
     except Exception as e:
@@ -770,11 +841,24 @@ def main():
 
         api_keys['openrouter'] = openrouter_key
 
-        # Show which models will be used
-        print("\nModels via OpenRouter:")
+        # Check for direct API keys (bypass OpenRouter for specific providers)
+        api_keys['direct'] = {}
         for proc in processors:
-            model_id = OPENROUTER_MODELS.get(proc, 'unknown')
-            print(f"  {proc}: {model_id}")
+            if proc in DIRECT_API_CONFIG:
+                env_var = DIRECT_API_CONFIG[proc]['env_var']
+                direct_key = os.environ.get(env_var)
+                if direct_key:
+                    api_keys['direct'][proc] = direct_key
+
+        # Show which models will be used
+        print("\nModels:")
+        for proc in processors:
+            if proc in api_keys.get('direct', {}):
+                config = DIRECT_API_CONFIG[proc]
+                print(f"  {proc}: {config['model_id']} (direct API via {config['env_var']})")
+            else:
+                model_id = OPENROUTER_MODELS.get(proc, 'unknown')
+                print(f"  {proc}: {model_id} (OpenRouter)")
     
     # Build context once
     print("\nBuilding context from glossary...")
