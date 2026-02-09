@@ -640,7 +640,9 @@ def transcribe_whisperx(audio_path, output_dir, force_cpu=False, consensus_mode=
 
 
 def transcribe_whisperx_cloud(audio_path, output_dir, consensus_mode=False):
-    """WhisperX cloud transcription via Replicate with speaker diarization
+    """Cloud transcription via Replicate with speaker diarization and word-level timestamps.
+
+    Uses thomasmol/whisper-diarization (Whisper Large V3 Turbo + Pyannote 3.3).
 
     Args:
         consensus_mode: If True, saves word-level JSON for alignment. If False (default),
@@ -650,46 +652,47 @@ def transcribe_whisperx_cloud(audio_path, output_dir, consensus_mode=False):
     import time
     import json
     from pathlib import Path
-    
+
     api_token = os.environ.get('REPLICATE_API_TOKEN')
     if not api_token:
         raise ValueError("REPLICATE_API_TOKEN environment variable not set")
-    
+
     audio_path_obj = Path(audio_path)
-    
-    print(f"  Uploading and transcribing via Replicate...")
-    print(f"  Model: WhisperX Large-v3")
-    
-    start_time = time.time()
-    
+
+    # Build vocabulary prompt from custom terms (helps with Ethereum-specific names)
+    vocab_prompt = ""
     try:
-        # Run WhisperX on Replicate - uses WhisperX + Pyannote diarization from Replicate model
+        custom_vocab = load_vocabulary()
+        if custom_vocab:
+            # thomasmol model accepts a prompt string for vocabulary hints
+            vocab_prompt = ", ".join(custom_vocab[:200])  # Cap at 200 terms
+            print(f"  Loaded {len(custom_vocab)} vocabulary terms for prompting")
+    except Exception:
+        pass
+
+    print(f"  Uploading and transcribing via Replicate...")
+    print(f"  Model: Whisper Large V3 Turbo + Pyannote 3.3 (thomasmol/whisper-diarization)")
+
+    start_time = time.time()
+
+    try:
+        input_params = {
+            "file": open(audio_path, "rb"),
+            "language": "en",
+        }
+        if vocab_prompt:
+            input_params["prompt"] = vocab_prompt
+
         prediction = replicate.run(
-            "victor-upmeet/whisperx:84d2ad2d6194fe98a17d2b60bef1c7f910c46b2f6fd38996ca457afd9c8abfcb",
-            input={
-                "audio_file": open(audio_path, "rb"),  # File upload for WhisperX + Pyannote diarization
-                "model": "large-v3",
-                "language": "en",
-                "diarization": True,
-                "align_output": True,  # Enable word-level timestamps for consensus mode
-                "huggingface_access_token": os.environ.get('HF_TOKEN', ''),
-                "batch_size": 8
-            }
+            "thomasmol/whisper-diarization:1495a9cddc83b2203b0d8d3516e38b80fd1572ebc4bc5700ac1da56a9b3ed886",
+            input=input_params
         )
-        
+
         elapsed = time.time() - start_time
         print(f"  Transcribed in {elapsed:.1f}s")
 
-        # Debug: Print prediction to understand format
-        print(f"Debug prediction type: {type(prediction)}")
-        print(f"Debug prediction sample: {str(prediction)[:500]}...")
-        # Additional debug
-        print(f"Full prediction: {prediction}")
-
         # Parse the output
         segments = []
-
-        # Assuming prediction is a dict with 'segments' list
         pred_segments = prediction.get('segments', [])
 
         if pred_segments:
@@ -710,10 +713,11 @@ def transcribe_whisperx_cloud(audio_path, output_dir, consensus_mode=False):
 
         if not segments:
             raise ValueError("No transcription segments returned from Replicate")
-        
+
         # Count speakers
         speakers = set(seg['speaker'] for seg in segments if seg['speaker'].startswith('SPEAKER_'))
-        print(f"  Detected {len(speakers)} speakers")
+        num_speakers = prediction.get('num_speakers', len(speakers))
+        print(f"  Detected {num_speakers} speakers")
 
         # Create output directory
         episode_dir = Path(output_dir) / audio_path_obj.stem
@@ -727,14 +731,18 @@ def transcribe_whisperx_cloud(audio_path, output_dir, consensus_mode=False):
                 if speaker and not speaker.startswith('SPEAKER_'):
                     speaker = f'SPEAKER_{int(speaker):02d}'
 
-                # WhisperX Replicate model may include word-level timing in 'words' field
+                # thomasmol model always includes word-level timing in 'words' field
                 if 'words' in seg:
                     for word in seg['words']:
+                        word_text = word.get('word', word.get('text', '')).strip()
+                        if not word_text:
+                            continue
                         word_data.append({
-                            'text': word.get('word', word.get('text', '')),
+                            'text': word_text,
                             'start': float(word.get('start', 0)),
                             'end': float(word.get('end', 0)),
-                            'speaker': speaker
+                            'speaker': word.get('speaker', speaker),
+                            'confidence': word.get('probability', word.get('score', None))
                         })
 
             if word_data:
