@@ -671,6 +671,7 @@ def transcribe_whisperx_cloud(audio_path, output_dir, consensus_mode=False):
                 "model": "large-v3",
                 "language": "en",
                 "diarization": True,
+                "align_output": True,  # Enable word-level timestamps for consensus mode
                 "huggingface_access_token": os.environ.get('HF_TOKEN', ''),
                 "batch_size": 8
             }
