@@ -1,102 +1,102 @@
 {
-  "input_word_count": 2839,
+  "input_word_count": 2840,
   "consensus_word_count": 2859,
   "models": {
     "minimax": {
       "word_count": 2832,
-      "input_preservation": 0.962976135434079,
+      "input_preservation": 0.9119351512781313,
       "consensus_alignment": 0.1455718392819578,
       "length_score": 1.0,
       "format_score": 1.0,
-      "quality_score": 0.6471215763430068
+      "quality_score": 0.6318092810962225
     },
     "llama": {
       "word_count": 2842,
-      "input_preservation": 0.9994659831250667,
+      "input_preservation": 0.9798925228655824,
       "consensus_alignment": 0.09082613883624623,
       "length_score": 1.0,
       "format_score": 1.0,
-      "quality_score": 0.6361702504720185
+      "quality_score": 0.6302982123941732
     },
     "kimi": {
       "word_count": 2839,
-      "input_preservation": 0.9999643785844049,
+      "input_preservation": 0.9803795890752413,
       "consensus_alignment": 0.09003441252896974,
       "length_score": 1.0,
       "format_score": 1.0,
-      "quality_score": 0.6360030785869093
-    },
-    "glm": {
-      "word_count": 2645,
-      "input_preservation": 0.6575282537367846,
-      "consensus_alignment": 0.09664091970540686,
-      "length_score": 1.0,
-      "format_score": 1.0,
-      "quality_score": 0.5359148440031981
+      "quality_score": 0.6301276417341602
     },
     "opus": {
       "word_count": 2649,
-      "input_preservation": 0.6007706848916678,
+      "input_preservation": 0.6086924921869322,
       "consensus_alignment": 0.1372837029341167,
       "length_score": 1.0,
       "format_score": 1.0,
-      "quality_score": 0.535144686641147
+      "quality_score": 0.5375212288297263
+    },
+    "glm": {
+      "word_count": 2645,
+      "input_preservation": 0.6575801749271137,
+      "consensus_alignment": 0.09664091970540686,
+      "length_score": 1.0,
+      "format_score": 1.0,
+      "quality_score": 0.5359304203602969
     },
     "qwen": {
       "word_count": 2617,
-      "input_preservation": 0.5246237779649225,
+      "input_preservation": 0.5144028403059917,
       "consensus_alignment": 0.13212584788569778,
       "length_score": 1.0,
       "format_score": 1.0,
-      "quality_score": 0.5102374725437558
+      "quality_score": 0.5071711912460766
     },
     "gemini": {
       "word_count": 2637,
-      "input_preservation": 0.4952089481546253,
+      "input_preservation": 0.4858506027606803,
       "consensus_alignment": 0.13234238115754704,
       "length_score": 1.0,
       "format_score": 1.0,
-      "quality_score": 0.5014996369094065
+      "quality_score": 0.49869213329122297
     },
     "deepseek": {
       "word_count": 2613,
-      "input_preservation": 0.5642867614719249,
+      "input_preservation": 0.5698688356415329,
       "consensus_alignment": 0.04586658962042688,
       "length_score": 1.0,
       "format_score": 1.0,
-      "quality_score": 0.4876326642897483
+      "quality_score": 0.4893072865406306
     },
     "grok": {
       "word_count": 2596,
-      "input_preservation": 0.41723721304873135,
+      "input_preservation": 0.42462394319803826,
       "consensus_alignment": 0.1305288981889025,
       "length_score": 1.0,
       "format_score": 1.0,
-      "quality_score": 0.4773827231901804
+      "quality_score": 0.47959874223497245
     },
     "chatgpt": {
       "word_count": 2541,
-      "input_preservation": 0.33757985303349214,
+      "input_preservation": 0.33797202022812006,
       "consensus_alignment": 0.15768027359382958,
       "length_score": 1.0,
       "format_score": 1.0,
-      "quality_score": 0.4643460653475795
+      "quality_score": 0.4644637155059679
     },
     "mistral": {
       "word_count": 2293,
-      "input_preservation": 0.055127906072622655,
+      "input_preservation": 0.05510648220115032,
       "consensus_alignment": 0.10027940444750641,
       "length_score": 1.0,
       "format_score": 1.0,
-      "quality_score": 0.35665013360078934
+      "quality_score": 0.3566437064393476
     }
   },
   "top_5": [
     "minimax",
     "llama",
     "kimi",
-    "glm",
-    "opus"
+    "opus",
+    "glm"
   ],
   "bottom_3": [
     "grok",
