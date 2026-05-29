@@ -309,21 +309,43 @@ def save_transcript_dual_format(output_dir, basename, service_name, content,
             f.write('\n'.join(md_lines))
 
     elif content_type == "segments":
+        # Ensure content is a list
+        if not isinstance(content, list):
+            print(f"  Warning: Expected list for segments, got {type(content)}")
+            # If it's a string, maybe it was already formatted?
+            if isinstance(content, str):
+                with open(md_path, 'w', encoding='utf-8') as f:
+                    f.write(content)
+                return md_path
+            return None
+
         # List of segment dicts with 'speaker', 'start', 'text' keys
         segments = content
         speaker_key = "speaker"
-        normalize_transcript_segments(segments)
+
+        # Filter out non-dict elements
+        valid_segments = [s for s in segments if isinstance(s, dict)]
+        if len(valid_segments) < len(segments):
+            print(f"  Warning: Skipped {len(segments) - len(valid_segments)} non-dictionary segments")
+
+        normalize_transcript_segments(valid_segments)
 
         # Save markdown version (WITH timestamps)
         with open(md_path, 'w', encoding='utf-8') as f:
             current_speaker = None
-            for segment in segments:
+            for segment in valid_segments:
                 speaker = segment.get(speaker_key, "UNKNOWN")
                 if speaker != current_speaker:
                     f.write(f"\n**{speaker}:**\n")
                     current_speaker = speaker
-                start_time = segment.get("start", 0)
-                text = segment.get("text", "").strip()
+
+                # Handle missing start_time gracefully
+                try:
+                    start_time = float(segment.get("start", 0))
+                except (ValueError, TypeError):
+                    start_time = 0.0
+
+                text = str(segment.get("text", "")).strip()
                 f.write(f"[{start_time:.1f}s] {text}\n")
 
     return md_path
